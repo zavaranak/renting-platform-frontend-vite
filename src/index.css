@@ -1,0 +1,39 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family:'Outfit' ;
+  src: url(./fonts/Outfit.ttf);
+}
+:root {
+  --background: #ffffff;
+  --foreground: #292d32;
+  --main-light-blue: #3874ac;
+  --main-neutral-blue: #254d72;
+  --main-dark-blue: #122638;
+  --main-light-brown: #ac6f38;
+  --main-neutral-brown: #724a25;
+  --main-dark-brown: #382512;
+  --main-neutral-grey: #d9d9d9;
+  --text-dark-color: #292d32;
+}
+
+/* @media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+    --main-light-blue: #3874AC;
+    --main-neutral-blue: #254D72;
+    --main-dark-blue: #122638;
+    --main-light-brown: #AC6F38;
+    --main-neutral-brown: #724A25;
+    --main-dark-brown: #382512;
+    --main-neutral-grey: #d9d9d9;
+  }
+} */  
+body{
+  color: var(--foreground);
+  background: var(--background);
+  font-family: 'Outfit';
+}
