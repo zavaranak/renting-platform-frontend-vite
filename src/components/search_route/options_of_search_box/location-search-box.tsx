@@ -1,10 +1,8 @@
 import { FormControl, Input, InputLabel } from "@mui/material";
-import { ChangeEvent } from "react";
 import { LocationParam, useSearchStore } from "@store/search-store";
 import { SearchOption } from "@lib/contanst";
 import { useState } from "react";
 import clsx from "clsx";
-import { FilterCenterFocus } from "@mui/icons-material";
 
 export default function LocationSearchBox() {
   const { location, setLocation, handleSearch, countries, cities } =
@@ -14,42 +12,29 @@ export default function LocationSearchBox() {
 
   const [filteredCountries, setFilteredCountries] = useState([""]);
   const [filteredCites, setFilteredCities] = useState([""]);
-  // const [city, setCity] = useState(location?.city);
-  // const [country, setCountry] = useState(location?.country);
 
-  // const handleLocationInput = (event: ChangeEvent<HTMLInputElement>) => {
-  //   const type = event.target.name;
-  //   const value = event.target.value;
-  //   const city = location ? location.city : "";
-  //   const country = location ? location.country : "";
-  //   const newLocation = {
-  //     city: type === "city_input" ? value : city,
-  //     country: type === "country_input" ? value : country,
-  //   };
-  //   setLocation(newLocation);
-  //   validateLocation();
-  // };
-
-  const validateLocation = () => {
-    const newLocation: LocationParam = {
-      city: city,
-      country: country,
-    };
-
-    if (newLocation) {
-      if (newLocation.city !== "" && newLocation.country !== "") {
-        setLocation(newLocation);
-        handleSearch({
-          searchOption: SearchOption.LOCATION,
-          valid: true,
-        });
-        setFilteredCountries([]);
-      } else if (newLocation.city === "" || newLocation.country === "") {
-        handleSearch({
-          searchOption: SearchOption.LOCATION,
-          valid: false,
-        });
-      }
+  const validateLocation = (location: LocationParam) => {
+    if (
+      cities.includes(location.city) &&
+      countries.includes(location.country)
+    ) {
+      setLocation({
+        city: location.city,
+        country: location.country,
+      });
+      handleSearch({
+        searchOption: SearchOption.LOCATION,
+        valid: true,
+      });
+      setFilteredCountries([]);
+    } else if (
+      !cities.includes(location.city) ||
+      !countries.includes(location.country)
+    ) {
+      handleSearch({
+        searchOption: SearchOption.LOCATION,
+        valid: false,
+      });
     }
   };
 
@@ -62,7 +47,7 @@ export default function LocationSearchBox() {
         : [];
     setFilteredCountries(filter);
     setCountry(value);
-    validateLocation();
+    validateLocation({ city: city, country: value });
   };
   const handleCityInput = (value: string) => {
     const filter =
@@ -73,7 +58,7 @@ export default function LocationSearchBox() {
         : [];
     setFilteredCities(filter);
     setCity(value);
-    validateLocation();
+    validateLocation({ city: value, country: country });
   };
 
   return (
@@ -83,46 +68,18 @@ export default function LocationSearchBox() {
       </div>
       <div className="grid grid-cols-2 gap-x-10 mt-2">
         <FormControl className="relative">
-          <InputLabel>City</InputLabel>
-          <Input
-            name="city_input"
-            type="text"
-            value={city}
-            onChange={(e) => handleCityInput(e.target.value)}
-          />
-          <div
-            className={clsx(
-              filteredCites.length == 0 && "hidden",
-              "absolute bottom-0"
-            )}
-          >
-            {filteredCites.map((c, index) => {
-              return (
-                <div
-                  key={c + index}
-                  onClick={() => {
-                    handleCityInput(c);
-                    setFilteredCities([]);
-                  }}
-                >
-                  {c}
-                </div>
-              );
-            })}
-          </div>
-        </FormControl>
-        <FormControl className="relative">
           <InputLabel>Country</InputLabel>
           <Input
             name="country_input"
             type="text"
             value={country}
             onChange={(e) => handleCountryInput(e.target.value)}
+            onFocus={() => setFilteredCountries(countries)}
           />
           <div
             className={clsx(
               filteredCountries.length == 0 && "hidden",
-              "absolute bottom-[-15px]"
+              "absolute bottom-[-20px]"
             )}
           >
             {filteredCountries.map((c, index) => {
@@ -136,6 +93,36 @@ export default function LocationSearchBox() {
                 >
                   {c}
                 </div>
+              );
+            })}
+          </div>
+        </FormControl>
+        <FormControl className="relative">
+          <InputLabel>City</InputLabel>
+          <Input
+            name="city_input"
+            type="text"
+            value={city}
+            onChange={(e) => handleCityInput(e.target.value)}
+            onFocus={() => setFilteredCities(cities)}
+          />
+          <div
+            className={clsx(
+              filteredCites.length == 0 && "hidden",
+              "absolute bottom-[-20px]"
+            )}
+          >
+            {filteredCites.map((c, index) => {
+              return (
+                <button
+                  key={c + index}
+                  onClick={() => {
+                    handleCityInput(c);
+                    setFilteredCities([]);
+                  }}
+                >
+                  {c}
+                </button>
               );
             })}
           </div>

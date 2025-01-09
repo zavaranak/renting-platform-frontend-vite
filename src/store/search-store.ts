@@ -3,6 +3,7 @@ import { create } from "zustand";
 import {
   livingPlaceType,
   Purpose,
+  QueryPagination,
   SearchOption,
   TermUnit,
   workingPlaceType,
@@ -34,6 +35,7 @@ export type SearchStoreState = {
   currentOption: number;
   searchOptionState: SearchOptionState[];
   canSearch: boolean;
+  pagination: QueryPagination;
 };
 
 export type SearchStoreAction = {
@@ -47,6 +49,7 @@ export type SearchStoreAction = {
   setTerm: (term: TermUnit) => void;
   setPurpose: (purpose: Purpose) => void;
   handleSearch: (optionState: SearchOptionState) => void;
+  setPagination: (data: QueryPagination) => void;
 };
 
 export type SearchStore = SearchStoreState & SearchStoreAction;
@@ -82,7 +85,10 @@ export const useSearchStore = create<SearchStore>((set) => ({
   canSearch: false,
   cities: [],
   countries: [],
-
+  pagination: {
+    skip: 0,
+    take: 20,
+  },
   addOption: (newOption: SearchOption) =>
     set((state: SearchStoreState) => {
       const newSearchOption: SearchOptionState = {
@@ -164,6 +170,11 @@ export const useSearchStore = create<SearchStore>((set) => ({
   setCountries: (data: string[]) => {
     set(() => ({
       countries: data,
+    }));
+  },
+  setPagination: (data: QueryPagination) => {
+    set(() => ({
+      pagination: data,
     }));
   },
 }));

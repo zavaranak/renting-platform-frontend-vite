@@ -5,9 +5,8 @@ import { useLazyQuery } from "@apollo/client";
 import { useState } from "react";
 
 export const useSearchPlaces = () => {
-  const { location, type, term, canSearch, guest } = useSearchStore(
-    (state) => state
-  );
+  const { location, type, term, canSearch, pagination, setPagination } =
+    useSearchStore((state) => state);
   const handleCondition = () => {
     const conditions: QueryCondition[] = [];
     if (location.city && location.country) {
@@ -66,7 +65,14 @@ export const useSearchPlaces = () => {
     },
   });
   const searchPlaces = () => {
-    search({ variables: { conditions: conditions } });
+    if (canSearch) {
+      setPagination({ take: 20, skip: 0 });
+      search({
+        variables: {
+          queryManyInput: { conditions: conditions, pagination: pagination },
+        },
+      });
+    }
   };
 
   return { searchPlaces, loading, error };

@@ -18,7 +18,7 @@ export default function SearchButton() {
   return (
     <div
       onClick={handleClick}
-      className={(canSearch && activeClass) || disabledClass}
+      className={(!loading && canSearch && activeClass) || disabledClass}
     >
       <div className="m-auto uppercase font-bold justify-center ">Search</div>
     </div>
