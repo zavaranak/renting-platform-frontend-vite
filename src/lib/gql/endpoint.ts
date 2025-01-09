@@ -1,4 +1,4 @@
-import { gql } from '@apollo/client';
+import { gql } from "@apollo/client";
 
 export const VERIFY_USER = gql`
   query {
@@ -85,8 +85,8 @@ export const LOGIN = gql`
 `;
 
 export const PLACES = gql`
-  query GetPlaces($conditions: [Condition!]!) {
-    getPlaces(conditions: $conditions) {
+  query GetPlaces($queryManyInput: QueryManyInput!) {
+    getPlaces(query_many_input: $queryManyInput) {
       name
       id
       address
@@ -107,6 +107,24 @@ export const PLACES = gql`
         name
         valueNumber
       }
+    }
+  }
+`;
+export const CITES = gql`
+  query GetCities($countryName: String) {
+    getCities(country_name: $countryName) {
+      type
+      message
+      customData
+    }
+  }
+`;
+export const COUNTRIES = gql`
+  query GetCountries {
+    getCountries {
+      customData
+      type
+      message
     }
   }
 `;

@@ -1,12 +1,12 @@
-'use client';
-import { create } from 'zustand';
+"use client";
+import { create } from "zustand";
 import {
   livingPlaceType,
   Purpose,
   SearchOption,
   TermUnit,
   workingPlaceType,
-} from '../lib/contanst';
+} from "../lib/contanst";
 
 export type SearchOptionState = {
   searchOption: SearchOption;
@@ -24,9 +24,11 @@ export type LocationParam = {
 };
 
 export type SearchStoreState = {
-  purpose: Purpose | '';
-  type: livingPlaceType | workingPlaceType | '';
-  term: TermUnit | '';
+  countries: string[];
+  cities: string[];
+  purpose: Purpose | "";
+  type: livingPlaceType | workingPlaceType | "";
+  term: TermUnit | "";
   location: LocationParam;
   guest: GuestParam;
   currentOption: number;
@@ -35,11 +37,13 @@ export type SearchStoreState = {
 };
 
 export type SearchStoreAction = {
+  setCountries: (data: string[]) => void;
+  setCities: (data: string[]) => void;
   addOption: (newOption: SearchOption) => void;
   setCurrentOption: (optionIndex: number) => void;
   setGuest: (guest: GuestParam) => void;
   setLocation: (location: LocationParam) => void;
-  setType: (type: livingPlaceType | workingPlaceType | '') => void;
+  setType: (type: livingPlaceType | workingPlaceType | "") => void;
   setTerm: (term: TermUnit) => void;
   setPurpose: (purpose: Purpose) => void;
   handleSearch: (optionState: SearchOptionState) => void;
@@ -62,12 +66,12 @@ export const initialSearchOptionState: SearchOptionState[] = [
   },
 ];
 export const useSearchStore = create<SearchStore>((set) => ({
-  purpose: '',
-  type: '',
-  term: '',
+  purpose: "",
+  type: "",
+  term: "",
   location: {
-    city: '',
-    country: '',
+    city: "",
+    country: "",
   },
   guest: {
     adults: 1,
@@ -76,6 +80,8 @@ export const useSearchStore = create<SearchStore>((set) => ({
   currentOption: 0,
   searchOptionState: initialSearchOptionState,
   canSearch: false,
+  cities: [],
+  countries: [],
 
   addOption: (newOption: SearchOption) =>
     set((state: SearchStoreState) => {
@@ -129,7 +135,10 @@ export const useSearchStore = create<SearchStore>((set) => ({
   },
   setLocation: (location: LocationParam) => {
     set(() => ({
-      location: location,
+      location: {
+        city: location.city.toLowerCase(),
+        country: location.country.toLowerCase(),
+      },
     }));
   },
   setTerm: (term: TermUnit) => {
@@ -142,9 +151,19 @@ export const useSearchStore = create<SearchStore>((set) => ({
       purpose: purpose,
     }));
   },
-  setType: (type: workingPlaceType | livingPlaceType | '') => {
+  setType: (type: workingPlaceType | livingPlaceType | "") => {
     set(() => ({
       type: type,
+    }));
+  },
+  setCities: (data: string[]) => {
+    set(() => ({
+      cities: data,
+    }));
+  },
+  setCountries: (data: string[]) => {
+    set(() => ({
+      countries: data,
     }));
   },
 }));
