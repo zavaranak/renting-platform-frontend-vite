@@ -14,6 +14,7 @@ export default {
         dark_brown: 'var(--main-dark-brown)',
         neutral_grey: 'var(--main-neutral-grey)',
         letter_dark: 'var(--text-dark-color)',
+        text_light_panel:'var(--text-light-panel)'
       },
     },
   },

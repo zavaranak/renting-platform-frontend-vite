@@ -5,7 +5,7 @@ loadDevMessages();
 loadErrorMessages();
 export default function SearchButton() {
   const { canSearch } = useSearchStore((state) => state);
-  const { searchPlaces, loading, error } = useSearchPlaces();
+  const { searchPlaces, loading } = useSearchPlaces();
   const handleClick = async () => {
     searchPlaces();
     // await searchByParams();

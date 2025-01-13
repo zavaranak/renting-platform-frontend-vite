@@ -49,8 +49,6 @@ export const LANDLORD_ATTRIBUTES = gql`
 export const LANDLORDS = gql`
   query {
     getLandlords {
-      username
-      password
       id
     }
   }
@@ -58,8 +56,6 @@ export const LANDLORDS = gql`
 export const TENANTS = gql`
   query {
     getTenants {
-      username
-      password
       id
     }
   }
@@ -72,41 +68,49 @@ export const LOGIN = gql`
       landlord {
         username
         id
-        status
       }
       tenant {
         username
         id
-        status
       }
       access_token
     }
   }
 `;
 
-export const PLACES = gql`
+export const QUERY_PLACES_ID = gql`
   query GetPlaces($queryManyInput: QueryManyInput!) {
     getPlaces(query_many_input: $queryManyInput) {
-      name
       id
+    }
+  }
+`;
+export const QUERY_PLACE_BY_ID = gql`
+  query GetOnePlace($value: String!, $type: String!) {
+    getOnePlace(value: $value, type: $type) {
       address
-      city
-      country
-      type
-      termUnit
       area
-      createdAt
-      lastUpdate
-      photos
-      status
-      landlord {
-        id
-        username
-      }
       attributes {
+        id
         name
+        value
         valueNumber
       }
+      city
+      country
+      createdAt
+      id
+      landlord {
+        id
+      }
+      name
+      photos
+      rating
+      status
+      termUnit
+      type
+      lastUpdate
+      distanceFromCenter
     }
   }
 `;

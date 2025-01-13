@@ -3,12 +3,12 @@ import { create } from "zustand";
 import {
   livingPlaceType,
   Purpose,
-  QueryPagination,
   SearchOption,
   TermUnit,
   workingPlaceType,
-} from "../lib/contanst";
+} from "@lib/contanst";
 
+import { QueryPagination } from "@lib/data-type";
 export type SearchOptionState = {
   searchOption: SearchOption;
   valid: boolean;
@@ -36,6 +36,7 @@ export type SearchStoreState = {
   searchOptionState: SearchOptionState[];
   canSearch: boolean;
   pagination: QueryPagination;
+  result: [];
 };
 
 export type SearchStoreAction = {
@@ -50,6 +51,7 @@ export type SearchStoreAction = {
   setPurpose: (purpose: Purpose) => void;
   handleSearch: (optionState: SearchOptionState) => void;
   setPagination: (data: QueryPagination) => void;
+  setResult: (data: any[]) => void;
 };
 
 export type SearchStore = SearchStoreState & SearchStoreAction;
@@ -89,6 +91,7 @@ export const useSearchStore = create<SearchStore>((set) => ({
     skip: 0,
     take: 20,
   },
+  result: [],
   addOption: (newOption: SearchOption) =>
     set((state: SearchStoreState) => {
       const newSearchOption: SearchOptionState = {
@@ -176,5 +179,8 @@ export const useSearchStore = create<SearchStore>((set) => ({
     set(() => ({
       pagination: data,
     }));
+  },
+  setResult: (data: any) => {
+    set(() => ({ result: data }));
   },
 }));

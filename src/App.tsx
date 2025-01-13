@@ -7,6 +7,7 @@ import LoginForm from "@components/form/login-form";
 import { useAuthStore } from "@store/auth-store";
 import { Role } from "@lib/contanst";
 import SearchRoute from "@components/search_route/searchRoute";
+import SearchResultRoute from "@components/search_result_route/searchResultRoute";
 
 import { useCreateApolloClient } from "@hook/create-apollo-client-hook";
 
@@ -38,10 +39,7 @@ export default function App() {
                 path={`/profile/${Role.landlord}/:userId`}
                 element={isAuthenticated ? <Navigate to="/" /> : <LoginForm />}
               />
-              <Route
-                path={`/search/`}
-                element={isAuthenticated ? <Navigate to="/" /> : <LoginForm />}
-              />
+              <Route path={`/search/`} element={<SearchResultRoute />} />
               {/* <Route path="/about" element={<About />} /> */}
               {/* <Route path="/contact" element={<Contact />} /> */}
               {/* <Route path="/products/:id" element={<ProductDetail />} /> */}

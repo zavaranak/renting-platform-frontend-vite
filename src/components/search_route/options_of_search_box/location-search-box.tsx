@@ -47,6 +47,7 @@ export default function LocationSearchBox() {
         : [];
     setFilteredCountries(filter);
     setCountry(value);
+    handleCityInput("");
     validateLocation({ city: city, country: value });
   };
   const handleCityInput = (value: string) => {

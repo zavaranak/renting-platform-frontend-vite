@@ -17,7 +17,7 @@ export const UseFetchCountriesAndCites = () => {
     },
   });
   useQuery(CITES, {
-    skip: !countries.includes(location.country),
+    skip: countries.includes(location.country),
     variables: {
       countryName: location.country ? location.country : null,
     },

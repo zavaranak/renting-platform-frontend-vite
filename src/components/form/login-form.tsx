@@ -1,16 +1,18 @@
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useState } from "react";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { AuthActions, LoginData, Role } from "@lib/contanst";
+import { AuthActions, Role, LoginData } from "@lib/contanst";
 
 import { MouseEvent } from "react";
 import clsx from "clsx";
 import useLogin from "@hook/logIn-hook";
+import { useSearchStore } from "@store/search-store";
 
 export default function LoginForm() {
   const [displayPassword, setDisplayPassword] = useState(false);
-
-  const { loading, error, logIn } = useLogin();
+  const { location, term } = useSearchStore((state) => state);
+  console.log(location, term);
+  const { loading, logIn } = useLogin();
   const [role, setRole] = useState(Role.tenant);
   const { register, handleSubmit } = useForm<LoginData>();
   const handleVisibilityPassword = () => {

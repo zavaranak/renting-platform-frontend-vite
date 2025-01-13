@@ -1,12 +1,21 @@
 import { useSearchStore } from "@store/search-store";
-import { Operator, QueryCondition } from "../lib/contanst";
-import { PLACES } from "@lib/gql/endpoint";
+import { Operator } from "@lib/contanst";
+import { QueryCondition } from "@lib/data-type";
+import { QUERY_PLACES_ID } from "@lib/gql/endpoint";
 import { useLazyQuery } from "@apollo/client";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export const useSearchPlaces = () => {
-  const { location, type, term, canSearch, pagination, setPagination } =
-    useSearchStore((state) => state);
+  const {
+    location,
+    type,
+    term,
+    canSearch,
+    pagination,
+    setPagination,
+    setResult,
+  } = useSearchStore((state) => state);
   const handleCondition = () => {
     const conditions: QueryCondition[] = [];
     if (location.city && location.country) {
@@ -50,12 +59,18 @@ export const useSearchPlaces = () => {
   };
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   const conditions = handleCondition();
 
-  const [search] = useLazyQuery(PLACES, {
+  const [search] = useLazyQuery(QUERY_PLACES_ID, {
     onCompleted: (data) => {
       console.log(data);
+      if (data.getPlaces.length > 0) {
+        const result = data.getPlaces.map((record: any) => record.id);
+        setResult(result);
+        navigate("/search");
+      }
       setLoading(false);
     },
     onError: (err) => {
