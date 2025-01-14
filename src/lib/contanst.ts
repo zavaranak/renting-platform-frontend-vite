@@ -24,7 +24,8 @@ export enum SearchOption {
   TYPE = "type",
   // PERIOD = 'period',
   // GUEST = 'guest',
-  TERM = "term",
+  // TERM = "term",
+  SORT = "sort",
 }
 
 export enum livingPlaceType {
@@ -127,6 +128,29 @@ export enum PlaceAttributeName {
   PRICE_BY_MONTH = "price_by_month",
   MAX_GUEST = "max_guest",
 }
+export enum Facilities {
+  PRIVATE_BATHROOM = "private_bathroom",
+  PRIVATE_KITCHEN = "private_kitchen",
+  SHARED_BATHROOM = "shared_bathroom",
+  SHARED_KITCHEN = "shared_kitchen",
+  LAUNDRY = "laundry",
+  AIR_CONDITIONER = "air_conditioner",
+  WIFI = "wifi",
+  ETHERNET = "ethernet",
+  FURNISHED = "furnished",
+  PARKING = "parking",
+  BALCONY = "balcony",
+  PET_FRIENDLY = "pet_friendly",
+  SMOKING_ALLOWED = "smoking_allowed",
+  ELEVATOR = "elevator",
+  GYM = "gym",
+  POOL = "pool",
+  HEATING = "heating",
+  ROOM_SERVICE = "room_service",
+  SECURITY = "security",
+  GARDEN = "garden",
+  PLAYGROUND = "playground",
+}
 
 export const searchOptionData = {
   location: {
@@ -141,7 +165,29 @@ export const searchOptionData = {
   // guest: {
   //   content: 'guest',
   // },
-  term: {
-    content: "term",
+  sort: {
+    content: "sort",
   },
+};
+
+export const SortOptions = {
+  price: {
+    default: "skip",
+    chreap: "Low price",
+    expensive: "High price",
+  },
+  area: {
+    default: "skip",
+    big_area: "Large area",
+    small_area: "Small area",
+  },
+
+  position: {
+    default: "skip",
+    near_center: "Near to center",
+    far_center: "Far from center",
+  },
+
+  rating: "High rating",
+  guest: "Number of guests",
 };

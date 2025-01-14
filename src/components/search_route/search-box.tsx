@@ -5,8 +5,8 @@ import SearchButton from "./search-button";
 
 import TypeSearchBox from "./options_of_search_box/type-search-box";
 import LocationSearchBox from "./options_of_search_box/location-search-box";
-import TermSearchBox from "./options_of_search_box/term-search-box";
 import { useSearchStore } from "@store/search-store";
+import SortSearchBox from "./options_of_search_box/sort-search-box";
 
 export default function SearchBox() {
   const { currentOption, searchOptionState, setCurrentOption } = useSearchStore(
@@ -36,7 +36,7 @@ export default function SearchBox() {
             {searchOptionState[currentOption].searchOption ===
               SearchOption.TYPE && <TypeSearchBox />}
             {searchOptionState[currentOption].searchOption ===
-              SearchOption.TERM && <TermSearchBox />}
+              SearchOption.SORT && <SortSearchBox />}
           </div>
           <SearchButton />
         </>

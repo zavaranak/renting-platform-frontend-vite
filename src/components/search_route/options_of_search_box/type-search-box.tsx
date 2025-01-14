@@ -3,9 +3,9 @@ import {
   Purpose,
   SearchOption,
   workingPlaceType,
-} from '@lib/contanst';
-import GuestSearchBox from './guest-search-box';
-import { SearchOptionState, useSearchStore } from '@store/search-store';
+} from "@lib/contanst";
+import GuestSearchBox from "./guest-search-box";
+import { SearchOptionState, useSearchStore } from "@store/search-store";
 
 import {
   Select,
@@ -13,7 +13,7 @@ import {
   InputLabel,
   SelectChangeEvent,
   FormControl,
-} from '@mui/material';
+} from "@mui/material";
 
 export default function TypeSearchBox() {
   const { purpose, setPurpose, type, setType, guest, handleSearch } =
@@ -22,7 +22,7 @@ export default function TypeSearchBox() {
   const handleChangePurpose = (event: SelectChangeEvent) => {
     if (purpose !== (event.target.value as Purpose)) {
       setPurpose(event.target.value as Purpose);
-      setType('');
+      setType("");
       handleSearch({ searchOption: SearchOption.TYPE, valid: false });
     }
   };
@@ -54,20 +54,20 @@ export default function TypeSearchBox() {
   };
 
   return (
-    <div className='w-full  border-2 border-neutral_brown border-b-transparent p-5'>
-      <div className='text-sm uppercase font-bold pb-6'>
+    <div className="w-full  border-2 border-neutral_brown border-b-transparent p-5">
+      <div className="text-sm uppercase font-bold pb-6">
         What kind of place you want to rent?
       </div>
-      <div className='grid grid-cols-2 gap-3'>
-        <FormControl className='flex content-center'>
-          <InputLabel id='select-purpose'>Purpose</InputLabel>
+      <div className="grid grid-cols-2 gap-3">
+        <FormControl className="flex content-center">
+          <InputLabel id="select-purpose">Purpose</InputLabel>
           <Select
-            labelId='select-purpose'
-            label='Purpose'
+            labelId="select-purpose"
+            label="Purpose"
             value={purpose}
             onChange={handleChangePurpose}
           >
-            <MenuItem value='' disabled>
+            <MenuItem value="" disabled>
               Select Purpose
             </MenuItem>
             {Object.entries(Purpose).map((purpose, index) => (
@@ -77,17 +77,17 @@ export default function TypeSearchBox() {
             ))}
           </Select>
         </FormControl>
-        <FormControl className='flex content-center'>
-          <InputLabel id='select-type'>Type</InputLabel>
+        <FormControl className="flex content-center">
+          <InputLabel id="select-type">Type</InputLabel>
           <Select
-            labelId='selecte-type'
-            className='w-full'
-            label='Type'
+            labelId="selecte-type"
+            className="w-full"
+            label="Type"
             value={type}
             onChange={handleChangeType}
             disabled={!purpose}
           >
-            <MenuItem value='' disabled>
+            <MenuItem value="" disabled>
               Select Type
             </MenuItem>
             {purpose === Purpose.LIVING &&
@@ -106,7 +106,7 @@ export default function TypeSearchBox() {
           </Select>
         </FormControl>
       </div>
-      {purpose === Purpose.LIVING && <GuestSearchBox></GuestSearchBox>}
+      {/* {purpose === Purpose.LIVING && <GuestSearchBox></GuestSearchBox>} */}
     </div>
   );
 }

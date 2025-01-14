@@ -38,3 +38,13 @@ body{
   background: var(--background);
   font-family: 'Outfit';
 }
+
+.invisible {
+  @apply opacity-0 pointer-events-none absolute -translate-y-1 transition-all duration-0;
+  visibility: hidden;
+}
+
+.visible {
+  @apply opacity-100 relative translate-y-0 transition-all duration-300;
+  visibility: visible;
+}

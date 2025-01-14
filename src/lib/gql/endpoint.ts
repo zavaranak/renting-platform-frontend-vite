@@ -115,8 +115,8 @@ export const QUERY_PLACE_BY_ID = gql`
   }
 `;
 export const CITES = gql`
-  query GetCities($countryName: String) {
-    getCities(country_name: $countryName) {
+  query GetCitiesByCountryName($countryName: String) {
+    getCitiesByCountryName(country_name: $countryName) {
       type
       message
       customData

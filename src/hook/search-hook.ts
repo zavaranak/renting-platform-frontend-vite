@@ -1,5 +1,5 @@
 import { useSearchStore } from "@store/search-store";
-import { Operator } from "@lib/contanst";
+import { Operator, SortOptions } from "@lib/contanst";
 import { QueryCondition } from "@lib/data-type";
 import { QUERY_PLACES_ID } from "@lib/gql/endpoint";
 import { useLazyQuery } from "@apollo/client";
@@ -13,6 +13,7 @@ export const useSearchPlaces = () => {
     term,
     canSearch,
     pagination,
+    sort,
     setPagination,
     setResult,
   } = useSearchStore((state) => state);
@@ -57,11 +58,27 @@ export const useSearchPlaces = () => {
     // }
     return conditions;
   };
+
+  const handleSortBy = () => {
+    const sortBy = [];
+    if (sort.price != SortOptions.price.default) {
+    }
+    if (sort.area != SortOptions.area.default) {
+    }
+    if (sort.position != SortOptions.position.default) {
+    }
+    if (sort.highNumberOfGuest) {
+    }
+    if (sort.rating) {
+    }
+    return [];
+  };
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
   const conditions = handleCondition();
+  const sortBy = handleSortBy();
 
   const [search] = useLazyQuery(QUERY_PLACES_ID, {
     onCompleted: (data) => {
@@ -84,7 +101,11 @@ export const useSearchPlaces = () => {
       setPagination({ take: 20, skip: 0 });
       search({
         variables: {
-          queryManyInput: { conditions: conditions, pagination: pagination },
+          queryManyInput: {
+            conditions: conditions,
+            pagination: pagination,
+            sortBy: sortBy,
+          },
         },
       });
     }

@@ -2,10 +2,7 @@ import { useSearchStore } from "@store/search-store";
 import { PlaceCard } from "@components/place/place-card";
 import { FilterBox } from "./filter-box";
 export default function SearchResultRoute() {
-  const { result, location } = useSearchStore((state) => {
-    console.log(state);
-    return state;
-  });
+  const { result, location } = useSearchStore((state) => state);
 
   return (
     <div className="flex flex-col col-span-full m-auto p-3 relative z-70 bg-background gap-4">

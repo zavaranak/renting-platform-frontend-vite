@@ -4,6 +4,7 @@ import {
   livingPlaceType,
   Purpose,
   SearchOption,
+  SortOptions,
   TermUnit,
   workingPlaceType,
 } from "@lib/contanst";
@@ -24,6 +25,13 @@ export type LocationParam = {
   city: string;
 };
 
+export interface SortOptionsInterface {
+  price: string;
+  area: string;
+  position: string;
+  rating: boolean;
+  highNumberOfGuest: boolean;
+}
 export type SearchStoreState = {
   countries: string[];
   cities: string[];
@@ -36,6 +44,7 @@ export type SearchStoreState = {
   searchOptionState: SearchOptionState[];
   canSearch: boolean;
   pagination: QueryPagination;
+  sort: SortOptionsInterface;
   result: [];
 };
 
@@ -52,6 +61,7 @@ export type SearchStoreAction = {
   handleSearch: (optionState: SearchOptionState) => void;
   setPagination: (data: QueryPagination) => void;
   setResult: (data: any[]) => void;
+  setSort: (data: SortOptionsInterface) => void;
 };
 
 export type SearchStore = SearchStoreState & SearchStoreAction;
@@ -66,8 +76,8 @@ export const initialSearchOptionState: SearchOptionState[] = [
     valid: false,
   },
   {
-    searchOption: SearchOption.TERM,
-    valid: false,
+    searchOption: SearchOption.SORT,
+    valid: true,
   },
 ];
 export const useSearchStore = create<SearchStore>((set) => ({
@@ -90,6 +100,13 @@ export const useSearchStore = create<SearchStore>((set) => ({
   pagination: {
     skip: 0,
     take: 20,
+  },
+  sort: {
+    price: SortOptions.price.default,
+    area: SortOptions.area.default,
+    position: SortOptions.position.default,
+    rating: false,
+    highNumberOfGuest: false,
   },
   result: [],
   addOption: (newOption: SearchOption) =>
@@ -182,5 +199,8 @@ export const useSearchStore = create<SearchStore>((set) => ({
   },
   setResult: (data: any) => {
     set(() => ({ result: data }));
+  },
+  setSort: (data: SortOptionsInterface) => {
+    set(() => ({ sort: data }));
   },
 }));

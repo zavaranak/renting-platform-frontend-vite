@@ -25,8 +25,8 @@ export const UseFetchCountriesAndCites = () => {
       console.log(error);
     },
     onCompleted: (data) => {
-      console.log(data.getCities.customData);
-      setCities(data.getCities.customData);
+      console.log(data.getCitiesByCountryName.customData);
+      setCities(data.getCitiesByCountryName.customData);
     },
   });
 };

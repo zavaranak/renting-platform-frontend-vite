@@ -1,19 +1,41 @@
-import { FormControl, Input, InputLabel } from "@mui/material";
+import {
+  FormControl,
+  Input,
+  InputLabel,
+  Select,
+  MenuItem,
+  SelectChangeEvent,
+} from "@mui/material";
 import { LocationParam, useSearchStore } from "@store/search-store";
-import { SearchOption } from "@lib/contanst";
-import { useState } from "react";
+import { SearchOption, TermUnit } from "@lib/contanst";
+import { useEffect, useState } from "react";
 import clsx from "clsx";
 
 export default function LocationSearchBox() {
-  const { location, setLocation, handleSearch, countries, cities } =
-    useSearchStore((state) => state);
+  const {
+    location,
+    setLocation,
+    handleSearch,
+    countries,
+    cities,
+    term,
+    setTerm,
+  } = useSearchStore((state) => state);
   const [city, setCity] = useState(location.city);
   const [country, setCountry] = useState(location.country);
-
   const [filteredCountries, setFilteredCountries] = useState([""]);
   const [filteredCites, setFilteredCities] = useState([""]);
 
-  const validateLocation = (location: LocationParam) => {
+  const handleChangeTerm = (e: SelectChangeEvent) => {
+    const tempTerm = e.target.value as TermUnit;
+    setTerm(tempTerm);
+    validateSearchParams(location, tempTerm);
+  };
+
+  const validateSearchParams = (
+    location: LocationParam,
+    term: TermUnit | ""
+  ) => {
     if (
       cities.includes(location.city) &&
       countries.includes(location.country)
@@ -22,14 +44,18 @@ export default function LocationSearchBox() {
         city: location.city,
         country: location.country,
       });
-      handleSearch({
-        searchOption: SearchOption.LOCATION,
-        valid: true,
-      });
+
       setFilteredCountries([]);
+      if (term != "") {
+        handleSearch({
+          searchOption: SearchOption.LOCATION,
+          valid: true,
+        });
+      }
     } else if (
       !cities.includes(location.city) ||
-      !countries.includes(location.country)
+      !countries.includes(location.country) ||
+      term == ""
     ) {
       handleSearch({
         searchOption: SearchOption.LOCATION,
@@ -48,7 +74,7 @@ export default function LocationSearchBox() {
     setFilteredCountries(filter);
     setCountry(value);
     handleCityInput("");
-    validateLocation({ city: city, country: value });
+    validateSearchParams({ city: city, country: value }, term);
   };
   const handleCityInput = (value: string) => {
     const filter =
@@ -59,15 +85,21 @@ export default function LocationSearchBox() {
         : [];
     setFilteredCities(filter);
     setCity(value);
-    validateLocation({ city: value, country: country });
+    validateSearchParams({ city: value, country: country }, term);
   };
+
+  useEffect(() => {
+    return () => {
+      if (cities.includes(city)) setLocation({ city, country });
+    };
+  }, []);
 
   return (
     <div className="w-full  border-2 border-neutral_brown border-b-transparent p-5">
       <div className="text-sm uppercase font-bold pb-6">
         where would you like to stay?
       </div>
-      <div className="grid grid-cols-2 gap-x-10 mt-2">
+      <div className="grid grid-cols-3 gap-x-10 mt-2">
         <FormControl className="relative">
           <InputLabel>Country</InputLabel>
           <Input
@@ -127,6 +159,24 @@ export default function LocationSearchBox() {
               );
             })}
           </div>
+        </FormControl>
+        <FormControl className="flex content-center w-full">
+          <InputLabel id="select-purpose">Term</InputLabel>
+          <Select
+            id="select-purpose"
+            label="Term"
+            value={term}
+            onChange={handleChangeTerm}
+          >
+            <MenuItem value="" disabled>
+              Select Term
+            </MenuItem>
+            {Object.entries(TermUnit).map((entry, index) => (
+              <MenuItem value={entry[1]} key={index}>
+                {entry[1]}
+              </MenuItem>
+            ))}
+          </Select>
         </FormControl>
       </div>
     </div>
