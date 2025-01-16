@@ -45,6 +45,7 @@ export type SearchStoreState = {
   canSearch: boolean;
   pagination: QueryPagination;
   sort: SortOptionsInterface;
+  filter: string[];
   result: [];
 };
 
@@ -58,10 +59,11 @@ export type SearchStoreAction = {
   setType: (type: livingPlaceType | workingPlaceType | "") => void;
   setTerm: (term: TermUnit) => void;
   setPurpose: (purpose: Purpose) => void;
-  handleSearch: (optionState: SearchOptionState) => void;
+  handleSearch: (optionState?: SearchOptionState) => void;
   setPagination: (data: QueryPagination) => void;
-  setResult: (data: any[]) => void;
+  setResult: (data: string[]) => void;
   setSort: (data: SortOptionsInterface) => void;
+  setFilter: (data: string[]) => void;
 };
 
 export type SearchStore = SearchStoreState & SearchStoreAction;
@@ -84,6 +86,7 @@ export const useSearchStore = create<SearchStore>((set) => ({
   purpose: "",
   type: "",
   term: "",
+  filter: [],
   location: {
     city: "",
     country: "",
@@ -121,6 +124,12 @@ export const useSearchStore = create<SearchStore>((set) => ({
     }),
   handleSearch: (optionState?: SearchOptionState) =>
     set((state: SearchStoreState) => {
+      if (optionState == undefined) {
+        return {
+          searchOptionState: initialSearchOptionState,
+          canSearch: false,
+        };
+      }
       let checkCanSearch: boolean = true;
       const newState = state.searchOptionState.map((option) => {
         if (
@@ -202,5 +211,8 @@ export const useSearchStore = create<SearchStore>((set) => ({
   },
   setSort: (data: SortOptionsInterface) => {
     set(() => ({ sort: data }));
+  },
+  setFilter: (data: string[]) => {
+    set(() => ({ filter: data }));
   },
 }));

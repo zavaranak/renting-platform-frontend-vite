@@ -1,10 +1,18 @@
 import { useSearchStore } from "@store/search-store";
-import { Operator, SortOptions } from "@lib/contanst";
-import { QueryCondition } from "@lib/data-type";
+import {
+  Facilities,
+  Operator,
+  Order,
+  PlaceAttributeName,
+  SortOptions,
+  TermUnit,
+} from "@lib/contanst";
+import { QueryCondition, QueryOrder } from "@lib/data-type";
 import { QUERY_PLACES_ID } from "@lib/gql/endpoint";
 import { useLazyQuery } from "@apollo/client";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { equal } from "assert";
 
 export const useSearchPlaces = () => {
   const {
@@ -14,6 +22,8 @@ export const useSearchPlaces = () => {
     canSearch,
     pagination,
     sort,
+    filter,
+    handleSearch,
     setPagination,
     setResult,
   } = useSearchStore((state) => state);
@@ -60,24 +70,121 @@ export const useSearchPlaces = () => {
   };
 
   const handleSortBy = () => {
-    const sortBy = [];
+    var sortBy: QueryOrder[] = [];
     if (sort.price != SortOptions.price.default) {
+      var priceBy: string | null;
+      var order: Order;
+      switch (term) {
+        case TermUnit.DAY:
+          priceBy = "PRICE_BY_DAY";
+          break;
+        case TermUnit.HOUR:
+          priceBy = "PRICE_BY_HOUR";
+          break;
+        case TermUnit.MONTH:
+          priceBy = "PRICE_BY_MONTH";
+          break;
+        case TermUnit.WEEK:
+          priceBy = "PRICE_BY_WEEK";
+          break;
+        default:
+          priceBy = null;
+          break;
+      }
+      switch (sort.price) {
+        case SortOptions.price.expensive:
+          order = Order.desc;
+          break;
+        case SortOptions.price.cheap:
+          order = Order.asc;
+          break;
+        default:
+          order = Order.asc;
+      }
+      const newSort: QueryOrder = {
+        attributeName: priceBy,
+        by: "attributes.valueNumber",
+        order: order,
+      };
+      sortBy.push(newSort);
     }
     if (sort.area != SortOptions.area.default) {
+      var order: Order;
+      switch (sort.area) {
+        case SortOptions.area.big_area:
+          order = Order.desc;
+          break;
+        case SortOptions.area.small_area:
+          order = Order.asc;
+          break;
+        default:
+          order = Order.asc;
+      }
+      const newSort: QueryOrder = {
+        attributeName: null,
+        by: "area",
+        order: order,
+      };
+      sortBy.push(newSort);
     }
     if (sort.position != SortOptions.position.default) {
+      var order: Order;
+      switch (sort.area) {
+        case SortOptions.area.big_area:
+          order = Order.desc;
+          break;
+        case SortOptions.area.small_area:
+          order = Order.asc;
+          break;
+        default:
+          order = Order.asc;
+      }
+      const newSort: QueryOrder = {
+        attributeName: null,
+        by: "distanceFromCenter",
+        order: order,
+      };
+      sortBy.push(newSort);
     }
     if (sort.highNumberOfGuest) {
+      const newSort: QueryOrder = {
+        attributeName: "MAX_GUEST",
+        by: "attributes.valueNumber",
+        order: Order.desc,
+      };
+      sortBy.push(newSort);
     }
     if (sort.rating) {
+      const newSort: QueryOrder = {
+        attributeName: null,
+        by: "rating",
+        order: Order.desc,
+      };
+      sortBy.push(newSort);
     }
-    return [];
+    return sortBy;
+  };
+
+  const handleFilter = () => {
+    const filterList: QueryCondition[] = [];
+
+    filter.forEach((value) => {
+      filterList.push({
+        attributeName: value,
+        operator: Operator.EQUAL,
+        key: "attribute.name",
+        value: Facilities[value as keyof typeof Facilities],
+      });
+    });
+
+    return filterList;
   };
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
   const conditions = handleCondition();
+  const filterList = handleFilter();
   const sortBy = handleSortBy();
 
   const [search] = useLazyQuery(QUERY_PLACES_ID, {
@@ -86,6 +193,7 @@ export const useSearchPlaces = () => {
       if (data.getPlaces.length > 0) {
         const result = data.getPlaces.map((record: any) => record.id);
         setResult(result);
+        handleSearch(undefined);
         navigate("/search");
       }
       setLoading(false);
@@ -98,13 +206,14 @@ export const useSearchPlaces = () => {
   });
   const searchPlaces = () => {
     if (canSearch) {
-      setPagination({ take: 20, skip: 0 });
+      console.log(conditions, sortBy);
+      setPagination({ take: 30, skip: 0 });
       search({
         variables: {
           queryManyInput: {
-            conditions: conditions,
+            conditions: [...conditions, ...filterList],
             pagination: pagination,
-            sortBy: sortBy,
+            orderBy: sortBy,
           },
         },
       });

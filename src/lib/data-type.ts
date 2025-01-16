@@ -1,11 +1,14 @@
 import {
   AuthActions,
+  LandlordAttributeName,
   livingPlaceType,
   Operator,
+  Order,
   PlaceAttributeName,
   PlaceStatus,
   Role,
   Status,
+  TenantAttributeName,
   TermUnit,
   workingPlaceType,
 } from "./contanst";
@@ -61,10 +64,6 @@ export type Place = {
 
   landlord: User;
 
-  // @OneToMany(() => Booking, (booking) => booking.place)
-  // @Field(() => [Booking], { nullable: true })
-  // bookings?: Booking[];
-
   attributes?: PlaceAttribute[];
 };
 
@@ -82,6 +81,7 @@ export type ResponseVerify = {
   attributes: Attribute[];
 };
 export type QueryCondition = {
+  attributeName?: string;
   value: string;
   key: string;
   operator: Operator;
@@ -91,3 +91,9 @@ export interface QueryPagination {
   skip: number;
   take: number;
 }
+
+export type QueryOrder = {
+  attributeName: string | null;
+  by: string;
+  order: Order;
+};
