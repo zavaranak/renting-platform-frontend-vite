@@ -16,15 +16,34 @@ export default function LocationSearchBox() {
     location,
     setLocation,
     handleSearch,
-    countries,
-    cities,
+    type,
+    locationMap,
     term,
     setTerm,
   } = useSearchStore((state) => state);
-  const [city, setCity] = useState(location.city);
+  const [city_location, setCityLocation] = useState(location as LocationParam);
   const [country, setCountry] = useState(location.country);
+  const [cities, setCities] = useState([] as LocationParam[]);
+  const [countries, setCountries] = useState([] as string[]);
   const [filteredCountries, setFilteredCountries] = useState([""]);
-  const [filteredCites, setFilteredCities] = useState([""]);
+  const [filteredCites, setFilteredCities] = useState([] as LocationParam[]);
+
+  useEffect(() => {
+    const newCities: LocationParam[] = [];
+    const newCountries: string[] = [];
+    locationMap.forEach((value, key) => {
+      newCountries.includes(key) || newCountries.push(key);
+      value.forEach((v) => {
+        const newCityLocation: LocationParam = {
+          city: v,
+          country: key,
+        };
+        newCities.push(newCityLocation);
+      });
+      setCountries(newCountries);
+      setCities(newCities);
+    });
+  }, [locationMap]);
 
   const handleChangeTerm = (e: SelectChangeEvent) => {
     const tempTerm = e.target.value as TermUnit;
@@ -37,14 +56,11 @@ export default function LocationSearchBox() {
     term: TermUnit | ""
   ) => {
     if (
-      cities.includes(location.city) &&
-      countries.includes(location.country)
+      locationMap.has(location.country) &&
+      locationMap.get(location.country)?.includes(location.city)
     ) {
-      setLocation({
-        city: location.city,
-        country: location.country,
-      });
-
+      setLocation(location);
+      setCountry(location.country);
       setFilteredCountries([]);
       if (term != "") {
         handleSearch({
@@ -52,11 +68,7 @@ export default function LocationSearchBox() {
           valid: true,
         });
       }
-    } else if (
-      !cities.includes(location.city) ||
-      !countries.includes(location.country) ||
-      term == ""
-    ) {
+    } else {
       handleSearch({
         searchOption: SearchOption.LOCATION,
         valid: false,
@@ -73,25 +85,33 @@ export default function LocationSearchBox() {
         : [];
     setFilteredCountries(filter);
     setCountry(value);
-    handleCityInput("");
-    validateSearchParams({ city: city, country: value }, term);
+    handleCityInput({ city: "", country: value });
   };
-  const handleCityInput = (value: string) => {
+  const handleCityInput = (value: LocationParam) => {
     const filter =
-      value.length > 0
+      value.city.length > 0
         ? cities.filter((x) => {
-            return x.startsWith(value.toLowerCase());
+            return x.city.startsWith(value.city.toLowerCase());
           })
         : [];
     setFilteredCities(filter);
-    setCity(value);
-    validateSearchParams({ city: value, country: country }, term);
+    setCityLocation(value);
+    validateSearchParams(value, term);
   };
 
   useEffect(() => {
-    return () => {
-      if (cities.includes(city)) setLocation({ city, country });
-    };
+    if (type) {
+      handleSearch({
+        searchOption: SearchOption.TYPE,
+        valid: true,
+      });
+    }
+    if (city_location && term) {
+      handleSearch({
+        searchOption: SearchOption.LOCATION,
+        valid: true,
+      });
+    }
   }, []);
 
   return (
@@ -135,8 +155,8 @@ export default function LocationSearchBox() {
           <Input
             name="city_input"
             type="text"
-            value={city}
-            onChange={(e) => handleCityInput(e.target.value)}
+            value={city_location.city}
+            onChange={(e) => handleCityInput({ city: e.target.value, country })}
             onFocus={() => setFilteredCities(cities)}
           />
           <div
@@ -145,16 +165,17 @@ export default function LocationSearchBox() {
               "absolute bottom-[-20px]"
             )}
           >
-            {filteredCites.map((c, index) => {
+            {filteredCites.map((c) => {
               return (
                 <button
-                  key={c + index}
+                  key={c.city + "|" + c.country}
                   onClick={() => {
                     handleCityInput(c);
                     setFilteredCities([]);
                   }}
                 >
-                  {c}
+                  <p>{c.city}</p>
+                  {country == "" && <p>|{c.country}</p>}
                 </button>
               );
             })}

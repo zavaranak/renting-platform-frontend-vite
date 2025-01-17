@@ -20,24 +20,24 @@ export const useCreateApolloClient = () => {
   );
   useEffect(() => {
     const initializeApolloClient = () => {
-    const authLink = setContext((_, { headers }) => {
-      return {
-        headers: {
-          ...headers,
-          authorization: token ? `Bearer ${token}` : "",
-          "require-apollo-preflight": true,
-        },
-      };
-    });
-    const newClient = new ApolloClient({
-      link: ApolloLink.from([authLink, httpLink]),
-      cache: new InMemoryCache(),
-    });
-    setClient(newClient);
-  };
+      const authLink = setContext((_, { headers }) => {
+        return {
+          headers: {
+            ...headers,
+            authorization: token ? `Bearer ${token}` : "",
+            "apollo-require-preflight": true,
+          },
+        };
+      });
+      const newClient = new ApolloClient({
+        link: ApolloLink.from([authLink, httpLink]),
+        cache: new InMemoryCache(),
+      });
+      setClient(newClient);
+    };
 
-  initializeApolloClient();
+    initializeApolloClient();
   }, [token]);
-  
+
   return client;
 };

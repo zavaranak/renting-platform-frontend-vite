@@ -64,6 +64,8 @@ export type Place = {
 
   landlord: User;
 
+  distanceFromCenter: number;
+
   attributes?: PlaceAttribute[];
 };
 

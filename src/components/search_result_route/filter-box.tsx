@@ -5,7 +5,7 @@ import {
 } from "@store/search-store";
 import { SideBox } from "@components/side_box/side-box";
 import clsx from "clsx";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Facilities,
   livingPlaceType,
@@ -17,8 +17,10 @@ import {
 } from "@lib/contanst";
 import { Checkbox, FormControlLabel, FormGroup } from "@mui/material";
 import SearchButton from "@components/search_route/search-button";
+import { UseFetchCountriesAndCites } from "@hook/fetch-countries-and-cities-hook";
 
 export const FilterBox = () => {
+  UseFetchCountriesAndCites();
   const [openSortBox, setOpenSortBox] = useState(false);
   const [openFilterBox, setOpenFilterBox] = useState(false);
   const {
@@ -26,9 +28,9 @@ export const FilterBox = () => {
     type,
     location,
     purpose,
-    cities,
     filter,
     sort,
+    locationMap,
     setLocation,
     handleSearch,
     setPurpose,
@@ -37,19 +39,21 @@ export const FilterBox = () => {
     setFilter,
     setSort,
   } = useSearchStore((state) => state);
-  const [checkCity, setCheckCity] = useState(cities.includes(location.city));
+  const [cityState, setCityState] = useState(location.city != "");
   const [city, setCity] = useState(location.city);
+  const [cities, setCities] = useState([] as LocationParam[]);
+  const [countries, setCountries] = useState([] as string[]);
 
   const handleCityChange = (e: any) => {
     const value = e.target.value;
     setCity(value);
     const check: boolean = cities.includes(value);
-    setCheckCity(check);
+    setCityState(check);
     checkSearch(check);
     if (check) {
       const newLocation: LocationParam = {
         city: value,
-        country: location.country,
+        country: location.country ? location.country : "",
       };
       setLocation(newLocation);
     }
@@ -67,7 +71,8 @@ export const FilterBox = () => {
   const handleTypeChange = (e: any) => {
     const newType = e.target.value;
     setType(newType);
-    checkSearch();
+    const checkedType = newType != "";
+    checkSearch(undefined, checkedType);
   };
   const handleFilter = (value: string) => {
     if (filter.includes(value)) {
@@ -79,14 +84,14 @@ export const FilterBox = () => {
     }
     checkSearch();
   };
-  const checkSearch = (checked?: boolean) => {
+  const checkSearch = (checkedCity?: boolean, checkedType?: boolean) => {
     handleSearch({
       searchOption: SearchOption.TYPE,
-      valid: type ? true : false,
+      valid: checkedType != undefined ? true : type != "",
     });
     handleSearch({
       searchOption: SearchOption.LOCATION,
-      valid: checked != undefined ? checked : checkCity,
+      valid: checkedCity != undefined ? checkedCity : cityState,
     });
   };
   const handleSort = (e: any, sortType: string) => {
@@ -105,11 +110,27 @@ export const FilterBox = () => {
 
     setSort(newSort);
   };
+  useEffect(() => {
+    const newCities: LocationParam[] = [];
+    const newCountries: string[] = [];
+    locationMap.forEach((value, key) => {
+      newCountries.includes(key) || newCountries.push(key);
+      value.forEach((v) => {
+        const newCityLocation: LocationParam = {
+          city: v,
+          country: key,
+        };
+        newCities.push(newCityLocation);
+      });
+      setCountries(newCountries);
+      setCities(newCities);
+    });
+  }, [locationMap]);
   return (
     // <div className="bg-text_light_panel">
     <SideBox>
       <div className="flex flex-col gap-3 p-3">
-        <label className={clsx("flex gap-3", checkCity || "text-red-700")}>
+        <label className={clsx("flex gap-3", cityState || "text-red-700")}>
           <p>Location</p>
           <input
             value={city || ""}
@@ -120,8 +141,18 @@ export const FilterBox = () => {
         <label className="flex gap-3">
           <p>Purpose</p>
           <select onChange={handlePurposeChange}>
+            <option
+              defaultChecked={purpose == undefined ? true : false}
+              value=""
+            >
+              --
+            </option>
             {Object.values(Purpose).map((value) => (
-              <option defaultChecked={value == purpose} value={value}>
+              <option
+                key={value}
+                defaultChecked={value == purpose}
+                value={value}
+              >
                 {value}
               </option>
             ))}
@@ -130,7 +161,8 @@ export const FilterBox = () => {
         <div className="flex gap-3">
           <label className="flex">
             <p>Type</p>
-            <select onChange={handleTypeChange} value={type}>
+            <select defaultValue="" onChange={handleTypeChange} value={type}>
+              <option value="">--</option>
               {purpose == Purpose.LIVING ? (
                 Object.keys(livingPlaceType).map((key) => (
                   <option
@@ -152,7 +184,7 @@ export const FilterBox = () => {
                   </option>
                 ))
               ) : (
-                <option value={undefined}>Please choose purpose</option>
+                <option value={undefined}>--</option>
               )}
             </select>
           </label>
@@ -160,14 +192,12 @@ export const FilterBox = () => {
             <p>Term</p>
             <select onChange={handleTermChange} value={term}>
               {Object.keys(TermUnit).map((key) => (
-                <>
-                  <option
-                    key={key}
-                    value={TermUnit[key as keyof typeof TermUnit]}
-                  >
-                    {TermUnit[key as keyof typeof TermUnit]}
-                  </option>
-                </>
+                <option
+                  key={key}
+                  value={TermUnit[key as keyof typeof TermUnit]}
+                >
+                  {TermUnit[key as keyof typeof TermUnit]}
+                </option>
               ))}
             </select>
           </label>
@@ -193,10 +223,9 @@ export const FilterBox = () => {
                 onChange={(e) => {
                   handleSort(e, "price");
                 }}
+                defaultValue={SortOptions.price.default}
               >
-                <option selected value={SortOptions.price.default}>
-                  skip
-                </option>
+                <option value={SortOptions.price.default}>skip</option>
                 <option value={SortOptions.price.expensive}>
                   from expensive
                 </option>
@@ -209,10 +238,9 @@ export const FilterBox = () => {
                 onChange={(e) => {
                   handleSort(e, "position");
                 }}
+                defaultValue={SortOptions.position.default}
               >
-                <option selected value={SortOptions.position.default}>
-                  skip
-                </option>
+                <option value={SortOptions.position.default}>skip</option>
                 <option value={SortOptions.position.far_center}>
                   far center
                 </option>
@@ -227,10 +255,9 @@ export const FilterBox = () => {
                 onChange={(e) => {
                   handleSort(e, "area");
                 }}
+                defaultValue={SortOptions.area.default}
               >
-                <option selected value={SortOptions.area.default}>
-                  skip
-                </option>
+                <option value={SortOptions.area.default}>skip</option>
                 <option value={SortOptions.area.big_area}>large area</option>
                 <option value={SortOptions.area.small_area}>small area</option>
               </select>

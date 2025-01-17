@@ -132,3 +132,12 @@ export const COUNTRIES = gql`
     }
   }
 `;
+export const CITIES_COUNTRIES = gql`
+  query GetCities {
+    getCities {
+      customData
+      type
+      message
+    }
+  }
+`;

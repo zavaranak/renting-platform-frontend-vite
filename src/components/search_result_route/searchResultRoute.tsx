@@ -5,7 +5,7 @@ export default function SearchResultRoute() {
   const { result, location } = useSearchStore((state) => state);
 
   return (
-    <div className="flex flex-col col-span-full m-auto p-3 relative z-70 bg-background gap-4">
+    <div className="flex flex-col col-span-full m-auto p-3 relative z-70 bg-background gap-4 lg:w-2/5 md:w-3/5 sm:w-ful">
       <FilterBox />
       {result.length > 0 && (
         <div className="bg-text_light_panel ">

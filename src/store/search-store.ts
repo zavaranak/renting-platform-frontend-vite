@@ -33,6 +33,7 @@ export interface SortOptionsInterface {
   highNumberOfGuest: boolean;
 }
 export type SearchStoreState = {
+  locationMap: Map<string, string[]>;
   countries: string[];
   cities: string[];
   purpose: Purpose | "";
@@ -64,6 +65,7 @@ export type SearchStoreAction = {
   setResult: (data: string[]) => void;
   setSort: (data: SortOptionsInterface) => void;
   setFilter: (data: string[]) => void;
+  setMap: (map: Map<string, string[]>) => void;
 };
 
 export type SearchStore = SearchStoreState & SearchStoreAction;
@@ -111,6 +113,7 @@ export const useSearchStore = create<SearchStore>((set) => ({
     rating: false,
     highNumberOfGuest: false,
   },
+  locationMap: new Map(),
   result: [],
   addOption: (newOption: SearchOption) =>
     set((state: SearchStoreState) => {
@@ -214,5 +217,10 @@ export const useSearchStore = create<SearchStore>((set) => ({
   },
   setFilter: (data: string[]) => {
     set(() => ({ filter: data }));
+  },
+  setMap: (map: Map<string, string[]>) => {
+    set(() => ({
+      locationMap: map,
+    }));
   },
 }));
