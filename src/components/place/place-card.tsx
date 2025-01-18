@@ -1,13 +1,21 @@
 import { useQuery } from "@apollo/client";
-import { Place } from "@lib/data-type";
+import Popup from "@components/boxes/popup-box";
+import useCreateBooking from "@hook/create-booking-hook";
+import { Place, PlaceAttribute } from "@lib/data-type";
 import { QUERY_PLACE_BY_ID } from "@lib/gql/endpoint";
+import { useSearchStore } from "@store/search-store";
 import { useState } from "react";
-
+import { DatePicker } from "@mui/x-date-pickers-pro";
 interface PlaceCardParam {
   id: string;
 }
+
 export const PlaceCard = (params: PlaceCardParam) => {
+  const { term } = useSearchStore((state) => state);
   const [place, setPlace] = useState<Place | null>();
+  const [price, setPrice] = useState({} as PlaceAttribute);
+  const [displayPopup, setDisplayPopup] = useState(false);
+  const { createBooking } = useCreateBooking();
   useQuery(QUERY_PLACE_BY_ID, {
     variables: {
       type: "id",
@@ -15,6 +23,11 @@ export const PlaceCard = (params: PlaceCardParam) => {
     },
     onCompleted: (data) => {
       setPlace(data.getOnePlace);
+      const priceAttributeName = "price_by_" + term;
+      const price_attribute = data.getOnePlace.attributes?.find(
+        (item: PlaceAttribute) => item.name === priceAttributeName.toUpperCase()
+      );
+      setPrice(price_attribute ?? {});
     },
   });
   return (
@@ -73,22 +86,32 @@ export const PlaceCard = (params: PlaceCardParam) => {
               <span className="mr-1">Status:</span>
               <span>{place.status}</span>
             </div>
+            <div className="flex items-center text-gray-700 mb-1">
+              <span className="mr-1">Price by {term}:</span>
+              <span>
+                {price.valueNumber
+                  ? price.valueNumber + " " + price.value.toUpperCase()
+                  : "currently not set"}
+              </span>
+            </div>
+            <div
+              className="flex justify-center border-2"
+              onClick={() => setDisplayPopup(true)}
+            >
+              Create booking
+            </div>
           </div>
         </div>
-
-        // <div className="p-3">
-        //   <div className="flex capitalize gap-3">
-        //     {place.name}
-        //     <div>Rate: {place.rating}</div>
-        //   </div>
-        //   <div>
-        //     <img
-        //       src={`api/storage/places/${place.id}/${place.photos}`}
-        //       alt="Loading image..."
-        //     />
-        //   </div>
-        // </div>
       )}
+      <Popup
+        title="create booking"
+        isOpen={displayPopup}
+        onClose={() => setDisplayPopup(false)}
+      >
+        <div></div>
+        {/* <DatePicker label="From" />
+        <DatePicker label="To" /> */}
+      </Popup>
     </div>
   );
 };

@@ -141,3 +141,15 @@ export const CITIES_COUNTRIES = gql`
     }
   }
 `;
+
+export const CREATE_BOOKING = gql`
+  mutation CreateBooking($bookingInput: BookingInput!) {
+    createBooking(bookingInput: $bookingInput) {
+      message
+      booking {
+        id
+      }
+      type
+    }
+  }
+`;

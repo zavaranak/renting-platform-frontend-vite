@@ -1,4 +1,3 @@
-"use client";
 import { create } from "zustand";
 import { Attribute, User } from "@lib/data-type";
 import { deleteCookie } from "@lib/utils";

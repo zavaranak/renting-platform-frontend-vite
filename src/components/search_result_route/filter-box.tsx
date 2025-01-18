@@ -1,9 +1,5 @@
-import {
-  LocationParam,
-  SortOptionsInterface,
-  useSearchStore,
-} from "@store/search-store";
-import { SideBox } from "@components/side_box/side-box";
+import { SortOptionsInterface, useSearchStore } from "@store/search-store";
+import { SideBox } from "@components/boxes/side-box";
 import clsx from "clsx";
 import { useState, useEffect } from "react";
 import {
@@ -31,6 +27,7 @@ export const FilterBox = () => {
     filter,
     sort,
     locationMap,
+    canSearch,
     setLocation,
     handleSearch,
     setPurpose,
@@ -39,26 +36,42 @@ export const FilterBox = () => {
     setFilter,
     setSort,
   } = useSearchStore((state) => state);
-  const [cityState, setCityState] = useState(location.city != "");
-  const [city, setCity] = useState(location.city);
-  const [cities, setCities] = useState([] as LocationParam[]);
-  const [countries, setCountries] = useState([] as string[]);
-
-  const handleCityChange = (e: any) => {
-    const value = e.target.value;
-    setCity(value);
-    const check: boolean = cities.includes(value);
-    setCityState(check);
-    checkSearch(check);
-    if (check) {
-      const newLocation: LocationParam = {
-        city: value,
-        country: location.country ? location.country : "",
+  const [locationState, setlocationState] = useState(location.city != "");
+  const [locationString, setLocationString] = useState(
+    location.city && location.country
+      ? location.city + "|" + location.country
+      : ""
+  );
+  const [filteredLocations, setFilteredLocations] = useState([] as string[]);
+  const [allLocationsString, setAllLocationsString] = useState([] as string[]);
+  const handleCityChange = (value: string) => {
+    const parts = value.split("|");
+    var check: boolean = false;
+    if (parts.length == 2) {
+      const newLocation = {
+        city: parts[0],
+        country: parts[1],
       };
-      setLocation(newLocation);
-    }
-  };
+      if (
+        locationMap.has(newLocation.country) &&
+        locationMap.get(newLocation.country)?.includes(newLocation.city)
+      ) {
+        setFilteredLocations([]);
+        check = true;
+      } else {
+        handleFilteredLocations(value);
+      }
 
+      if (check) {
+        setLocation(newLocation);
+      }
+    } else {
+      handleFilteredLocations(value);
+    }
+    setLocationString(value);
+    setlocationState(check);
+    checkSearch(check);
+  };
   const handlePurposeChange = (e: any) => {
     setPurpose(e.target.value);
     checkSearch();
@@ -91,7 +104,7 @@ export const FilterBox = () => {
     });
     handleSearch({
       searchOption: SearchOption.LOCATION,
-      valid: checkedCity != undefined ? checkedCity : cityState,
+      valid: checkedCity != undefined ? checkedCity : locationState,
     });
   };
   const handleSort = (e: any, sortType: string) => {
@@ -107,52 +120,64 @@ export const FilterBox = () => {
         newSort.position = e.target.value;
         break;
     }
-
+    if (!canSearch) {
+      checkSearch();
+    }
     setSort(newSort);
   };
+  const handleFilteredLocations = (value: string) => {
+    const list: string[] =
+      value != ""
+        ? allLocationsString.filter((item) => item.includes(value))
+        : [];
+    setFilteredLocations(list);
+  };
   useEffect(() => {
-    const newCities: LocationParam[] = [];
+    const allLocations: string[] = [];
     const newCountries: string[] = [];
     locationMap.forEach((value, key) => {
       newCountries.includes(key) || newCountries.push(key);
       value.forEach((v) => {
-        const newCityLocation: LocationParam = {
-          city: v,
-          country: key,
-        };
-        newCities.push(newCityLocation);
+        allLocations.push(`${v}|${key}`);
       });
-      setCountries(newCountries);
-      setCities(newCities);
+      setAllLocationsString(allLocations);
     });
   }, [locationMap]);
   return (
-    // <div className="bg-text_light_panel">
     <SideBox>
       <div className="flex flex-col gap-3 p-3">
-        <label className={clsx("flex gap-3", cityState || "text-red-700")}>
+        <label
+          className={clsx(
+            "flex gap-3 relative",
+            locationState || "text-red-700"
+          )}
+        >
           <p>Location</p>
           <input
-            value={city || ""}
+            value={locationString}
             placeholder={"City"}
-            onChange={handleCityChange}
+            onChange={(e) => handleCityChange(e.target.value)}
           />
+          <div className="absolute flex flex-col gap-3 right-[65px] top-[20px]">
+            {filteredLocations.length > 0 &&
+              filteredLocations.map((item) => (
+                <div
+                  className="p-2  bg-neutral_grey"
+                  onClick={() => {
+                    handleCityChange(item);
+                  }}
+                >
+                  {item}
+                </div>
+              ))}
+          </div>
         </label>
         <label className="flex gap-3">
           <p>Purpose</p>
-          <select onChange={handlePurposeChange}>
-            <option
-              defaultChecked={purpose == undefined ? true : false}
-              value=""
-            >
-              --
-            </option>
+          <select onChange={handlePurposeChange} value={purpose ?? ""}>
+            <option value="">--</option>
             {Object.values(Purpose).map((value) => (
-              <option
-                key={value}
-                defaultChecked={value == purpose}
-                value={value}
-              >
+              <option key={value} value={value}>
                 {value}
               </option>
             ))}
@@ -161,7 +186,7 @@ export const FilterBox = () => {
         <div className="flex gap-3">
           <label className="flex">
             <p>Type</p>
-            <select defaultValue="" onChange={handleTypeChange} value={type}>
+            <select onChange={handleTypeChange} value={type ?? ""}>
               <option value="">--</option>
               {purpose == Purpose.LIVING ? (
                 Object.keys(livingPlaceType).map((key) => (
@@ -190,7 +215,8 @@ export const FilterBox = () => {
           </label>
           <label className="flex">
             <p>Term</p>
-            <select onChange={handleTermChange} value={term}>
+            <select onChange={handleTermChange} value={term ?? ""}>
+              <option value="">--</option>
               {Object.keys(TermUnit).map((key) => (
                 <option
                   key={key}
@@ -223,7 +249,7 @@ export const FilterBox = () => {
                 onChange={(e) => {
                   handleSort(e, "price");
                 }}
-                defaultValue={SortOptions.price.default}
+                value={SortOptions.price.default}
               >
                 <option value={SortOptions.price.default}>skip</option>
                 <option value={SortOptions.price.expensive}>
@@ -238,7 +264,7 @@ export const FilterBox = () => {
                 onChange={(e) => {
                   handleSort(e, "position");
                 }}
-                defaultValue={SortOptions.position.default}
+                value={SortOptions.position.default}
               >
                 <option value={SortOptions.position.default}>skip</option>
                 <option value={SortOptions.position.far_center}>
@@ -255,7 +281,7 @@ export const FilterBox = () => {
                 onChange={(e) => {
                   handleSort(e, "area");
                 }}
-                defaultValue={SortOptions.area.default}
+                value={SortOptions.area.default}
               >
                 <option value={SortOptions.area.default}>skip</option>
                 <option value={SortOptions.area.big_area}>large area</option>

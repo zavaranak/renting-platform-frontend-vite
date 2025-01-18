@@ -99,3 +99,13 @@ export type QueryOrder = {
   by: string;
   order: Order;
 };
+
+export interface BookingInput {
+  startAt: number;
+  endAt: number;
+  termUnit: TermUnit;
+  period: number;
+  totalCharge: number;
+  tenantId?: string;
+  placeId: string;
+}

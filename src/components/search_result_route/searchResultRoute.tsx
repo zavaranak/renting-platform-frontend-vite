@@ -1,9 +1,13 @@
 import { useSearchStore } from "@store/search-store";
 import { PlaceCard } from "@components/place/place-card";
 import { FilterBox } from "./filter-box";
+import Popup from "@components/boxes/popup-box";
+import { useAppStore } from "@store/app-store";
+
 export default function SearchResultRoute() {
   const { result, location } = useSearchStore((state) => state);
-
+  const { authWarningForCreateBooking, setAuthWaringForCreateBooking } =
+    useAppStore((state) => state);
   return (
     <div className="flex flex-col col-span-full m-auto p-3 relative z-70 bg-background gap-4 lg:w-2/5 md:w-3/5 sm:w-ful">
       <FilterBox />
@@ -22,6 +26,13 @@ export default function SearchResultRoute() {
       {result.map((place) => (
         <PlaceCard key={place} id={place}></PlaceCard>
       ))}
+      <Popup
+        title="Please login to create a booking"
+        isOpen={authWarningForCreateBooking}
+        onClose={() => setAuthWaringForCreateBooking(false)}
+      >
+        Hi
+      </Popup>
     </div>
   );
 }
