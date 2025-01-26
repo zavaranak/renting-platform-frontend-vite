@@ -1,4 +1,4 @@
-import { useSearchStore } from "@store/search-store";
+import { useSearchStore } from "@/store/search-store";
 import {
   Facilities,
   Operator,
@@ -6,13 +6,12 @@ import {
   PlaceAttributeName,
   SortOptions,
   TermUnit,
-} from "@lib/contanst";
-import { QueryCondition, QueryOrder } from "@lib/data-type";
-import { QUERY_PLACES_ID } from "@lib/gql/endpoint";
+} from "@/lib/contanst";
+import { QueryCondition, QueryOrder } from "@/lib/data-type";
+import { QUERY_PLACES_ID } from "@/lib/gql/endpoint";
 import { useLazyQuery } from "@apollo/client";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { equal } from "assert";
 
 export const useSearchPlaces = () => {
   const {

@@ -1,5 +1,5 @@
-import { useSearchPlaces } from "@hook/search-hook";
-import { useSearchStore } from "@store/search-store";
+import { useSearchPlaces } from "@/hook/search-hook";
+import { useSearchStore } from "@/store/search-store";
 import { loadErrorMessages, loadDevMessages } from "@apollo/client/dev";
 loadDevMessages();
 loadErrorMessages();

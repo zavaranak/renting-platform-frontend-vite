@@ -1,9 +1,5 @@
-"use client";
-
 import { MouseEvent } from "react";
-import { GuestParam, useSearchStore } from "@store/search-store";
-import { Button } from "@mui/material";
-
+import { GuestParam, useSearchStore } from "@/store/search-store";
 interface AdjustEvent extends MouseEvent<HTMLButtonElement> {
   name: string;
 }
@@ -51,23 +47,23 @@ export default function GuestSearchBox() {
       <div className="grid grid-cols-2 gap-10">
         <div className="flex justify-center items-center">
           <div>Adults</div>
-          <Button name="minus" onClick={handleAdultAdjust}>
+          <button name="minus" onClick={handleAdultAdjust}>
             -
-          </Button>
+          </button>
           <div>{guest.adults}</div>
-          <Button name="plus" onClick={handleAdultAdjust}>
+          <button name="plus" onClick={handleAdultAdjust}>
             +
-          </Button>
+          </button>
         </div>
         <div className="flex justify-center items-center">
           <div>Children</div>
-          <Button name="minus" onClick={handleChildAdjust}>
+          <button name="minus" onClick={handleChildAdjust}>
             -
-          </Button>
+          </button>
           <div>{guest.children}</div>
-          <Button name="plus" onClick={handleChildAdjust}>
+          <button name="plus" onClick={handleChildAdjust}>
             +
-          </Button>
+          </button>
         </div>
       </div>
     </>

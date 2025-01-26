@@ -7,9 +7,9 @@ import {
   SortOptions,
   TermUnit,
   workingPlaceType,
-} from "@lib/contanst";
+} from "@/lib/contanst";
 
-import { QueryPagination } from "@lib/data-type";
+import { QueryPagination } from "@/lib/data-type";
 export type SearchOptionState = {
   searchOption: SearchOption;
   valid: boolean;

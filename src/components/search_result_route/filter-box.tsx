@@ -1,5 +1,5 @@
-import { SortOptionsInterface, useSearchStore } from "@store/search-store";
-import { SideBox } from "@components/boxes/side-box";
+import { SortOptionsInterface, useSearchStore } from "@/store/search-store";
+import { SideBox } from "@/components/boxes/side-box";
 import clsx from "clsx";
 import { useState, useEffect } from "react";
 import {
@@ -10,10 +10,10 @@ import {
   workingPlaceType,
   SearchOption,
   SortOptions,
-} from "@lib/contanst";
+} from "@/lib/contanst";
 import { Checkbox, FormControlLabel, FormGroup } from "@mui/material";
-import SearchButton from "@components/search_route/search-button";
-import { UseFetchCountriesAndCites } from "@hook/fetch-countries-and-cities-hook";
+import SearchButton from "@/components/search_route/search-button";
+import { UseFetchCountriesAndCites } from "@/hook/fetch-countries-and-cities-hook";
 
 export const FilterBox = () => {
   UseFetchCountriesAndCites();

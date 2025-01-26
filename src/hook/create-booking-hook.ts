@@ -1,8 +1,8 @@
 import { useMutation } from "@apollo/client";
-import { BookingInput } from "@lib/data-type";
-import { CREATE_BOOKING } from "@lib/gql/endpoint";
-import { useAppStore } from "@store/app-store";
-import { useAuthStore } from "@store/auth-store";
+import { BookingInput } from "@/lib/data-type";
+import { CREATE_BOOKING } from "@/lib/gql/endpoint";
+import { useAppStore } from "@/store/app-store";
+import { useAuthStore } from "@/store/auth-store";
 // import { useSearchStore } from "@store/search-store";
 import { useState } from "react";
 const useCreateBooking = () => {

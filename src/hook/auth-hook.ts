@@ -1,8 +1,8 @@
 import { useQuery } from "@apollo/client";
-import { VERIFY_USER } from "@lib/gql/endpoint";
-import { useAuthStore } from "@store/auth-store";
-import { getCookie } from "@lib/utils";
-import { Role } from "@lib/contanst";
+import { VERIFY_USER } from "@/lib/gql/endpoint";
+import { useAuthStore } from "@/store/auth-store";
+import { getCookie } from "@/lib/cookies-handler";
+import { Role } from "@/lib/contanst";
 
 export const useAuthHook = () => {
   const { setUser, setAuth } = useAuthStore();

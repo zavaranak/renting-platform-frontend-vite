@@ -1,11 +1,10 @@
 import { useQuery } from "@apollo/client";
-import Popup from "@components/boxes/popup-box";
-import useCreateBooking from "@hook/create-booking-hook";
-import { Place, PlaceAttribute } from "@lib/data-type";
-import { QUERY_PLACE_BY_ID } from "@lib/gql/endpoint";
-import { useSearchStore } from "@store/search-store";
+import Popup from "@/components/boxes/popup-box";
+import useCreateBooking from "@/hook/create-booking-hook";
+import { Place, PlaceAttribute } from "@/lib/data-type";
+import { QUERY_PLACE_BY_ID } from "@/lib/gql/endpoint";
+import { useSearchStore } from "@/store/search-store";
 import { useState } from "react";
-import { DatePicker } from "@mui/x-date-pickers-pro";
 interface PlaceCardParam {
   id: string;
 }

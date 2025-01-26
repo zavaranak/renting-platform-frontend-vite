@@ -1,8 +1,8 @@
-import { useSearchStore } from "@store/search-store";
-import { PlaceCard } from "@components/place/place-card";
+import { useSearchStore } from "@/store/search-store";
+import { PlaceCard } from "@/components/place/place-card";
 import { FilterBox } from "./filter-box";
-import Popup from "@components/boxes/popup-box";
-import { useAppStore } from "@store/app-store";
+import Popup from "@/components/boxes/popup-box";
+import { useAppStore } from "@/store/app-store";
 
 export default function SearchResultRoute() {
   const { result, location } = useSearchStore((state) => state);

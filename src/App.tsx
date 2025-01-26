@@ -1,15 +1,15 @@
-import { useTitle } from "./hook/title-hook";
-import "./index.css";
+import { useTitle } from "@/hook/title-hook";
+import "@/index.css";
 import { ApolloProvider } from "@apollo/client";
-import { Header } from "@components/header/header";
+import { Header } from "@/components/header/header";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import LoginForm from "@components/form/login-form";
-import { useAuthStore } from "@store/auth-store";
-import { Role } from "@lib/contanst";
-import SearchRoute from "@components/search_route/searchRoute";
-import SearchResultRoute from "@components/search_result_route/searchResultRoute";
+import LoginForm from "@/components/form/login-form";
+import { useAuthStore } from "@/store/auth-store";
+import { Role } from "@/lib/contanst";
+import SearchRoute from "@/components/search_route/searchRoute";
+import SearchResultRoute from "@/components/search_result_route/searchResultRoute";
 
-import { useCreateApolloClient } from "@hook/create-apollo-client-hook";
+import { useCreateApolloClient } from "@/hook/create-apollo-client-hook";
 
 export default function App() {
   useTitle("Homsk - Main page");

@@ -1,15 +1,26 @@
-import {
-  FormControl,
-  Input,
-  InputLabel,
-  Select,
-  MenuItem,
-  SelectChangeEvent,
-} from "@mui/material";
-import { LocationParam, useSearchStore } from "@store/search-store";
-import { SearchOption, TermUnit } from "@lib/contanst";
+import { LocationParam, useSearchStore } from "@/store/search-store";
+import { SearchOption, TermUnit } from "@/lib/contanst";
 import { useEffect, useState } from "react";
-import clsx from "clsx";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Check, ChevronsUpDown } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
+import { Label } from "@/components/ui/label";
 
 export default function LocationSearchBox() {
   const {
@@ -21,12 +32,15 @@ export default function LocationSearchBox() {
     term,
     setTerm,
   } = useSearchStore((state) => state);
+  const [openTermBox, setOpenTermBox] = useState(false);
   const [city_location, setCityLocation] = useState(location as LocationParam);
   const [country, setCountry] = useState(location.country);
   const [cities, setCities] = useState([] as LocationParam[]);
   const [countries, setCountries] = useState([] as string[]);
-  const [filteredCountries, setFilteredCountries] = useState([""]);
+  const [filteredCountries, setFilteredCountries] = useState([] as string[]);
   const [filteredCites, setFilteredCities] = useState([] as LocationParam[]);
+
+  // import { DateRange } from "react-day-picker";
 
   useEffect(() => {
     const newCities: LocationParam[] = [];
@@ -45,10 +59,9 @@ export default function LocationSearchBox() {
     });
   }, [locationMap]);
 
-  const handleChangeTerm = (e: SelectChangeEvent) => {
-    const tempTerm = e.target.value as TermUnit;
-    setTerm(tempTerm);
-    validateSearchParams(location, tempTerm);
+  const handleChangeTerm = (value: TermUnit) => {
+    setTerm(value);
+    validateSearchParams(location, value);
   };
 
   const validateSearchParams = (
@@ -120,85 +133,123 @@ export default function LocationSearchBox() {
         where would you like to stay?
       </div>
       <div className="grid grid-cols-3 gap-x-10 mt-2">
-        <FormControl className="relative">
-          <InputLabel>Country</InputLabel>
+        <div className="grid w-full max-w-sm items-center gap-1.5 relative">
+          <Label htmlFor="country_input">Country</Label>
           <Input
             name="country_input"
-            type="text"
             value={country}
+            type="text"
             onChange={(e) => handleCountryInput(e.target.value)}
-            onFocus={() => setFilteredCountries(countries)}
+            onFocus={() => {
+              // setFilteredCountries(countries);
+            }}
           />
           <div
-            className={clsx(
+            className={cn(
               filteredCountries.length == 0 && "hidden",
-              "absolute bottom-[-20px]"
+              "absolute top-[100%] h-50 w-48 rounded-md border bg-white"
             )}
           >
-            {filteredCountries.map((c, index) => {
-              return (
-                <div
-                  key={c + index}
-                  onClick={() => {
-                    handleCountryInput(c);
-                    setFilteredCountries([]);
-                  }}
-                >
-                  {c}
-                </div>
-              );
-            })}
+            <ScrollArea className="h-50 w-48 rounded-md border">
+              <div className="p-4">
+                {filteredCountries.map((c, index) => {
+                  return (
+                    <div
+                      key={c + index}
+                      onClick={() => {
+                        handleCountryInput(c);
+                        setFilteredCountries([]);
+                      }}
+                    >
+                      {c}
+                      <Separator className="my-2" />
+                    </div>
+                  );
+                })}
+              </div>
+            </ScrollArea>
           </div>
-        </FormControl>
-        <FormControl className="relative">
-          <InputLabel>City</InputLabel>
+        </div>
+        <div className="grid w-full max-w-sm items-center gap-1.5 relative">
+          <Label htmlFor="city_input">City</Label>
           <Input
             name="city_input"
             type="text"
             value={city_location.city}
             onChange={(e) => handleCityInput({ city: e.target.value, country })}
-            onFocus={() => setFilteredCities(cities)}
+            // onFocus={() => setFilteredCities(cities)}
           />
           <div
-            className={clsx(
+            className={cn(
               filteredCites.length == 0 && "hidden",
-              "absolute bottom-[-20px]"
+              "absolute top-[100%] h-50 w-48 rounded-md border bg-white"
             )}
           >
-            {filteredCites.map((c) => {
-              return (
-                <button
-                  key={c.city + "|" + c.country}
-                  onClick={() => {
-                    handleCityInput(c);
-                    setFilteredCities([]);
-                  }}
-                >
-                  <p>{c.city}</p>
-                  {country == "" && <p>|{c.country}</p>}
-                </button>
-              );
-            })}
+            <ScrollArea className="h-50 w-48 rounded-md border">
+              <div className="p-4">
+                {filteredCites.map((c, index) => {
+                  return (
+                    <div
+                      key={c.city + index}
+                      onClick={() => {
+                        handleCityInput(c);
+                        setFilteredCities([]);
+                      }}
+                    >
+                      {c.city}
+                      <Separator className="my-2" />
+                    </div>
+                  );
+                })}
+              </div>
+            </ScrollArea>
           </div>
-        </FormControl>
-        <FormControl className="flex content-center w-full">
-          <InputLabel id="select-purpose">Term</InputLabel>
-          <Select
-            id="select-purpose"
-            label="Term"
-            value={term}
-            onChange={handleChangeTerm}
-          >
-            <MenuItem value="" disabled>
-              Select Term
-            </MenuItem>
-            {Object.entries(TermUnit).map((entry, index) => (
-              <MenuItem value={entry[1]} key={index}>
-                {entry[1]}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+        </div>
+
+        <div className="flex flex-col gap-1">
+          <Label htmlFor="none">Term</Label>
+          <Popover open={openTermBox} onOpenChange={setOpenTermBox}>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                role="combobox"
+                aria-expanded={openTermBox}
+                className="w-[300px%] justify-between"
+              >
+                {term ? term : "Select term"}
+                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-[300px] p-0">
+              <Command>
+                <CommandInput placeholder="Search type..." />
+                <CommandList>
+                  <CommandEmpty>No type can be found</CommandEmpty>
+                  <CommandGroup>
+                    {Object.entries(TermUnit).map((entry, index) => (
+                      <CommandItem
+                        value={entry[1]}
+                        key={index}
+                        onSelect={(currentValue) => {
+                          handleChangeTerm(currentValue as TermUnit);
+                          setOpenTermBox(false);
+                        }}
+                      >
+                        {entry[1]}
+                        <Check
+                          className={cn(
+                            "mr-2 h-4 w-4",
+                            term === entry[1] ? "opacity-100" : "opacity-0"
+                          )}
+                        />
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </CommandList>
+              </Command>
+            </PopoverContent>
+          </Popover>
+        </div>
       </div>
     </div>
   );

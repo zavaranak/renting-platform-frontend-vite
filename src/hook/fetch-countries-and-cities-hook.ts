@@ -1,6 +1,6 @@
-import { useSearchStore } from "@store/search-store";
+import { useSearchStore } from "@/store/search-store";
 import { useQuery } from "@apollo/client";
-import { CITIES_COUNTRIES } from "@lib/gql/endpoint";
+import { CITIES_COUNTRIES } from "@/lib/gql/endpoint";
 
 export const UseFetchCountriesAndCites = () => {
   const { locationMap, setMap } = useSearchStore((state) => state);

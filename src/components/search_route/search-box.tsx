@@ -1,11 +1,11 @@
 import OptionSwitchButton from "./option-switch-button";
-import { SearchOption, searchOptionData } from "@lib/contanst";
+import { SearchOption, searchOptionData } from "@/lib/contanst";
 
 import SearchButton from "./search-button";
 
 import TypeSearchBox from "./options_of_search_box/type-search-box";
 import LocationSearchBox from "./options_of_search_box/location-search-box";
-import { useSearchStore } from "@store/search-store";
+import { useSearchStore } from "@/store/search-store";
 import SortSearchBox from "./options_of_search_box/sort-search-box";
 
 export default function SearchBox() {

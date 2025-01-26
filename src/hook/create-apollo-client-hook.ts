@@ -1,4 +1,4 @@
-import { useAuthStore } from "@store/auth-store";
+import { useAuthStore } from "@/store/auth-store";
 import { useEffect, useState } from "react";
 import {
   HttpLink,
