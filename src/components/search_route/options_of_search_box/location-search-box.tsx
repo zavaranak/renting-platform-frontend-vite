@@ -24,40 +24,24 @@ import { Label } from "@/components/ui/label";
 
 export default function LocationSearchBox() {
   const {
+    countries,
+    cities,
+    setCities,
+    setCountries,
     location,
     setLocation,
     handleSearch,
     type,
-    locationMap,
     term,
     setTerm,
   } = useSearchStore((state) => state);
   const [openTermBox, setOpenTermBox] = useState(false);
-  const [city_location, setCityLocation] = useState(location as LocationParam);
+  const [city, setCity] = useState(location.city);
   const [country, setCountry] = useState(location.country);
-  const [cities, setCities] = useState([] as LocationParam[]);
-  const [countries, setCountries] = useState([] as string[]);
   const [filteredCountries, setFilteredCountries] = useState([] as string[]);
-  const [filteredCites, setFilteredCities] = useState([] as LocationParam[]);
+  const [filteredCites, setFilteredCities] = useState([] as string[]);
 
   // import { DateRange } from "react-day-picker";
-
-  useEffect(() => {
-    const newCities: LocationParam[] = [];
-    const newCountries: string[] = [];
-    locationMap.forEach((value, key) => {
-      newCountries.includes(key) || newCountries.push(key);
-      value.forEach((v) => {
-        const newCityLocation: LocationParam = {
-          city: v,
-          country: key,
-        };
-        newCities.push(newCityLocation);
-      });
-      setCountries(newCountries);
-      setCities(newCities);
-    });
-  }, [locationMap]);
 
   const handleChangeTerm = (value: TermUnit) => {
     setTerm(value);
@@ -65,16 +49,14 @@ export default function LocationSearchBox() {
   };
 
   const validateSearchParams = (
-    location: LocationParam,
+    passedLocation: LocationParam,
     term: TermUnit | ""
   ) => {
     if (
-      locationMap.has(location.country) &&
-      locationMap.get(location.country)?.includes(location.city)
+      countries.includes(passedLocation.country) &&
+      cities.includes(passedLocation.city)
     ) {
-      setLocation(location);
-      setCountry(location.country);
-      setFilteredCountries([]);
+      setLocation(passedLocation);
       if (term != "") {
         handleSearch({
           searchOption: SearchOption.LOCATION,
@@ -90,6 +72,7 @@ export default function LocationSearchBox() {
   };
 
   const handleCountryInput = (value: string) => {
+    setCountry(value);
     const filter =
       value.length > 0
         ? countries.filter((x) => {
@@ -97,19 +80,20 @@ export default function LocationSearchBox() {
           })
         : [];
     setFilteredCountries(filter);
-    setCountry(value);
-    handleCityInput({ city: "", country: value });
+    setLocation({ country: value, city: "" });
+    setCities([]);
+    handleCityInput("");
   };
-  const handleCityInput = (value: LocationParam) => {
+  const handleCityInput = (value: string) => {
+    setCity(value);
     const filter =
-      value.city.length > 0
+      value != ""
         ? cities.filter((x) => {
-            return x.city.startsWith(value.city.toLowerCase());
+            return x.startsWith(value.toLowerCase());
           })
         : [];
     setFilteredCities(filter);
-    setCityLocation(value);
-    validateSearchParams(value, term);
+    validateSearchParams({ city: value, country: location.country }, term);
   };
 
   useEffect(() => {
@@ -119,7 +103,7 @@ export default function LocationSearchBox() {
         valid: true,
       });
     }
-    if (city_location && term) {
+    if (city && term) {
       handleSearch({
         searchOption: SearchOption.LOCATION,
         valid: true,
@@ -175,8 +159,8 @@ export default function LocationSearchBox() {
           <Input
             name="city_input"
             type="text"
-            value={city_location.city}
-            onChange={(e) => handleCityInput({ city: e.target.value, country })}
+            value={city}
+            onChange={(e) => handleCityInput(e.target.value)}
             // onFocus={() => setFilteredCities(cities)}
           />
           <div
@@ -190,13 +174,13 @@ export default function LocationSearchBox() {
                 {filteredCites.map((c, index) => {
                   return (
                     <div
-                      key={c.city + index}
+                      key={c + index}
                       onClick={() => {
                         handleCityInput(c);
                         setFilteredCities([]);
                       }}
                     >
-                      {c.city}
+                      {c}
                       <Separator className="my-2" />
                     </div>
                   );

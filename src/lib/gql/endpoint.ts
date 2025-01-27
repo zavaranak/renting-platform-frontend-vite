@@ -114,7 +114,7 @@ export const QUERY_PLACE_BY_ID = gql`
     }
   }
 `;
-export const CITES = gql`
+export const CITIES = gql`
   query GetCitiesByCountryName($countryName: String) {
     getCitiesByCountryName(country_name: $countryName) {
       type

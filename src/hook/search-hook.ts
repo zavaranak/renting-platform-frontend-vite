@@ -3,7 +3,6 @@ import {
   Facilities,
   Operator,
   Order,
-  PlaceAttributeName,
   SortOptions,
   TermUnit,
 } from "@/lib/contanst";
