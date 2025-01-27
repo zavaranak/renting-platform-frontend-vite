@@ -109,3 +109,8 @@ export interface BookingInput {
   tenantId?: string;
   placeId: string;
 }
+
+export type SelectedDate = {
+  end: number;
+  start: number;
+};
