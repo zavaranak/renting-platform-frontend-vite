@@ -1,10 +1,11 @@
 import { useSearchPlaces } from "@/hook/search-hook";
+import { TermUnit } from "@/lib/contanst";
 import { useSearchStore } from "@/store/search-store";
 import { loadErrorMessages, loadDevMessages } from "@apollo/client/dev";
 loadDevMessages();
 loadErrorMessages();
 export default function SearchButton() {
-  const { canSearch } = useSearchStore((state) => state);
+  const { canSearch, selectedDate, term } = useSearchStore((state) => state);
   const { searchPlaces, loading } = useSearchPlaces();
   const handleClick = async () => {
     searchPlaces();
@@ -18,7 +19,13 @@ export default function SearchButton() {
   return (
     <div
       onClick={handleClick}
-      className={(!loading && canSearch && activeClass) || disabledClass}
+      className={
+        (!loading &&
+          canSearch &&
+          ((term != TermUnit.DAY && term != TermUnit.HOUR) || selectedDate) &&
+          activeClass) ||
+        disabledClass
+      }
     >
       <div className="m-auto uppercase font-bold justify-center ">Search</div>
     </div>

@@ -77,7 +77,7 @@ export const initialSearchOptionState: SearchOptionState[] = [
   },
   {
     searchOption: SearchOption.TYPE,
-    valid: false,
+    valid: true,
   },
   {
     searchOption: SearchOption.SORT,
@@ -91,7 +91,7 @@ export const useSearchStore = create<SearchStore>((set) => ({
   filter: [],
   location: {
     city: "",
-    country: "",
+    country: "vietnam",
   },
   guest: {
     adults: 1,

@@ -19,18 +19,17 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-const hours = Array.from({ length: 24 }, (_, i) => ({
-  value: i.toString().padStart(2, "0"),
-  label: i.toString().padStart(2, "0"),
-}));
-
 interface HourSelectorParams {
   value: string;
   setValue: (value: string) => void;
 }
 export default function HourSelector({ value, setValue }: HourSelectorParams) {
+  const hours = Array.from({ length: 24 }, (_, i) => ({
+    value: i.toString().padStart(2, "0"),
+    label: i.toString().padStart(2, "0"),
+  }));
+
   const [open, setOpen] = React.useState(false);
-  //   const [value, setValue] = React.useState("");
 
   return (
     <Popover open={open} onOpenChange={setOpen}>

@@ -1,7 +1,6 @@
-import * as React from "react";
+import { useState, useEffect } from "react";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
-import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -10,39 +9,34 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { SelectedDate } from "@/lib/data-type";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
+import { useSearchStore } from "@/store/search-store";
 import HourSelector from "./hour-combobox";
-
-const hours = Array.from({ length: 24 }, (_, i) => ({
-  value: i.toString().padStart(2, "0"),
-  label: i.toString().padStart(2, "0"),
-}));
-
+import dayjs from "dayjs";
 export function HourPicker() {
-  // const [hourValue, setHourValue] = React.useState<SelectedDate | undefined>(
-  //   undefined
-  // );
-  const [date, setDate] = React.useState<Date>();
-  const [startHour, setStartHour] = React.useState("");
-  const [endHour, setEndHour] = React.useState("");
-
-  const handleHourStartValue = (value: number) => {
-    if (value >= 0 && value <= 23) {
+  const { setSelectedDate } = useSearchStore((state) => state);
+  const [date, setDate] = useState<Date | undefined>(dayjs().toDate());
+  const [startHour, setStartHour] = useState("");
+  const [endHour, setEndHour] = useState("");
+  const timeValueHandler = () => {
+    const start = dayjs(date).add(parseInt(startHour), "hour").valueOf();
+    const end = dayjs(date).add(parseInt(endHour), "hour").valueOf();
+    console.log(start, end);
+    console.log(start < end);
+    if (start < end) {
+      setSelectedDate({ start, end });
+    } else {
+      setEndHour("");
     }
   };
-  const handleHourEndValue = (value: number) => {
-    if (value >= 0 && value <= 23) {
-    }
-  };
-
+  useEffect(() => {
+    timeValueHandler();
+  }, [startHour, endHour, date]);
+  useEffect(() => {
+    setSelectedDate(undefined);
+    // return () => {
+    //   setSelectedDate(undefined);
+    // };
+  }, []);
   return (
     <div className="grid grid-cols-5 gap-1">
       <div className="col-span-5 grid grid-cols-5 gap-1 text-xs">

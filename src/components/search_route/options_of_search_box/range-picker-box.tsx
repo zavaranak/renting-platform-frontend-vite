@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { DateRange } from "react-day-picker";
@@ -11,15 +11,11 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-// import { SelectedDate } from "@/lib/data-type";
 
 export function DatePickerWithRange({
   className,
 }: React.HTMLAttributes<HTMLDivElement>) {
-  const { setSelectedDate } = useSearchStore((state) => state);
-  // const [dateValue, setDateValue] = useState<SelectedDate | undefined>(
-  //   undefined
-  // );
+  const { selectedDate, setSelectedDate } = useSearchStore((state) => state);
   const [date, setDate] = useState<DateRange | undefined>({
     from: dayjs().hour(14).minute(0).second(0).millisecond(0).toDate(),
     to: undefined,
@@ -42,8 +38,8 @@ export function DatePickerWithRange({
           .toDate();
 
         setSelectedDate({
-          start: adjustedFrom.getTime(), // Use the adjusted date
-          end: adjustedTo.getTime(), // Use the adjusted date
+          start: adjustedFrom.getTime(),
+          end: adjustedTo.getTime(),
         });
         setDate(value);
       }
@@ -52,9 +48,17 @@ export function DatePickerWithRange({
       setDate(value);
     }
   };
-  // useEffect(() => {}, [selectedDate]);
+  useEffect(() => {
+    setSelectedDate(undefined);
+    // return () => {
+    //   setSelectedDate(undefined);
+    // };
+  }, []);
   return (
-    <div className={cn("grid gap-2", className)}>
+    <div className={cn("flex flex-col gap-2", className)}>
+      <div className="text-xs">
+        <span className="col-span-3">Date</span>
+      </div>
       <Popover>
         <PopoverTrigger asChild>
           <Button

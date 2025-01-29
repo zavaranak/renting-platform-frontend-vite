@@ -21,9 +21,6 @@ import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Label } from "@/components/ui/label";
-import TypeSearchBox from "./type-search-box";
-import { DatePickerWithRange } from "./range-picker-box";
-import { HourPicker } from "./hour-picker-box";
 
 export default function LocationSearchBox() {
   const {
@@ -42,8 +39,6 @@ export default function LocationSearchBox() {
   const [country, setCountry] = useState(location.country);
   const [filteredCountries, setFilteredCountries] = useState([] as string[]);
   const [filteredCites, setFilteredCities] = useState([] as string[]);
-
-  // import { DateRange } from "react-day-picker";
 
   const handleChangeTerm = (value: TermUnit) => {
     setTerm(value);
@@ -97,148 +92,136 @@ export default function LocationSearchBox() {
     setFilteredCities(filter);
     validateSearchParams({ city: value, country: location.country }, term);
   };
-
   useEffect(() => {
-    // if (type) {
-    //   handleSearch({
-    //     searchOption: SearchOption.TYPE,
-    //     valid: true,
-    //   });
-    // }
-    // if (city && term) {
-    //   handleSearch({
-    //     searchOption: SearchOption.LOCATION,
-    //     valid: true,
-    //   });
-    // }
+    if (city != "" && country != "") {
+      handleSearch({
+        searchOption: SearchOption.LOCATION,
+        valid: true,
+      });
+    }
   }, []);
 
   return (
-    <div className="w-full flex flex-col gap-4 border-2 border-neutral_brown border-b-transparent p-5">
-      <div>
-        <div className="text-sm uppercase font-bold pb-3">
-          where would you like to stay?
+    <>
+      <div className="text-sm uppercase font-bold pb-3">
+        where would you like to stay?
+      </div>
+      <div className="grid grid-cols-3 gap-x-10 mt-2">
+        <div className="grid w-full max-w-sm items-center gap-1.5 relative">
+          <Label htmlFor="country_input">Country</Label>
+          <Input
+            name="country_input"
+            value={country}
+            type="text"
+            onChange={(e) => handleCountryInput(e.target.value)}
+          />
+          <div
+            className={cn(
+              filteredCountries.length == 0 && "hidden",
+              "absolute top-[100%] h-50 w-48 rounded-md border bg-white"
+            )}
+          >
+            <ScrollArea className="h-50 w-48 rounded-md border">
+              <div className="p-4">
+                {filteredCountries.map((c, index) => {
+                  return (
+                    <div
+                      key={c + index}
+                      onClick={() => {
+                        handleCountryInput(c);
+                        setFilteredCountries([]);
+                      }}
+                    >
+                      {c}
+                      <Separator className="my-2" />
+                    </div>
+                  );
+                })}
+              </div>
+            </ScrollArea>
+          </div>
         </div>
-        <div className="grid grid-cols-3 gap-x-10 mt-2">
-          <div className="grid w-full max-w-sm items-center gap-1.5 relative">
-            <Label htmlFor="country_input">Country</Label>
-            <Input
-              name="country_input"
-              value={country}
-              type="text"
-              onChange={(e) => handleCountryInput(e.target.value)}
-            />
-            <div
-              className={cn(
-                filteredCountries.length == 0 && "hidden",
-                "absolute top-[100%] h-50 w-48 rounded-md border bg-white"
-              )}
-            >
-              <ScrollArea className="h-50 w-48 rounded-md border">
-                <div className="p-4">
-                  {filteredCountries.map((c, index) => {
-                    return (
-                      <div
-                        key={c + index}
-                        onClick={() => {
-                          handleCountryInput(c);
-                          setFilteredCountries([]);
-                        }}
-                      >
-                        {c}
-                        <Separator className="my-2" />
-                      </div>
-                    );
-                  })}
-                </div>
-              </ScrollArea>
-            </div>
+        <div className="grid w-full max-w-sm items-center gap-1.5 relative">
+          <Label htmlFor="city_input">City</Label>
+          <Input
+            name="city_input"
+            type="text"
+            value={city}
+            onChange={(e) => handleCityInput(e.target.value)}
+            // onFocus={() => setFilteredCities(cities)}
+          />
+          <div
+            className={cn(
+              filteredCites.length == 0 && "hidden",
+              "absolute top-[100%] h-50 w-48 rounded-md border bg-white"
+            )}
+          >
+            <ScrollArea className="h-50 w-48 rounded-md border">
+              <div className="p-4">
+                {filteredCites.map((c, index) => {
+                  return (
+                    <div
+                      key={c + index}
+                      onClick={() => {
+                        handleCityInput(c);
+                        setFilteredCities([]);
+                      }}
+                    >
+                      {c}
+                      <Separator className="my-2" />
+                    </div>
+                  );
+                })}
+              </div>
+            </ScrollArea>
           </div>
-          <div className="grid w-full max-w-sm items-center gap-1.5 relative">
-            <Label htmlFor="city_input">City</Label>
-            <Input
-              name="city_input"
-              type="text"
-              value={city}
-              onChange={(e) => handleCityInput(e.target.value)}
-              // onFocus={() => setFilteredCities(cities)}
-            />
-            <div
-              className={cn(
-                filteredCites.length == 0 && "hidden",
-                "absolute top-[100%] h-50 w-48 rounded-md border bg-white"
-              )}
-            >
-              <ScrollArea className="h-50 w-48 rounded-md border">
-                <div className="p-4">
-                  {filteredCites.map((c, index) => {
-                    return (
-                      <div
-                        key={c + index}
-                        onClick={() => {
-                          handleCityInput(c);
-                          setFilteredCities([]);
-                        }}
-                      >
-                        {c}
-                        <Separator className="my-2" />
-                      </div>
-                    );
-                  })}
-                </div>
-              </ScrollArea>
-            </div>
-          </div>
+        </div>
 
-          <div className="flex flex-col gap-1">
-            <Label htmlFor="none">Term</Label>
-            <Popover open={openTermBox} onOpenChange={setOpenTermBox}>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  role="combobox"
-                  aria-expanded={openTermBox}
-                  className="w-[300px%] justify-between"
-                >
-                  {term ? term : "Select term"}
-                  <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-[300px] p-0">
-                <Command>
-                  <CommandInput placeholder="Search type..." />
-                  <CommandList>
-                    <CommandEmpty>No type can be found</CommandEmpty>
-                    <CommandGroup>
-                      {Object.entries(TermUnit).map((entry, index) => (
-                        <CommandItem
-                          value={entry[1]}
-                          key={index}
-                          onSelect={(currentValue) => {
-                            handleChangeTerm(currentValue as TermUnit);
-                            setOpenTermBox(false);
-                          }}
-                        >
-                          {entry[1]}
-                          <Check
-                            className={cn(
-                              "mr-2 h-4 w-4",
-                              term === entry[1] ? "opacity-100" : "opacity-0"
-                            )}
-                          />
-                        </CommandItem>
-                      ))}
-                    </CommandGroup>
-                  </CommandList>
-                </Command>
-              </PopoverContent>
-            </Popover>
-          </div>
+        <div className="flex flex-col gap-1">
+          <Label htmlFor="none">Term</Label>
+          <Popover open={openTermBox} onOpenChange={setOpenTermBox}>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                role="combobox"
+                aria-expanded={openTermBox}
+                className="w-[300px%] justify-between"
+              >
+                {term ? term : "Select term"}
+                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-[300px] p-0">
+              <Command>
+                <CommandInput placeholder="Search type..." />
+                <CommandList>
+                  <CommandEmpty>No type can be found</CommandEmpty>
+                  <CommandGroup>
+                    {Object.entries(TermUnit).map((entry, index) => (
+                      <CommandItem
+                        value={entry[1]}
+                        key={index}
+                        onSelect={(currentValue) => {
+                          handleChangeTerm(currentValue as TermUnit);
+                          setOpenTermBox(false);
+                        }}
+                      >
+                        {entry[1]}
+                        <Check
+                          className={cn(
+                            "mr-2 h-4 w-4",
+                            term === entry[1] ? "opacity-100" : "opacity-0"
+                          )}
+                        />
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </CommandList>
+              </Command>
+            </PopoverContent>
+          </Popover>
         </div>
       </div>
-      {term == TermUnit.DAY && <DatePickerWithRange />}
-      {term == TermUnit.HOUR && <HourPicker />}
-      <TypeSearchBox />
-    </div>
+    </>
   );
 }

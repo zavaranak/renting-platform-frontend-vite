@@ -2,7 +2,7 @@ import OptionSwitchButton from "./option-switch-button";
 import { SearchOption } from "@/lib/contanst";
 
 import SearchButton from "./search-button";
-import LocationSearchBox from "./options_of_search_box/location-search-box";
+import MainSearchBox from "./options_of_search_box/main-search-box";
 import { useSearchStore } from "@/store/search-store";
 import SortSearchBox from "./options_of_search_box/sort-search-box";
 
@@ -34,7 +34,7 @@ export default function SearchBox() {
 
           <div className="flex w-full flex-col md:flex-row space-x-0">
             {searchOptionState[currentOption].searchOption ===
-              SearchOption.LOCATION && <LocationSearchBox />}
+              SearchOption.LOCATION && <MainSearchBox />}
             {searchOptionState[currentOption].searchOption ===
               SearchOption.SORT && <SortSearchBox />}
           </div>

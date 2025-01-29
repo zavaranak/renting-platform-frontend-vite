@@ -21,6 +21,7 @@ export const useSearchPlaces = () => {
     pagination,
     sort,
     filter,
+    selectedDate,
     handleSearch,
     setPagination,
     setResult,
@@ -57,6 +58,7 @@ export const useSearchPlaces = () => {
         operator: Operator.INCLUDE,
       });
     }
+
     // if (guest.adults > 0) {
     //   conditions.push({
     //     value: (guest.adults + guest.children / 2).toString(),
@@ -66,7 +68,6 @@ export const useSearchPlaces = () => {
     // }
     return conditions;
   };
-
   const handleSortBy = () => {
     var sortBy: QueryOrder[] = [];
     if (sort.price != SortOptions.price.default) {
@@ -212,6 +213,10 @@ export const useSearchPlaces = () => {
             conditions: [...conditions, ...filterList],
             pagination: pagination,
             orderBy: sortBy,
+            selectedDate:
+              term == TermUnit.DAY || term == TermUnit.HOUR
+                ? selectedDate
+                : undefined,
           },
         },
       });
