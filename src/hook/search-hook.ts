@@ -188,7 +188,7 @@ export const useSearchPlaces = () => {
   const [search] = useLazyQuery(QUERY_PLACES_ID, {
     onCompleted: (data) => {
       console.log(data);
-      if (data.getPlaces.length > 0) {
+      if (data.getPlaces.length >= 0) {
         const result = data.getPlaces.map((record: any) => record.id);
         setResult(result);
         handleSearch(undefined);

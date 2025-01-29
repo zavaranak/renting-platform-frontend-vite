@@ -9,7 +9,7 @@ import {
   workingPlaceType,
 } from "@/lib/contanst";
 
-import { QueryPagination } from "@/lib/data-type";
+import { QueryPagination, SelectedDate } from "@/lib/data-type";
 export type SearchOptionState = {
   searchOption: SearchOption;
   valid: boolean;
@@ -33,7 +33,7 @@ export interface SortOptionsInterface {
   highNumberOfGuest: boolean;
 }
 export type SearchStoreState = {
-  // locationMap: Map<string, string[]>;
+  selectedDate: SelectedDate | undefined;
   countries: string[];
   cities: string[];
   purpose: Purpose | "";
@@ -65,7 +65,7 @@ export type SearchStoreAction = {
   setResult: (data: string[]) => void;
   setSort: (data: SortOptionsInterface) => void;
   setFilter: (data: string[]) => void;
-  // setMap: (map: Map<string, string[]>) => void;
+  setSelectedDate: (data: SelectedDate | undefined) => void;
 };
 
 export type SearchStore = SearchStoreState & SearchStoreAction;
@@ -85,9 +85,9 @@ export const initialSearchOptionState: SearchOptionState[] = [
   },
 ];
 export const useSearchStore = create<SearchStore>((set) => ({
-  purpose: "",
-  type: "",
-  term: "",
+  purpose: Purpose.LIVING,
+  type: livingPlaceType.HOUSE,
+  term: TermUnit.DAY,
   filter: [],
   location: {
     city: "",
@@ -113,7 +113,7 @@ export const useSearchStore = create<SearchStore>((set) => ({
     rating: false,
     highNumberOfGuest: false,
   },
-  // locationMap: new Map(),
+  selectedDate: undefined,
   result: [],
   addOption: (newOption: SearchOption) =>
     set((state: SearchStoreState) => {
@@ -217,6 +217,9 @@ export const useSearchStore = create<SearchStore>((set) => ({
   },
   setFilter: (data: string[]) => {
     set(() => ({ filter: data }));
+  },
+  setSelectedDate(data) {
+    set(() => ({ selectedDate: data }));
   },
   // setMap: (map: Map<string, string[]>) => {
   //   set(() => ({

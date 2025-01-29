@@ -6,7 +6,7 @@ export const getCookie = (name: string) => {
       return cookie.substring(name.length + 1);
     }
   }
-  return undefined; // Không tìm thấy cookie
+  return undefined;
 };
 
 export const setCookie = (name: string, value: string) => {

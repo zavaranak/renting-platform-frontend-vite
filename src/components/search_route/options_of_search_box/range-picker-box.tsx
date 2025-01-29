@@ -1,8 +1,8 @@
-import * as React from "react";
+import { useState, useEffect } from "react";
 import dayjs from "dayjs";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { DateRange } from "react-day-picker";
-
+import { useSearchStore } from "@/store/search-store";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -11,16 +11,17 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { SelectedDate } from "@/lib/data-type";
+// import { SelectedDate } from "@/lib/data-type";
 
 export function DatePickerWithRange({
   className,
 }: React.HTMLAttributes<HTMLDivElement>) {
-  const [dateValue, setDateValue] = React.useState<SelectedDate | undefined>(
-    undefined
-  );
-  const [date, setDate] = React.useState<DateRange | undefined>({
-    from: dayjs().hour(12).minute(0).second(0).millisecond(0).toDate(),
+  const { setSelectedDate } = useSearchStore((state) => state);
+  // const [dateValue, setDateValue] = useState<SelectedDate | undefined>(
+  //   undefined
+  // );
+  const [date, setDate] = useState<DateRange | undefined>({
+    from: dayjs().hour(14).minute(0).second(0).millisecond(0).toDate(),
     to: undefined,
   });
 
@@ -40,18 +41,18 @@ export function DatePickerWithRange({
           .second(0)
           .toDate();
 
-        setDateValue({
+        setSelectedDate({
           start: adjustedFrom.getTime(), // Use the adjusted date
           end: adjustedTo.getTime(), // Use the adjusted date
         });
         setDate(value);
       }
     } else {
-      setDateValue(undefined);
+      setSelectedDate(undefined);
       setDate(value);
     }
   };
-  React.useEffect(() => {}, [dateValue]);
+  // useEffect(() => {}, [selectedDate]);
   return (
     <div className={cn("grid gap-2", className)}>
       <Popover>
@@ -70,12 +71,12 @@ export function DatePickerWithRange({
                 <>
                   {dayjs(date.from)
                     .add(14, "hour")
-                    .format("MMM DD, YYYY h:mm A")}{" "}
+                    .format("MMM DD, YYYY HH:mm")}{" "}
                   -{" "}
-                  {dayjs(date.to).add(12, "hour").format("MMM DD, YYYY h:mm A")}
+                  {dayjs(date.to).add(12, "hour").format("MMM DD, YYYY HH:mm")}
                 </>
               ) : (
-                dayjs(date.from).add(14, "hour").format("MMM DD, YYYY h:mm A")
+                dayjs(date.from).format("MMM DD, YYYY HH:mm")
               )
             ) : (
               <span>Pick a date</span>

@@ -26,7 +26,6 @@ export const FilterBox = () => {
     purpose,
     filter,
     sort,
-    locationMap,
     canSearch,
     setLocation,
     handleSearch,
@@ -36,42 +35,6 @@ export const FilterBox = () => {
     setFilter,
     setSort,
   } = useSearchStore((state) => state);
-  const [locationState, setlocationState] = useState(location.city != "");
-  const [locationString, setLocationString] = useState(
-    location.city && location.country
-      ? location.city + "|" + location.country
-      : ""
-  );
-  const [filteredLocations, setFilteredLocations] = useState([] as string[]);
-  const [allLocationsString, setAllLocationsString] = useState([] as string[]);
-  const handleCityChange = (value: string) => {
-    const parts = value.split("|");
-    var check: boolean = false;
-    if (parts.length == 2) {
-      const newLocation = {
-        city: parts[0],
-        country: parts[1],
-      };
-      if (
-        locationMap.has(newLocation.country) &&
-        locationMap.get(newLocation.country)?.includes(newLocation.city)
-      ) {
-        setFilteredLocations([]);
-        check = true;
-      } else {
-        handleFilteredLocations(value);
-      }
-
-      if (check) {
-        setLocation(newLocation);
-      }
-    } else {
-      handleFilteredLocations(value);
-    }
-    setLocationString(value);
-    setlocationState(check);
-    checkSearch(check);
-  };
   const handlePurposeChange = (e: any) => {
     setPurpose(e.target.value);
     checkSearch();
@@ -85,7 +48,7 @@ export const FilterBox = () => {
     const newType = e.target.value;
     setType(newType);
     const checkedType = newType != "";
-    checkSearch(undefined, checkedType);
+    checkSearch(checkedType);
   };
   const handleFilter = (value: string) => {
     if (filter.includes(value)) {
@@ -97,14 +60,14 @@ export const FilterBox = () => {
     }
     checkSearch();
   };
-  const checkSearch = (checkedCity?: boolean, checkedType?: boolean) => {
+  const checkSearch = (checkedType?: boolean) => {
     handleSearch({
       searchOption: SearchOption.TYPE,
       valid: checkedType != undefined ? true : type != "",
     });
     handleSearch({
       searchOption: SearchOption.LOCATION,
-      valid: checkedCity != undefined ? checkedCity : locationState,
+      valid: true,
     });
   };
   const handleSort = (e: any, sortType: string) => {
@@ -125,53 +88,9 @@ export const FilterBox = () => {
     }
     setSort(newSort);
   };
-  const handleFilteredLocations = (value: string) => {
-    const list: string[] =
-      value != ""
-        ? allLocationsString.filter((item) => item.includes(value))
-        : [];
-    setFilteredLocations(list);
-  };
-  useEffect(() => {
-    const allLocations: string[] = [];
-    const newCountries: string[] = [];
-    locationMap.forEach((value, key) => {
-      newCountries.includes(key) || newCountries.push(key);
-      value.forEach((v) => {
-        allLocations.push(`${v}|${key}`);
-      });
-      setAllLocationsString(allLocations);
-    });
-  }, [locationMap]);
   return (
     <SideBox>
-      <div className="flex flex-col gap-3 p-3">
-        <label
-          className={clsx(
-            "flex gap-3 relative",
-            locationState || "text-red-700"
-          )}
-        >
-          <p>Location</p>
-          <input
-            value={locationString}
-            placeholder={"City"}
-            onChange={(e) => handleCityChange(e.target.value)}
-          />
-          <div className="absolute flex flex-col gap-3 right-[65px] top-[20px]">
-            {filteredLocations.length > 0 &&
-              filteredLocations.map((item) => (
-                <div
-                  className="p-2  bg-neutral_grey"
-                  onClick={() => {
-                    handleCityChange(item);
-                  }}
-                >
-                  {item}
-                </div>
-              ))}
-          </div>
-        </label>
+      <div className="flex bg-background_brown flex-col gap-3 p-3">
         <label className="flex gap-3">
           <p>Purpose</p>
           <select onChange={handlePurposeChange} value={purpose ?? ""}>

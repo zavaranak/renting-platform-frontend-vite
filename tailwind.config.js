@@ -7,6 +7,8 @@ export default {
   		colors: {
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
+  			background_brown: 'var(--background-brown)',
+  			foreground_blue: 'var(--foreground-blue)',
   			light_blue: 'var(--main-light-blue)',
   			neutral_blue: 'var(--main-neutral-blue)',
   			dark_blue: 'var(--main-dark-blue)',

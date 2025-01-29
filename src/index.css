@@ -7,8 +7,8 @@
   src: url(./fonts/Outfit.ttf);
 }
 :root {
-  --background: #F7F2EB;
-  --foreground: #292d32;
+  --background-brown: #F7F2EB;
+  --foreground-blue: #292d32;
   --main-light-blue: #3874ac;
   --main-neutral-blue: #254d72;
   --main-dark-blue: #122638;

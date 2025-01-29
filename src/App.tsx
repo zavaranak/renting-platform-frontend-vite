@@ -24,7 +24,7 @@ export default function App() {
       <ApolloProvider client={client}>
         <BrowserRouter>
           <Header />
-          <div className="bg-background grid lg:grid-cols-12 md:grid-cols-8 grid-cols-4 gap-3 justify-center text-dark_blue place-items-center">
+          <div className="bg-background grid lg:grid-cols-12 md:grid-cols-8 grid-cols-4 gap-3 justify-center text-dark_blue place-items-center z-10 mt-20">
             <Routes>
               <Route path="/" element={<SearchRoute />} />
               <Route

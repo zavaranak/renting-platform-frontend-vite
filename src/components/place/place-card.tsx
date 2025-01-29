@@ -32,7 +32,7 @@ export const PlaceCard = (params: PlaceCardParam) => {
   return (
     <div className="bg-text_light_panel">
       {place && (
-        <div className="bg-white shadow-md rounded-lg overflow-hidden">
+        <div className="bg-background_brown shadow-md rounded-lg overflow-hidden">
           {place.photos && place.photos.length > 0 && (
             <img
               className="w-full h-48 object-cover"
