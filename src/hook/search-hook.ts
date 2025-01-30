@@ -205,6 +205,7 @@ export const useSearchPlaces = () => {
   });
   const searchPlaces = () => {
     if (canSearch) {
+      setResult([]);
       console.log(conditions, sortBy);
       setPagination({ take: 30, skip: 0 });
       search({

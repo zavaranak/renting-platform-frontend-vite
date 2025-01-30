@@ -36,7 +36,7 @@ export type LoginData = {
 };
 
 export type Place = {
-  id?: string;
+  id: string;
 
   name: string;
 
@@ -101,8 +101,8 @@ export type QueryOrder = {
 };
 
 export interface BookingInput {
-  startAt: number;
-  endAt: number;
+  startAt?: number;
+  endAt?: number;
   termUnit: TermUnit;
   period: number;
   totalCharge: number;

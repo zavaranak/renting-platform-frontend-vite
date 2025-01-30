@@ -46,13 +46,13 @@ export default function SortSearchBox() {
               variant="outline"
               role="combobox"
               aria-expanded={openPriceSort}
-              className="w-[200px] justify-between"
+              className="w-full justify-between"
             >
               {sort.price ? sort.price : "sort by price"}
               <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="w-[200px] p-0">
+          <PopoverContent className="w-full p-0">
             <Command>
               <CommandList>
                 <CommandGroup>
@@ -88,13 +88,13 @@ export default function SortSearchBox() {
               variant="outline"
               role="combobox"
               aria-expanded={openAreaSort}
-              className="w-[200px] justify-between"
+              className="w-full justify-between"
             >
               {sort.area ? sort.area : "sort by area"}
               <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="w-[200px] p-0">
+          <PopoverContent className="w-full p-0">
             <Command>
               <CommandList>
                 <CommandGroup>
@@ -130,13 +130,13 @@ export default function SortSearchBox() {
               variant="outline"
               role="combobox"
               aria-expanded={openPositionSort}
-              className="w-[200px] justify-between"
+              className="w-full justify-between"
             >
-              {sort.area ? sort.area : "sort by area"}
+              {sort.position ? sort.position : "sort by position"}
               <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="w-[200px] p-0">
+          <PopoverContent className="w-full p-0">
             <Command>
               <CommandList>
                 <CommandGroup>

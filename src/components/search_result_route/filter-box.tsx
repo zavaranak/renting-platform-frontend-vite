@@ -1,17 +1,16 @@
 import { SortOptionsInterface, useSearchStore } from "@/store/search-store";
 import { SideBox } from "@/components/boxes/side-box";
 import clsx from "clsx";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   Facilities,
   livingPlaceType,
   Purpose,
-  TermUnit,
   workingPlaceType,
   SearchOption,
   SortOptions,
 } from "@/lib/contanst";
-import { Checkbox, FormControlLabel, FormGroup } from "@mui/material";
+import { Card, Checkbox, FormControlLabel, FormGroup } from "@mui/material";
 import SearchButton from "@/components/search_route/search-button";
 import { UseFetchCountriesAndCites } from "@/hook/fetch-countries-and-cities-hook";
 
@@ -20,30 +19,17 @@ export const FilterBox = () => {
   const [openSortBox, setOpenSortBox] = useState(false);
   const [openFilterBox, setOpenFilterBox] = useState(false);
   const {
-    term,
     type,
-    location,
     purpose,
     filter,
     sort,
     canSearch,
-    setLocation,
     handleSearch,
-    setPurpose,
-    setTerm,
     setType,
     setFilter,
     setSort,
   } = useSearchStore((state) => state);
-  const handlePurposeChange = (e: any) => {
-    setPurpose(e.target.value);
-    checkSearch();
-  };
-  const handleTermChange = (e: any) => {
-    const newTerm = e.target.value;
-    setTerm(newTerm);
-    checkSearch();
-  };
+
   const handleTypeChange = (e: any) => {
     const newType = e.target.value;
     setType(newType);
@@ -90,18 +76,7 @@ export const FilterBox = () => {
   };
   return (
     <SideBox>
-      <div className="flex bg-background_brown flex-col gap-3 p-3">
-        <label className="flex gap-3">
-          <p>Purpose</p>
-          <select onChange={handlePurposeChange} value={purpose ?? ""}>
-            <option value="">--</option>
-            {Object.values(Purpose).map((value) => (
-              <option key={value} value={value}>
-                {value}
-              </option>
-            ))}
-          </select>
-        </label>
+      <Card className="flex bg-background_brown flex-col gap-3 p-3">
         <div className="flex gap-3">
           <label className="flex">
             <p>Type</p>
@@ -130,20 +105,6 @@ export const FilterBox = () => {
               ) : (
                 <option value={undefined}>--</option>
               )}
-            </select>
-          </label>
-          <label className="flex">
-            <p>Term</p>
-            <select onChange={handleTermChange} value={term ?? ""}>
-              <option value="">--</option>
-              {Object.keys(TermUnit).map((key) => (
-                <option
-                  key={key}
-                  value={TermUnit[key as keyof typeof TermUnit]}
-                >
-                  {TermUnit[key as keyof typeof TermUnit]}
-                </option>
-              ))}
             </select>
           </label>
         </div>
@@ -242,7 +203,7 @@ export const FilterBox = () => {
 
         <SearchButton />
         {/* )} */}
-      </div>
+      </Card>
     </SideBox>
     // </div>
   );

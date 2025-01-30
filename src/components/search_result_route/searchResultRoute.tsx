@@ -1,22 +1,25 @@
 import { useSearchStore } from "@/store/search-store";
 import { PlaceCard } from "@/components/place/place-card";
 import { FilterBox } from "./filter-box";
-import Popup from "@/components/boxes/popup-box";
-import { useAppStore } from "@/store/app-store";
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { Card } from "@mui/material";
 
 export default function SearchResultRoute() {
+  const navigate = useNavigate();
   const { result, location } = useSearchStore((state) => state);
-  const { authWarningForCreateBooking, setAuthWaringForCreateBooking } =
-    useAppStore((state) => state);
   useEffect(() => {
-    console.log("result set", result.length);
+    if (!result || result.length == 0) {
+      navigate("/");
+    }
   }, [result]);
+  // const { authWarningForCreateBooking, setAuthWaringForCreateBooking } =
+  //   useAppStore((state) => state);
   return (
     <div className="flex flex-col col-span-full m-auto p-3 relative z-70 bg-background gap-4 lg:w-2/5 md:w-3/5 sm:w-ful">
       <FilterBox />
       {result.length > 0 && (
-        <div className="bg-background_brown ">
+        <Card>
           <div className="flex p-3">
             <p className="capitalize">
               {location.city} ({location.country})
@@ -25,18 +28,11 @@ export default function SearchResultRoute() {
             {"  "}
             accommodations options available
           </div>
-        </div>
+        </Card>
       )}
       {result.map((place) => (
         <PlaceCard key={place} id={place}></PlaceCard>
       ))}
-      <Popup
-        title="Please login to create a booking"
-        isOpen={authWarningForCreateBooking}
-        onClose={() => setAuthWaringForCreateBooking(false)}
-      >
-        Hi
-      </Popup>
     </div>
   );
 }
