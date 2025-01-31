@@ -103,7 +103,7 @@ export type QueryOrder = {
 export interface BookingInput {
   startAt?: number;
   endAt?: number;
-  termUnit: TermUnit;
+  termUnit: string;
   period: number;
   totalCharge: number;
   tenantId?: string;

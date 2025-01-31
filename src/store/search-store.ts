@@ -38,7 +38,7 @@ export type SearchStoreState = {
   cities: string[];
   purpose: Purpose | "";
   type: livingPlaceType | workingPlaceType | "";
-  term: TermUnit | "";
+  term: TermUnit;
   location: LocationParam;
   guest: GuestParam;
   currentOption: number;

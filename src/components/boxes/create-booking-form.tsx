@@ -22,28 +22,30 @@ import { BookingInput, Place } from "@/lib/data-type";
 import { useSearchStore } from "@/store/search-store";
 import { useAuthStore } from "@/store/auth-store";
 import useCreateBooking from "@/hook/create-booking-hook";
+import ClientInfoForm from "./client-info-form";
+import { TermUnit } from "@/lib/contanst";
 
 interface CreateBookingBoxProps {
   place: Place;
+  parsedDate?: { start: any; end: any; date?: any; diff: any } | undefined;
+  totalCharge?: number;
 }
 export function CreateBookingBox(createBookingBoxProps: CreateBookingBoxProps) {
-  const { place } = createBookingBoxProps;
+  const { place, parsedDate, totalCharge } = createBookingBoxProps;
   const { user } = useAuthStore((state) => state);
   const { term, selectedDate } = useSearchStore((state) => state);
   const { createBooking } = useCreateBooking();
   const createBookingHandler = () => {
-    if (term) {
-      const bookingInput: BookingInput = {
-        placeId: place.id,
-        tenantId: user?.id,
-        startAt: selectedDate?.start,
-        endAt: selectedDate?.end,
-        period: 10,
-        termUnit: term,
-        totalCharge: 100,
-      };
-      createBooking(bookingInput);
-    }
+    const bookingInput: BookingInput = {
+      placeId: place.id,
+      tenantId: user?.id,
+      startAt: selectedDate?.start,
+      endAt: selectedDate?.end,
+      period: parsedDate?.diff,
+      termUnit: term.toUpperCase(),
+      totalCharge: 100,
+    };
+    createBooking(bookingInput);
   };
   return (
     <AlertDialog>
@@ -60,16 +62,29 @@ export function CreateBookingBox(createBookingBoxProps: CreateBookingBoxProps) {
           <Card>
             <CardHeader>
               <CardTitle>Client: {user?.username}</CardTitle>
+              <ClientInfoForm />
               <CardDescription>Card Description</CardDescription>
             </CardHeader>
-            <CardContent>
-              <p>Booking from _ to _</p>
-            </CardContent>
+            {parsedDate && term == TermUnit.DAY && (
+              <CardContent>
+                <p>
+                  Booking from {parsedDate.start} to {parsedDate?.end} (
+                  {parsedDate.diff} nights)
+                </p>
+              </CardContent>
+            )}
+            {parsedDate && term == TermUnit.HOUR && (
+              <CardContent>
+                <p>
+                  Booking from {parsedDate.start} to {parsedDate?.end} (
+                  {parsedDate.diff} hours)
+                </p>
+                <p>on {parsedDate?.date}</p>
+              </CardContent>
+            )}
+
             <CardFooter>
-              <p>Total charge</p>
-            </CardFooter>
-            <CardFooter>
-              <p>Total charge</p>
+              <p>Total charge: {totalCharge}</p>
             </CardFooter>
           </Card>
         </AlertDialogHeader>
@@ -77,7 +92,6 @@ export function CreateBookingBox(createBookingBoxProps: CreateBookingBoxProps) {
           <AlertDialogCancel>Cancel</AlertDialogCancel>
           <AlertDialogAction
             onClick={() => {
-              console.log("created booking for ", place.name);
               createBookingHandler();
             }}
           >

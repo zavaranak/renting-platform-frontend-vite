@@ -1,5 +1,4 @@
 import { useQuery } from "@apollo/client";
-import useCreateBooking from "@/hook/create-booking-hook";
 import { Place, PlaceAttribute } from "@/lib/data-type";
 import { QUERY_PLACE_BY_ID } from "@/lib/gql/endpoint";
 import { useEffect, useState } from "react";
@@ -15,12 +14,13 @@ import {
 } from "@/components/ui/card";
 interface PlaceCardParam {
   id: string;
+  parsedDate?: { start: any; end: any; date?: any; diff: any } | undefined;
 }
 
 export const PlaceCard = (params: PlaceCardParam) => {
   const [place, setPlace] = useState<Place | null>();
   const [price, setPrice] = useState<PlaceAttribute | undefined>(undefined);
-  const { createBooking } = useCreateBooking();
+  const [totalCharge, setTotalCharge] = useState(0);
   const { term } = useSearchStore((state) => state);
   // const { data, loading, error, refetch } =
   useQuery(QUERY_PLACE_BY_ID, {
@@ -44,8 +44,14 @@ export const PlaceCard = (params: PlaceCardParam) => {
         (item: PlaceAttribute) => item.name === priceAttributeName.toUpperCase()
       );
       setPrice(price_attribute ?? undefined);
+      if (params.parsedDate && params.parsedDate?.diff) {
+        const temp = price_attribute?.valueNumber ?? 1;
+        setTotalCharge(temp * params.parsedDate?.diff);
+      } else {
+        setTotalCharge(price_attribute?.valueNumber ?? 0);
+      }
     }
-  }, [term]);
+  }, [term, price]);
 
   return (
     <div className="bg-text_light_panel">
@@ -77,10 +83,20 @@ export const PlaceCard = (params: PlaceCardParam) => {
             </CardContent>
             <CardContent>
               <p>
-                <span className="mr-1">Price by {term}:</span>
+                <span className="mr-1">Price:</span>
+
+                {params.parsedDate && (
+                  <span>
+                    {totalCharge} {price ? price.value.toUpperCase() : " "} |{" "}
+                  </span>
+                )}
                 <span>
                   {price
-                    ? price.valueNumber + " " + price.value.toUpperCase()
+                    ? price.valueNumber +
+                      " " +
+                      price.value.toUpperCase() +
+                      " per " +
+                      term
                     : "currently not set"}
                 </span>
               </p>
@@ -108,7 +124,11 @@ export const PlaceCard = (params: PlaceCardParam) => {
             </CardContent>
             <CardFooter>
               {/* <p>Card Footer</p> */}
-              <CreateBookingBox place={place} />
+              <CreateBookingBox
+                place={place}
+                parsedDate={params.parsedDate}
+                totalCharge={totalCharge}
+              />
             </CardFooter>
           </Card>
         </div>

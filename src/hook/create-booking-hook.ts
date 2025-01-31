@@ -12,7 +12,7 @@ const useCreateBooking = () => {
   const [mutationCreateBooking] = useMutation(CREATE_BOOKING, {
     onCompleted: (data) => {
       const { createBooking } = data;
-      console.log(createBooking.booking.id);
+      console.log(createBooking.pendingBooking.id);
       setLoading(false);
     },
     onError: (error) => {
@@ -28,7 +28,7 @@ const useCreateBooking = () => {
       params.tenantId = user.id;
       setLoading(true);
       setError(null);
-      await mutationCreateBooking({ variables: { BookingInput: params } });
+      await mutationCreateBooking({ variables: { bookingInput: params } });
     } else {
       setAuthWaringForCreateBooking(true);
     }

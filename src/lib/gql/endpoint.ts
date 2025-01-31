@@ -146,7 +146,7 @@ export const CREATE_BOOKING = gql`
   mutation CreateBooking($bookingInput: BookingInput!) {
     createBooking(bookingInput: $bookingInput) {
       message
-      booking {
+      pendingBooking {
         id
       }
       type

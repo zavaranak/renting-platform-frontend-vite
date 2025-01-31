@@ -15,7 +15,7 @@ import {
 export function DatePickerWithRange({
   className,
 }: React.HTMLAttributes<HTMLDivElement>) {
-  const { selectedDate, setSelectedDate } = useSearchStore((state) => state);
+  const { setSelectedDate } = useSearchStore((state) => state);
   const [date, setDate] = useState<DateRange | undefined>({
     from: dayjs().hour(14).minute(0).second(0).millisecond(0).toDate(),
     to: undefined,
@@ -41,7 +41,7 @@ export function DatePickerWithRange({
           start: adjustedFrom.getTime(),
           end: adjustedTo.getTime(),
         });
-        setDate(value);
+        setDate({ from: adjustedFrom, to: adjustedTo });
       }
     } else {
       setSelectedDate(undefined);
@@ -50,9 +50,6 @@ export function DatePickerWithRange({
   };
   useEffect(() => {
     setSelectedDate(undefined);
-    // return () => {
-    //   setSelectedDate(undefined);
-    // };
   }, []);
   return (
     <div className={cn("flex flex-col gap-2", className)}>
@@ -73,11 +70,8 @@ export function DatePickerWithRange({
             {date?.from ? (
               date.to ? (
                 <>
-                  {dayjs(date.from)
-                    .add(14, "hour")
-                    .format("MMM DD, YYYY HH:mm")}{" "}
-                  -{" "}
-                  {dayjs(date.to).add(12, "hour").format("MMM DD, YYYY HH:mm")}
+                  {dayjs(date.from).format("MMM DD, YYYY HH:mm")} -{" "}
+                  {dayjs(date.to).format("MMM DD, YYYY HH:mm")}
                 </>
               ) : (
                 dayjs(date.from).format("MMM DD, YYYY HH:mm")
