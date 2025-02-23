@@ -2,6 +2,7 @@
 import { create } from "zustand";
 import {
   livingPlaceType,
+  PlaceType,
   Purpose,
   SearchOption,
   SortOptions,
@@ -37,7 +38,7 @@ export type SearchStoreState = {
   countries: string[];
   cities: string[];
   purpose: Purpose | "";
-  type: livingPlaceType | workingPlaceType | "";
+  type: livingPlaceType | workingPlaceType | PlaceType | "";
   term: TermUnit;
   location: LocationParam;
   guest: GuestParam;
@@ -57,7 +58,7 @@ export type SearchStoreAction = {
   setCurrentOption: (optionIndex: number) => void;
   setGuest: (guest: GuestParam) => void;
   setLocation: (location: LocationParam) => void;
-  setType: (type: livingPlaceType | workingPlaceType | "") => void;
+  setType: (type: livingPlaceType | workingPlaceType | PlaceType | "") => void;
   setTerm: (term: TermUnit) => void;
   setPurpose: (purpose: Purpose) => void;
   handleSearch: (optionState?: SearchOptionState) => void;
@@ -189,7 +190,7 @@ export const useSearchStore = create<SearchStore>((set) => ({
       purpose: purpose,
     }));
   },
-  setType: (type: workingPlaceType | livingPlaceType | "") => {
+  setType: (type: workingPlaceType | livingPlaceType | PlaceType | "") => {
     set(() => ({
       type: type,
     }));

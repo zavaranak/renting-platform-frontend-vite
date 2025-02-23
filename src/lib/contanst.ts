@@ -47,6 +47,21 @@ export enum workingPlaceType {
   EVENT_SPACE = "event space",
 }
 
+export enum PlaceType {
+  OFFICE = "office",
+  WORKSHOP = "workshop",
+  FACTORY = "factory",
+  STUDIO = "studio",
+  WAREHOURSE = "warehourse",
+  SHOPHOUSE = "shop house",
+  COWORKING_SPACE = "coworking space",
+  EVENT_SPACE = "event space",
+  HOUSE = "house",
+  APARTMENT = "apartment",
+  DORMITORY = "dormitory",
+  HOTEL = "hotel",
+}
+
 export enum AuthActions {
   LOG_IN = "LOG_IN",
   SIGN_UP = "SIGN_UP",

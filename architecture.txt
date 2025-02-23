@@ -1,0 +1,73 @@
+DB
+    USER PARTITION: LANDLORD, TENANT 
+    BOOKING PARTITION: PENDING, ACTIVE, COMPLETED
+    INDEXS?
+
+QUERY
+    verify user
+    get_user (no guard for common info ||jwt guards - userid)
+    get_booking (jwt guard - userid~booking_tenant_id||place_owner_id)
+    get_places by placeCopyID (jwt guard - userid~booking_tenant_id||place_owner_id)
+    get_place (no guard for common info)
+    get_reviews_by_place()
+
+
+MUTATION
+
+    PLACE
+    create_place (jwt guard - userid~[input]place_owner_id)
+    update_place (jwt guard - userid~[input]place_owner_id)
+
+        [problem with creating]
+        copies > 1? => create copies of that place based on quantity. Add UNIQUE for query logic on  copy placeCopyID
+        [problem with updating]
+        copies > 1? update multiple? => get all place by placeCopyId of current place
+
+
+
+    BOOKING
+    create_pending_booking(jwt guard - userid~[input]booking_tenant_id)
+    update_pending_bookingj(jwt guard - userid~[input]booking_tenant_id)
+    activate_pending_booking(jwt guard - userid~place_owner_id)
+    cancel_pending_booking(jwt guard - userid~booking_tenant_id||place_owner_id)
+    cancel_active_booking(jwt guard - userid~booking_tenant_id||place_owner_id)
+    complete_active_booking(jwt guard - userid~place_owner_id)
+
+    REVIEW 
+    create_review (jwt guard user_id&&booking_tenant_id&&[input]reviewer)
+
+    PROFILE
+    get_profiles 
+    create_profile (jwt guard - userid~[input]profile_owner)
+    update_profile (jwt guard - userid~[input]profile_owner)
+
+NOTIFICATION service
+    stores current online clients in redis
+
+    check new notification on 
+
+    on create booking => subcribe 'new_booking' => send notification 
+        save notification
+        landlord online? => send by websocket
+        queueing message until landlord comes back online
+    on update booking => subcribe 'update_booking' => send notification 
+        save notification
+        queueing message until landlord comes back online
+    
+    on cancel booking 
+    on activate booking => publish 'activate booking' => send notification 
+
+
+query_response
+    status 
+    message
+    data
+
+
+question: 
+    advantage of kafka over event emitter
+                 kafka vs websocket event
+    apply encryption?
+    
+
+City => add City

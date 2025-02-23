@@ -1,62 +1,100 @@
 import { useState } from "react";
-import { Input } from "../ui/input";
-import { Label } from "../ui/label";
-export default function ClientInfoForm() {
-  const [clientInfo, setClientInfo] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    phone: "",
-  });
+
+interface ClientInfoFormProps {
+  onSubmit: (guestInfo: any) => void; // Replace `any` with your guest info type
+}
+
+export default function ClientInfoForm({ onSubmit }: ClientInfoFormProps) {
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [middleName, setMiddleName] = useState("");
+  const [gender, setGender] = useState("");
+  const [birthday, setBirthday] = useState("");
+  const [email, setEmail] = useState("");
+  const [tel, setTel] = useState("");
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSubmit({
+      firstName,
+      lastName,
+      middleName,
+      gender,
+      birthday,
+      email,
+      tel,
+    });
+  };
 
   return (
-    <>
-      <div className="grid grid-cols-3 gap-1 ">
-        {" "}
-        <Label>
-          First Name
-          <Input
-            type="text"
-            value={clientInfo.firstName}
-            onChange={(e) =>
-              setClientInfo({ ...clientInfo, firstName: e.target.value })
-            }
-          />
-        </Label>
-        <Label>
-          Last Name
-          <Input
-            type="text"
-            value={clientInfo.lastName}
-            onChange={(e) =>
-              setClientInfo({ ...clientInfo, lastName: e.target.value })
-            }
-          />
-        </Label>
-        <Label>
-          {" "}
-          Phone number
-          <Input
-            type="text"
-            value={clientInfo.firstName}
-            onChange={(e) =>
-              setClientInfo({ ...clientInfo, firstName: e.target.value })
-            }
-          />
-        </Label>
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div>
+        <label>First Name</label>
+        <input
+          type="text"
+          value={firstName}
+          onChange={(e) => setFirstName(e.target.value)}
+          required
+        />
       </div>
-      <div className="grid grid-cols-2 gap-1 ">
-        <Label>
-          Email
-          <Input
-            type="email"
-            value={clientInfo.email}
-            onChange={(e) =>
-              setClientInfo({ ...clientInfo, email: e.target.value })
-            }
-          />
-        </Label>
+      <div>
+        <label>Last Name</label>
+        <input
+          type="text"
+          value={lastName}
+          onChange={(e) => setLastName(e.target.value)}
+          required
+        />
       </div>
-    </>
+      <div>
+        <label>Middle Name</label>
+        <input
+          type="text"
+          value={middleName}
+          onChange={(e) => setMiddleName(e.target.value)}
+        />
+      </div>
+      <div>
+        <label>Gender</label>
+        <select
+          value={gender}
+          onChange={(e) => setGender(e.target.value)}
+          required
+        >
+          <option value="">Select</option>
+          <option value="MALE">Male</option>
+          <option value="FEMALE">Female</option>
+          <option value="OTHER">Other</option>
+        </select>
+      </div>
+      <div>
+        <label>Birthday</label>
+        <input
+          type="date"
+          value={birthday}
+          onChange={(e) => setBirthday(e.target.value)}
+          required
+        />
+      </div>
+      <div>
+        <label>Email</label>
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
+      </div>
+      <div>
+        <label>Phone Number</label>
+        <input
+          type="tel"
+          value={tel}
+          onChange={(e) => setTel(e.target.value)}
+          required
+        />
+      </div>
+      <button type="submit">Submit</button>
+    </form>
   );
 }

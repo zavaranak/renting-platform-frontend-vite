@@ -54,82 +54,92 @@ export const PlaceCard = (params: PlaceCardParam) => {
   }, [term, price]);
 
   return (
-    <div className="bg-text_light_panel">
+    <div className="bg-text_light_panel ">
       {place && (
-        <div className="bg-background_brown shadow-md rounded-lg overflow-hidden">
-          <Card>
-            <CardHeader>
+        <div className=" bg-background_brown shadow-md rounded-lg overflow-hidden">
+          <Card className="cursor-pointer grid grid-cols-2 ">
+            <CardHeader className="col-span-2">
               <CardTitle>{place.name}</CardTitle>
               <CardDescription>
                 {place.address}, {place.city}, {place.country}
               </CardDescription>
             </CardHeader>
-            {/* <CardContent> */}
-            {place.photos && place.photos.length > 0 && (
-              <img
-                className="w-full h-48 object-cover"
-                src={`/storage/places/${place.id}/${place.photos[0]}`}
-                alt={place.name}
-              />
-            )}
-            {/* </CardContent> */}
-            <CardContent>
+            {/* <CardContent>
               <span className="mr-1">Term:</span>
               {place.termUnit && (
                 <span className="mr-1">
                   {place.termUnit.map((unit) => unit).join(", ")}
                 </span>
               )}
-            </CardContent>
-            <CardContent>
-              <p>
-                <span className="mr-1">Price:</span>
+            </CardContent> */}
+            <div>
+              <CardContent>
+                <p>
+                  <span className="mr-1">Price:</span>
 
-                {params.parsedDate && (
+                  {params.parsedDate && (
+                    <span>
+                      {totalCharge} {price ? price.value.toUpperCase() : " "} |{" "}
+                    </span>
+                  )}
                   <span>
-                    {totalCharge} {price ? price.value.toUpperCase() : " "} |{" "}
+                    {price
+                      ? price.valueNumber +
+                        " " +
+                        price.value.toUpperCase() +
+                        " per " +
+                        term
+                      : "currently not set"}
                   </span>
+                </p>
+              </CardContent>
+              <CardContent>
+                <span className="mr-1">Area:</span>
+                <span>{place.area} m²</span>
+              </CardContent>
+              <CardContent>
+                {place.distanceFromCenter !== undefined && (
+                  <div className="flex items-center text-gray-700">
+                    <span className="mr-1">Distance:</span>
+                    <span>{place.distanceFromCenter} km from center</span>
+                  </div>
                 )}
-                <span>
-                  {price
-                    ? price.valueNumber +
-                      " " +
-                      price.value.toUpperCase() +
-                      " per " +
-                      term
-                    : "currently not set"}
-                </span>
-              </p>
-            </CardContent>
-            <CardContent>
-              <span className="mr-1">Area:</span>
-              <span>{place.area} m²</span>
-            </CardContent>
-            <CardContent>
-              {place.distanceFromCenter !== undefined && (
-                <div className="flex items-center text-gray-700">
-                  <span className="mr-1">Distance:</span>
-                  <span>{place.distanceFromCenter} km from center</span>
-                </div>
-              )}
-            </CardContent>
+              </CardContent>
 
-            <CardContent>
-              {place.rating !== undefined && (
-                <div className="flex items-center text-gray-700 mb-1">
-                  <span className="mr-1">Rating:</span>
-                  <span>{place.rating}</span>
-                </div>
-              )}
-            </CardContent>
-            <CardFooter>
-              {/* <p>Card Footer</p> */}
-              <CreateBookingBox
-                place={place}
-                parsedDate={params.parsedDate}
-                totalCharge={totalCharge}
-              />
-            </CardFooter>
+              <CardContent>
+                {place.rating !== undefined && (
+                  <div className="flex items-center text-gray-700 mb-1">
+                    <span className="mr-1">Rating:</span>
+                    <span>{place.rating}</span>
+                  </div>
+                )}
+              </CardContent>
+              <CardFooter>
+                {/* <p>Card Footer</p> */}
+                <CreateBookingBox
+                  place={place}
+                  parsedDate={params.parsedDate}
+                  totalCharge={totalCharge}
+                />
+              </CardFooter>
+            </div>
+            <div>
+              <CardContent className="h-full">
+                {(place.photos && place.photos.length > 0 && (
+                  <img
+                    className="h-full object-corver"
+                    src={`/storage/places/${place.id}/${place.photos[0]}`}
+                    alt={place.name}
+                  />
+                )) || (
+                  <img
+                    className="h-full object-corver"
+                    src={`/storage/places/default/place.webp`}
+                    alt={place.name}
+                  />
+                )}
+              </CardContent>
+            </div>
           </Card>
         </div>
       )}

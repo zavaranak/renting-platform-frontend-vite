@@ -17,7 +17,6 @@ export const useSearchPlaces = () => {
     location,
     type,
     term,
-    canSearch,
     pagination,
     sort,
     filter,
@@ -51,7 +50,7 @@ export const useSearchPlaces = () => {
       });
     }
 
-    if (term != "") {
+    if (term) {
       conditions.push({
         value: term,
         key: "termUnit",
@@ -178,6 +177,11 @@ export const useSearchPlaces = () => {
 
     return filterList;
   };
+
+  const handleUrl = () => {
+    return `?co=${location.country}&ci=${location.city}&ty=${type}&t=${term}&s=${selectedDate?.start}&e=${selectedDate?.end}`;
+  };
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
@@ -193,7 +197,8 @@ export const useSearchPlaces = () => {
         const result = data.getPlaces.map((record: any) => record.id);
         setResult(result);
         handleSearch(undefined);
-        navigate("/search");
+        const params = handleUrl();
+        navigate("/search" + params);
       }
       setLoading(false);
     },
@@ -204,24 +209,22 @@ export const useSearchPlaces = () => {
     },
   });
   const searchPlaces = () => {
-    if (canSearch) {
-      setResult([]);
-      console.log(conditions, sortBy);
-      setPagination({ take: 30, skip: 0 });
-      search({
-        variables: {
-          queryManyInput: {
-            conditions: [...conditions, ...filterList],
-            pagination: pagination,
-            orderBy: sortBy,
-            selectedDate:
-              term == TermUnit.DAY || term == TermUnit.HOUR
-                ? selectedDate
-                : undefined,
-          },
+    console.log("searching");
+    setResult([]);
+    setPagination({ take: 30, skip: 0 });
+    search({
+      variables: {
+        queryManyInput: {
+          conditions: [...conditions, ...filterList],
+          pagination: pagination,
+          orderBy: sortBy,
+          selectedDate:
+            term == TermUnit.DAY || term == TermUnit.HOUR
+              ? selectedDate
+              : undefined,
         },
-      });
-    }
+      },
+    });
   };
 
   return { searchPlaces, loading, error };

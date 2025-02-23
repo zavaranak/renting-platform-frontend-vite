@@ -2,25 +2,68 @@ import { useSearchStore } from "@/store/search-store";
 import { PlaceCard } from "@/components/place/place-card";
 import { FilterBox } from "./filter-box";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Card } from "@mui/material";
-import { TermUnit } from "@/lib/contanst";
+import { SearchOption, PlaceType, TermUnit } from "@/lib/contanst";
 import dayjs from "dayjs";
 import localizedFormat from "dayjs/plugin/localizedFormat"; // ES 2015
+import { useSearchPlaces } from "@/hook/search-hook";
+
 export default function SearchResultRoute() {
   dayjs.extend(localizedFormat);
-  const navigate = useNavigate();
-  const { result, location, selectedDate, term } = useSearchStore(
-    (state) => state
-  );
+  // const navigate = useNavigate();
+  const {
+    result,
+    location,
+    selectedDate,
+    term,
+    type,
+    setType,
+    setLocation,
+    setTerm,
+    setSelectedDate,
+    handleSearch,
+  } = useSearchStore((state) => state);
+  const { searchPlaces, loading } = useSearchPlaces();
   const [parsedDate, setParsedDate] = useState<
     { start: any; end: any; date?: any; diff: any } | undefined
   >(undefined);
+  const [searchParams] = useSearchParams();
   useEffect(() => {
-    if (!result || result.length == 0) {
-      navigate("/");
+    if (result.length == 0 && location.city == "") {
+      {
+        const paramCity = searchParams.get("ci");
+        const paramCountry = searchParams.get("co");
+        const paramTerm = searchParams.get("t");
+        const paramType = searchParams.get("ty");
+
+        // console.log(paramCity, paramCountry, paramTerm, paramStart, paramEnd);
+        if (paramCity && paramCountry && paramTerm && paramType) {
+          setType(paramType as PlaceType);
+          setLocation({ city: paramCity, country: paramCountry });
+
+          if (paramTerm == TermUnit.DAY || paramTerm == TermUnit.HOUR) {
+            const paramStart = searchParams.get("s");
+            const paramEnd = searchParams.get("e");
+            if (paramStart && paramEnd) {
+              setSelectedDate({
+                start: Number(paramStart),
+                end: Number(paramEnd),
+              });
+              handleSearch({
+                searchOption: SearchOption.LOCATION,
+                valid: true,
+              });
+              searchPlaces();
+            }
+          } else {
+            handleSearch({ searchOption: SearchOption.LOCATION, valid: true });
+            searchPlaces();
+          }
+        }
+      }
     }
-  }, [result]);
+  }, []);
   useEffect(() => {
     if (term == TermUnit.DAY) {
       setParsedDate({
