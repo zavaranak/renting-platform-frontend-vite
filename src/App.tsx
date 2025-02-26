@@ -41,7 +41,7 @@ export default function App() {
                 element={isAuthenticated ? <Navigate to="/" /> : <LoginForm />}
               />
               <Route path={`/search/`} element={<SearchResultRoute />} />
-              <Route path="/place" element={<PlaceRoute />} />
+              <Route path="/place/:placeId" element={<PlaceRoute />} />
               {/* <Route path="/contact" element={<Contact />} /> */}
               {/* <Route path="/products/:id" element={<ProductDetail />} /> */}
               {/* <Route path="*" element={<NotFound />} /> */}

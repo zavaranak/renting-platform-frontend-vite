@@ -2,7 +2,8 @@ import { useQuery } from "@apollo/client";
 import { Place, PlaceAttribute } from "@/lib/data-type";
 import { QUERY_PLACE_BY_ID } from "@/lib/gql/endpoint";
 import { useEffect, useState } from "react";
-import { CreateBookingBox } from "../boxes/create-booking-form";
+// import { CreateBookingBox } from "../boxes/create-booking-form";
+import { useAppStore } from "@/store/app-store";
 import { useNavigate } from "react-router-dom";
 import { useSearchStore } from "@/store/search-store";
 import {
@@ -19,7 +20,8 @@ interface PlaceCardParam {
 }
 
 export const PlaceCard = (params: PlaceCardParam) => {
-  const [place, setPlace] = useState<Place | null>();
+  const { setPlaceFromNavigation } = useAppStore((state) => state);
+  const [place, setLocalStatePlace] = useState<Place | undefined>();
   const [price, setPrice] = useState<PlaceAttribute | undefined>(undefined);
   const [totalCharge, setTotalCharge] = useState(0);
   const { term } = useSearchStore((state) => state);
@@ -31,7 +33,7 @@ export const PlaceCard = (params: PlaceCardParam) => {
       value: params.id,
     },
     onCompleted: (data) => {
-      setPlace(data.getOnePlace);
+      setLocalStatePlace(data.getOnePlace);
       const priceAttributeName = "price_by_" + term;
       const price_attribute = data.getOnePlace.attributes?.find(
         (item: PlaceAttribute) => item.name === priceAttributeName.toUpperCase()
@@ -56,7 +58,11 @@ export const PlaceCard = (params: PlaceCardParam) => {
   }, [term, price]);
 
   const handleClickOnPlaceCard = () => {
-    navigate(`/place/${place?.id}`);
+    console.log(place);
+    setPlaceFromNavigation(place);
+    navigate(
+      `/place/${place?.id}?s=${params.parsedDate?.start}&e=${params.parsedDate?.end}&d=${params.parsedDate?.diff}`
+    );
   };
 
   return (
@@ -74,14 +80,6 @@ export const PlaceCard = (params: PlaceCardParam) => {
                   {place.address}, {place.city}, {place.country}
                 </CardDescription>
               </CardHeader>
-              {/* <CardContent>
-              <span className="mr-1">Term:</span>
-              {place.termUnit && (
-                <span className="mr-1">
-                  {place.termUnit.map((unit) => unit).join(", ")}
-                </span>
-              )}
-            </CardContent> */}
               <div>
                 <CardContent>
                   <p>
