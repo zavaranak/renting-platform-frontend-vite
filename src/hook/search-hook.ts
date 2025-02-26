@@ -42,7 +42,7 @@ export const useSearchPlaces = () => {
       ];
       conditions.push(...locations);
     }
-    if (type != "") {
+    if (type != undefined) {
       conditions.push({
         value: type,
         key: "type",
@@ -170,8 +170,8 @@ export const useSearchPlaces = () => {
       filterList.push({
         attributeName: value,
         operator: Operator.EQUAL,
-        key: "attribute.name",
-        value: Facilities[value as keyof typeof Facilities],
+        key: "attributes.name",
+        value: Facilities[value as keyof typeof Facilities].replace(" ", "_"),
       });
     });
 

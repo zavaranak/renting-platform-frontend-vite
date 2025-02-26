@@ -37,9 +37,9 @@ export type SearchStoreState = {
   selectedDate: SelectedDate | undefined;
   countries: string[];
   cities: string[];
-  purpose: Purpose | "";
-  type: livingPlaceType | workingPlaceType | PlaceType | "";
-  term: TermUnit;
+  purpose: Purpose;
+  type: livingPlaceType | workingPlaceType | PlaceType | undefined;
+  term: TermUnit | undefined;
   location: LocationParam;
   guest: GuestParam;
   currentOption: number;
@@ -58,7 +58,9 @@ export type SearchStoreAction = {
   setCurrentOption: (optionIndex: number) => void;
   setGuest: (guest: GuestParam) => void;
   setLocation: (location: LocationParam) => void;
-  setType: (type: livingPlaceType | workingPlaceType | PlaceType | "") => void;
+  setType: (
+    type: livingPlaceType | workingPlaceType | PlaceType | undefined
+  ) => void;
   setTerm: (term: TermUnit) => void;
   setPurpose: (purpose: Purpose) => void;
   handleSearch: (optionState?: SearchOptionState) => void;
@@ -87,8 +89,8 @@ export const initialSearchOptionState: SearchOptionState[] = [
 ];
 export const useSearchStore = create<SearchStore>((set) => ({
   purpose: Purpose.LIVING,
-  type: livingPlaceType.HOUSE,
-  term: TermUnit.DAY,
+  type: undefined,
+  term: undefined,
   filter: [],
   location: {
     city: "",
@@ -190,7 +192,9 @@ export const useSearchStore = create<SearchStore>((set) => ({
       purpose: purpose,
     }));
   },
-  setType: (type: workingPlaceType | livingPlaceType | PlaceType | "") => {
+  setType: (
+    type: workingPlaceType | livingPlaceType | PlaceType | undefined
+  ) => {
     set(() => ({
       type: type,
     }));

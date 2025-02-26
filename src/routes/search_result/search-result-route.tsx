@@ -1,9 +1,9 @@
 import { useSearchStore } from "@/store/search-store";
 import { PlaceCard } from "@/components/place/place-card";
-import { FilterBox } from "./filter-box";
+import { FilterBox } from "@/components/boxes/filter-box";
 import { useEffect, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import { Card } from "@mui/material";
+import { useSearchParams } from "react-router-dom";
+import { Card } from "@/components/ui/card";
 import { SearchOption, PlaceType, TermUnit } from "@/lib/contanst";
 import dayjs from "dayjs";
 import localizedFormat from "dayjs/plugin/localizedFormat"; // ES 2015
@@ -11,13 +11,11 @@ import { useSearchPlaces } from "@/hook/search-hook";
 
 export default function SearchResultRoute() {
   dayjs.extend(localizedFormat);
-  // const navigate = useNavigate();
   const {
     result,
     location,
     selectedDate,
     term,
-    type,
     setType,
     setLocation,
     setTerm,
@@ -28,6 +26,7 @@ export default function SearchResultRoute() {
   const [parsedDate, setParsedDate] = useState<
     { start: any; end: any; date?: any; diff: any } | undefined
   >(undefined);
+  const [firstLoad, setFirstLoad] = useState(false);
   const [searchParams] = useSearchParams();
   useEffect(() => {
     if (result.length == 0 && location.city == "") {
@@ -37,8 +36,8 @@ export default function SearchResultRoute() {
         const paramTerm = searchParams.get("t");
         const paramType = searchParams.get("ty");
 
-        // console.log(paramCity, paramCountry, paramTerm, paramStart, paramEnd);
         if (paramCity && paramCountry && paramTerm && paramType) {
+          setTerm(paramTerm as TermUnit);
           setType(paramType as PlaceType);
           setLocation({ city: paramCity, country: paramCountry });
 
@@ -54,14 +53,13 @@ export default function SearchResultRoute() {
                 searchOption: SearchOption.LOCATION,
                 valid: true,
               });
-              searchPlaces();
             }
           } else {
             handleSearch({ searchOption: SearchOption.LOCATION, valid: true });
-            searchPlaces();
           }
         }
       }
+      setFirstLoad(true);
     }
   }, []);
   useEffect(() => {
@@ -83,6 +81,9 @@ export default function SearchResultRoute() {
       });
     }
   }, []);
+  useEffect(() => {
+    searchPlaces();
+  }, [firstLoad]);
   return (
     <div className="flex flex-col col-span-full m-auto p-3 relative z-70 bg-background gap-4 lg:w-2/5 md:w-3/5 sm:w-ful">
       <FilterBox />

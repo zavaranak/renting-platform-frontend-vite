@@ -6,10 +6,11 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import LoginForm from "@/components/boxes/login-form";
 import { useAuthStore } from "@/store/auth-store";
 import { Role } from "@/lib/contanst";
-import SearchRoute from "@/components/search_route/searchRoute";
-import SearchResultRoute from "@/components/search_result_route/searchResultRoute";
+import SearchRoute from "@/routes/search/search-route";
+import SearchResultRoute from "@/routes/search_result/search-result-route";
 
 import { useCreateApolloClient } from "@/hook/create-apollo-client-hook";
+import PlaceRoute from "./routes/place/place-route";
 
 export default function App() {
   useTitle("Homsk - Main page");
@@ -40,7 +41,7 @@ export default function App() {
                 element={isAuthenticated ? <Navigate to="/" /> : <LoginForm />}
               />
               <Route path={`/search/`} element={<SearchResultRoute />} />
-              {/* <Route path="/about" element={<About />} /> */}
+              <Route path="/place" element={<PlaceRoute />} />
               {/* <Route path="/contact" element={<Contact />} /> */}
               {/* <Route path="/products/:id" element={<ProductDetail />} /> */}
               {/* <Route path="*" element={<NotFound />} /> */}

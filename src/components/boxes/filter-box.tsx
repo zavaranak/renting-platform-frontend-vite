@@ -49,7 +49,7 @@ export const FilterBox = () => {
   const checkSearch = (checkedType?: boolean) => {
     handleSearch({
       searchOption: SearchOption.TYPE,
-      valid: checkedType != undefined ? true : type != "",
+      valid: checkedType != undefined ? true : type != undefined,
     });
     handleSearch({
       searchOption: SearchOption.LOCATION,
@@ -199,10 +199,7 @@ export const FilterBox = () => {
             </FormGroup>
           </div>
         </div>
-        {/* {(true && <>Loading</>) || ( */}
-
         <SearchButton />
-        {/* )} */}
       </Card>
     </SideBox>
     // </div>
