@@ -13,18 +13,23 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { CreateBookingBox } from "@/components/boxes/create-booking-form";
+import { usePlaceDateParsing } from "@/hook/place-date-parsing.hook";
+import { usePlacePrice } from "@/hook/place-price.hook";
+import { useParamsUrlHandler } from "@/hook/params-url-handler.hook";
+import { useAuthStore } from "@/store/auth-store";
+import { Button } from "@/components/ui/button";
 
 export default function PlaceRoute() {
+  const { isAuthenticated } = useAuthStore((state) => state);
   const { placeFromNavigation } = useAppStore((state) => state);
-  const { term } = useSearchStore((state) => state);
   const [place, setLocalStatePlace] = useState<Place | undefined>(
     placeFromNavigation
   );
   const { placeId } = useParams();
-  const [totalCharge, setTotalCharge] = useState(0);
-  const [price, setPrice] = useState<PlaceAttribute | undefined>(undefined);
-  const [searchParams] = useSearchParams();
 
+  const { firstLoad } = useParamsUrlHandler();
+  const { parsedDate } = usePlaceDateParsing(firstLoad);
+  const { totalCharge } = usePlacePrice({ id: placeId, parsedDate });
   // ✅ Call useQuery at the top level
   const { data, loading, error } = useQuery(QUERY_PLACE_BY_ID, {
     skip: !!placeFromNavigation || !placeId,
@@ -41,22 +46,6 @@ export default function PlaceRoute() {
       console.log(data.getOnePlace);
     }
   }, [data, placeFromNavigation]);
-
-  // useEffect(() => {
-  //   if (place) {
-  //     const priceAttributeName = "price_by_" + term;
-  //     const price_attribute = place.attributes?.find(
-  //       (item: PlaceAttribute) => item.name === priceAttributeName.toUpperCase()
-  //     );
-  //     setPrice(price_attribute ?? undefined);
-  //     if (params.parsedDate && params.parsedDate?.diff) {
-  //       const temp = price_attribute?.valueNumber ?? 1;
-  //       setTotalCharge(temp * params.parsedDate?.diff);
-  //     } else {
-  //       setTotalCharge(price_attribute?.valueNumber ?? 0);
-  //     }
-  //   }
-  // }, [term, price]);
 
   if (loading)
     return <div className="text-center py-10">Loading place details...</div>;
@@ -128,12 +117,19 @@ export default function PlaceRoute() {
             </p>
           </div>
 
-          <div>
-            <CreateBookingBox
-              place={place}
-              parsedDate={undefined}
-              totalCharge={0}
-            />
+          <div className="mt-4">
+            {isAuthenticated || (
+              <div>
+                <Button>Please login to create booking</Button>
+              </div>
+            )}
+            {isAuthenticated && (
+              <CreateBookingBox
+                place={place}
+                parsedDate={parsedDate}
+                totalCharge={totalCharge}
+              />
+            )}
           </div>
         </div>
         <div>
@@ -141,7 +137,7 @@ export default function PlaceRoute() {
             <Carousel className="m-10">
               <CarouselContent>
                 {place.photos.map((url) => (
-                  <CarouselItem>
+                  <CarouselItem key={url}>
                     {" "}
                     <img
                       className="h-full object-corver"

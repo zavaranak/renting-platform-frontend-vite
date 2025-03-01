@@ -1,5 +1,6 @@
 import {
   AuthActions,
+  Gender,
   LandlordAttributeName,
   livingPlaceType,
   Operator,
@@ -108,9 +109,24 @@ export interface BookingInput {
   totalCharge: number;
   tenantId?: string;
   placeId: string;
+  payment: string;
+  guests?: string[];
 }
 
 export type SelectedDate = {
   end: number;
   start: number;
+};
+
+export type Guest = {
+  id?: string;
+  birthday: number;
+  createdAt?: number;
+  email: string;
+  firstName: string;
+  gender: string;
+  lastName: string;
+  middleName?: string;
+  tel: string;
+  tenantId: string;
 };

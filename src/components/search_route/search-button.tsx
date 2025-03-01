@@ -1,4 +1,4 @@
-import { useSearchPlaces } from "@/hook/search-hook";
+import { useSearchPlaces } from "@/hook/search.hook";
 import { TermUnit } from "@/lib/contanst";
 import { useSearchStore } from "@/store/search-store";
 import { loadErrorMessages, loadDevMessages } from "@apollo/client/dev";

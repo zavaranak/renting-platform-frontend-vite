@@ -153,3 +153,53 @@ export const CREATE_BOOKING = gql`
     }
   }
 `;
+export const CREATE_GUEST = gql`
+  mutation Mutation($input: CreateGuestInput!) {
+    createGuest(input: $input) {
+      message
+      type
+      guest {
+        id
+      }
+    }
+  }
+`;
+export const GET_GUEST_BY_ID = gql`
+  query GetOneGuest($value: String!, $type: String!) {
+    getOneGuest(value: $value, type: $type) {
+      message
+      type
+      guest {
+        birthday
+        createdAt
+        email
+        firstName
+        gender
+        lastName
+        middleName
+        tel
+        tenantId
+      }
+    }
+  }
+`;
+export const GET_ALL_GUESTS_BY_ID = gql`
+  query GetGuests($value: String!, $type: String!) {
+    getGuests(value: $value, type: $type) {
+      type
+      message
+      guests {
+        id
+        birthday
+        createdAt
+        email
+        firstName
+        gender
+        lastName
+        middleName
+        tel
+        tenantId
+      }
+    }
+  }
+`;

@@ -1,8 +1,3 @@
-import { useQuery } from "@apollo/client";
-import { Place, PlaceAttribute } from "@/lib/data-type";
-import { QUERY_PLACE_BY_ID } from "@/lib/gql/endpoint";
-import { useEffect, useState } from "react";
-// import { CreateBookingBox } from "../boxes/create-booking-form";
 import { useAppStore } from "@/store/app-store";
 import { useNavigate } from "react-router-dom";
 import { useSearchStore } from "@/store/search-store";
@@ -14,57 +9,24 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { usePlacePrice } from "@/hook/place-price.hook";
 interface PlaceCardParam {
   id: string;
   parsedDate?: { start: any; end: any; date?: any; diff: any } | undefined;
 }
 
 export const PlaceCard = (params: PlaceCardParam) => {
+  const { term, selectedDate, type } = useSearchStore((state) => state);
   const { setPlaceFromNavigation } = useAppStore((state) => state);
-  const [place, setLocalStatePlace] = useState<Place | undefined>();
-  const [price, setPrice] = useState<PlaceAttribute | undefined>(undefined);
-  const [totalCharge, setTotalCharge] = useState(0);
-  const { term } = useSearchStore((state) => state);
   const navigate = useNavigate();
-  // const { data, loading, error, refetch } =
-  useQuery(QUERY_PLACE_BY_ID, {
-    variables: {
-      type: "id",
-      value: params.id,
-    },
-    onCompleted: (data) => {
-      setLocalStatePlace(data.getOnePlace);
-      const priceAttributeName = "price_by_" + term;
-      const price_attribute = data.getOnePlace.attributes?.find(
-        (item: PlaceAttribute) => item.name === priceAttributeName.toUpperCase()
-      );
-      setPrice(price_attribute ?? undefined);
-    },
-  });
-  useEffect(() => {
-    if (place) {
-      const priceAttributeName = "price_by_" + term;
-      const price_attribute = place.attributes?.find(
-        (item: PlaceAttribute) => item.name === priceAttributeName.toUpperCase()
-      );
-      setPrice(price_attribute ?? undefined);
-      if (params.parsedDate && params.parsedDate?.diff) {
-        const temp = price_attribute?.valueNumber ?? 1;
-        setTotalCharge(temp * params.parsedDate?.diff);
-      } else {
-        setTotalCharge(price_attribute?.valueNumber ?? 0);
-      }
-    }
-  }, [term, price]);
-
   const handleClickOnPlaceCard = () => {
     console.log(place);
     setPlaceFromNavigation(place);
     navigate(
-      `/place/${place?.id}?s=${params.parsedDate?.start}&e=${params.parsedDate?.end}&d=${params.parsedDate?.diff}`
+      `/place/${place?.id}?s=${selectedDate?.start}&e=${selectedDate?.end}&t=${term}&ty=${type}`
     );
   };
-
+  const { totalCharge, place, price } = usePlacePrice(params);
   return (
     <div className="bg-text_light_panel ">
       {place && (
@@ -123,14 +85,7 @@ export const PlaceCard = (params: PlaceCardParam) => {
                     </div>
                   )}
                 </CardContent>
-                <CardFooter>
-                  {/* <p>Card Footer</p> */}
-                  {/* <CreateBookingBox
-                  place={place}
-                  parsedDate={params.parsedDate}
-                  totalCharge={totalCharge}
-                /> */}
-                </CardFooter>
+                <CardFooter></CardFooter>
               </div>
             </div>
             <div>

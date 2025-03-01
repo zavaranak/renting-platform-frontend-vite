@@ -5,7 +5,7 @@ import { AuthActions, Role, LoginData } from "@/lib/contanst";
 
 import { MouseEvent } from "react";
 import clsx from "clsx";
-import useLogin from "@/hook/logIn-hook";
+import useLogin from "@/hook/logIn.hook";
 import { useSearchStore } from "@/store/search-store";
 
 export default function LoginForm() {

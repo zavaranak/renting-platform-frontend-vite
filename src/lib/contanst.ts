@@ -73,6 +73,12 @@ export type LoginData = {
   password: string;
 };
 
+export const Gender = {
+  MALE: "MALE",
+  FEMALE: "FEMALE",
+  OTHER: "OTHER",
+};
+
 export enum Role {
   landlord = "LANDLORD",
   tenant = "TENANT",
@@ -82,7 +88,7 @@ export enum TenantAttributeName {
   LASTNAME = "last_name",
   MIDDLENAME = "middle_name",
   TEL = "tel",
-  SEX = "sex",
+  GENDER = "gender",
   BIRTH_DAY = "birth_day",
   DOCUMENT = "document",
   COUNTRY = "country",
@@ -94,6 +100,7 @@ export enum LandlordAttributeName {
   LASTNAME = "last_name",
   MIDDLENAME = "middle_name",
   TEL = "tel",
+  GENDER = "gender",
   COMPANY = "company",
   BIRTH_DAY = "birth_day",
   AVATAR = "avatar",
@@ -216,3 +223,8 @@ export enum Order {
 export type AbstractAttributesType = typeof PlaceAttributeName &
   typeof TenantAttributeName &
   typeof LandlordAttributeName;
+
+export const Payment = {
+  CASH: "CASH",
+  CARD: "CARD",
+};

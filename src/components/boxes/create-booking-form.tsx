@@ -1,4 +1,10 @@
-import { useState } from "react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -22,18 +28,11 @@ import { Button } from "@/components/ui/button";
 import { BookingInput, Place } from "@/lib/data-type";
 import { useSearchStore } from "@/store/search-store";
 import { useAuthStore } from "@/store/auth-store";
-import useCreateBooking from "@/hook/create-booking-hook";
-import ClientInfoForm from "./client-info-form";
-import { TermUnit } from "@/lib/contanst";
-import {
-  Drawer,
-  DrawerContent,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerClose,
-} from "@/components/ui/drawer"; // Import the Drawer component
+import useCreateBooking from "@/hook/create-booking.hook";
+import { Payment, TermUnit } from "@/lib/contanst";
+import { useState } from "react";
+import GuestManager from "./guest/guest-manager";
+import { Label } from "../ui/label";
 
 interface CreateBookingBoxProps {
   place: Place;
@@ -46,35 +45,41 @@ export function CreateBookingBox(createBookingBoxProps: CreateBookingBoxProps) {
   const { user } = useAuthStore((state) => state);
   const { term, selectedDate } = useSearchStore((state) => state);
   const { createBooking } = useCreateBooking();
+  const [payment, setPayment] = useState(Payment.CASH);
+  const [guests, setGuests] = useState<string[]>([]);
 
   // State to manage guest info list and drawer visibility
-  const [showGuestInfoDrawer, setShowGuestInfoDrawer] = useState(false);
-  const [guestList, setGuestList] = useState<Array<any>>([]); // Replace `any` with your guest info type
 
-  const createBookingHandler = () => {
-    const bookingInput: BookingInput = {
-      placeId: place.id,
-      tenantId: user?.id,
-      startAt: selectedDate?.start,
-      endAt: selectedDate?.end,
-      period: parsedDate?.diff,
-      termUnit: term.toUpperCase(),
-      totalCharge: 100,
-    };
-    createBooking(bookingInput);
+  const createBookingHandler = (
+    totalCharge: number,
+    payment: string,
+    guests: string[]
+  ) => {
+    if (term != undefined) {
+      const bookingInput: BookingInput = {
+        placeId: place.id,
+        tenantId: user?.id,
+        startAt: selectedDate?.start,
+        endAt: selectedDate?.end,
+        period: parsedDate?.diff,
+        termUnit: term.toUpperCase(),
+        guests: guests,
+        payment: payment,
+        totalCharge: totalCharge,
+      };
+      createBooking(bookingInput);
+    }
   };
 
   // Handler to add guest info
-  const handleAddGuestInfo = (guestInfo: any) => {
-    setGuestList([...guestList, guestInfo]);
-    setShowGuestInfoDrawer(false); // Close the drawer after submission
-  };
 
   return (
     <>
       <AlertDialog>
         <AlertDialogTrigger asChild>
-          <Button variant="outline">Book</Button>
+          <Button className="p-3" variant="outline">
+            Create Booking
+          </Button>
         </AlertDialogTrigger>
         <AlertDialogContent>
           <AlertDialogHeader>
@@ -86,28 +91,13 @@ export function CreateBookingBox(createBookingBoxProps: CreateBookingBoxProps) {
             <Card>
               <CardHeader>
                 <CardTitle>Client: {user?.username}</CardTitle>
-                <Button
-                  variant={"outline"}
-                  onClick={() => setShowGuestInfoDrawer(true)}
-                >
-                  {guestList.length > 0
-                    ? "Select guest info"
-                    : "Fill guest info"}
-                </Button>
+                <div>
+                  <GuestManager setGuests={setGuests} />
+                </div>
                 <CardDescription>Card Description</CardDescription>
               </CardHeader>
 
               {/* Display guest info list */}
-              {guestList.length > 0 && (
-                <CardContent>
-                  <h3 className="font-semibold mb-2">Guest List</h3>
-                  <ul>
-                    {guestList.map((guest, index) => (
-                      <li key={index}>{guest.name}</li> // Replace with your guest info structure
-                    ))}
-                  </ul>
-                </CardContent>
-              )}
 
               {parsedDate && term == TermUnit.DAY && (
                 <CardContent>
@@ -130,13 +120,34 @@ export function CreateBookingBox(createBookingBoxProps: CreateBookingBoxProps) {
               <CardFooter>
                 <p>Total charge: {totalCharge}</p>
               </CardFooter>
+              <CardFooter>
+                <div className="space-y-2">
+                  <Label htmlFor="payment">Payment method</Label>
+                  <Select
+                    onValueChange={(value) => {
+                      setPayment(value);
+                    }}
+                    value={payment}
+                  >
+                    <SelectTrigger id="gender">
+                      <SelectValue placeholder="Select gender" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value={Payment.CARD}>By card</SelectItem>
+                      <SelectItem value={Payment.CASH}>
+                        By cash on place
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </CardFooter>
             </Card>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
               onClick={() => {
-                createBookingHandler();
+                createBookingHandler(totalCharge || 0, payment, guests || []);
               }}
             >
               Create Booking
@@ -144,24 +155,6 @@ export function CreateBookingBox(createBookingBoxProps: CreateBookingBoxProps) {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-
-      {/* Drawer for Guest Info Form */}
-      <Drawer open={showGuestInfoDrawer} onOpenChange={setShowGuestInfoDrawer}>
-        <DrawerContent>
-          <DrawerHeader>
-            <DrawerTitle>Fill Guest Information</DrawerTitle>
-            <DrawerDescription>
-              Please provide the guest information.
-            </DrawerDescription>
-          </DrawerHeader>
-          <ClientInfoForm onSubmit={handleAddGuestInfo} />
-          <DrawerFooter>
-            <DrawerClose asChild>
-              <Button variant="outline">Cancel</Button>
-            </DrawerClose>
-          </DrawerFooter>
-        </DrawerContent>
-      </Drawer>
     </>
   );
 }

@@ -3,7 +3,7 @@ import { useAuthStore } from "@/store/auth-store";
 import { useEffect, useRef, useState } from "react";
 import LoginForm from "../boxes/login-form";
 import { ProfileMenu } from "../menu/profile-menu";
-import { useAuthHook } from "@/hook/auth-hook";
+import { useAuthHook } from "@/hook/auth.hook";
 export const Header = () => {
   const [displayLogInMenu, setDisplayLogInMenu] = useState(false);
   const [displayProfileMenu, setDisplayProfileMenu] = useState(false);
