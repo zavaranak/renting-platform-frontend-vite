@@ -1,10 +1,9 @@
-import { Place, PlaceAttribute } from "@/lib/data-type";
+import { Place } from "@/lib/data-type";
 import { QUERY_PLACE_BY_ID } from "@/lib/gql/endpoint";
 import { useAppStore } from "@/store/app-store";
-import { useSearchStore } from "@/store/search-store";
 import { useQuery } from "@apollo/client";
 import { useEffect, useState } from "react";
-import { useParams, useSearchParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import {
   Carousel,
   CarouselContent,

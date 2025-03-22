@@ -47,6 +47,7 @@ export function CreateBookingBox(createBookingBoxProps: CreateBookingBoxProps) {
   const { createBooking } = useCreateBooking();
   const [payment, setPayment] = useState(Payment.CASH);
   const [guests, setGuests] = useState<string[]>([]);
+  const [displayForm, setDisplayForm] = useState(false);
 
   // State to manage guest info list and drawer visibility
 
@@ -75,85 +76,99 @@ export function CreateBookingBox(createBookingBoxProps: CreateBookingBoxProps) {
 
   return (
     <>
-      <AlertDialog>
+      <AlertDialog open={displayForm} onOpenChange={setDisplayForm}>
         <AlertDialogTrigger asChild>
-          <Button className="p-3" variant="outline">
+          <Button
+            className="p-3"
+            variant="outline"
+            onClick={() => setDisplayForm(true)}
+          >
             Create Booking
           </Button>
         </AlertDialogTrigger>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Booking: "{place.name}"</AlertDialogTitle>
-            <AlertDialogDescription>
-              After creating a booking, you will be able to see the booking
-              details. Please wait for the host to confirm your booking.
-            </AlertDialogDescription>
-            <Card>
-              <CardHeader>
-                <CardTitle>Client: {user?.username}</CardTitle>
+        {displayForm && (
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Booking: "{place.name}"</AlertDialogTitle>
+              <AlertDialogDescription>
+                After creating a booking, you will be able to see the booking
+                details. Please wait for the host to confirm your booking.
+              </AlertDialogDescription>
+              <Card>
                 <div>
-                  <GuestManager setGuests={setGuests} />
+                  <CardHeader>
+                    <CardTitle>Client: {user?.username}</CardTitle>
+
+                    <GuestManager setGuests={setGuests} />
+                  </CardHeader>
                 </div>
-                <CardDescription>Card Description</CardDescription>
-              </CardHeader>
+                {/* Display guest info list */}
 
-              {/* Display guest info list */}
+                {parsedDate && term == TermUnit.DAY && (
+                  <CardContent>
+                    <p>
+                      Booking from {parsedDate.start} to {parsedDate?.end} (
+                      {parsedDate.diff} nights)
+                    </p>
+                  </CardContent>
+                )}
+                {parsedDate && term == TermUnit.HOUR && (
+                  <CardContent>
+                    <p>
+                      Booking from {parsedDate.start} to {parsedDate?.end} (
+                      {parsedDate.diff} hours)
+                    </p>
+                    <p>on {parsedDate?.date}</p>
+                  </CardContent>
+                )}
 
-              {parsedDate && term == TermUnit.DAY && (
-                <CardContent>
-                  <p>
-                    Booking from {parsedDate.start} to {parsedDate?.end} (
-                    {parsedDate.diff} nights)
-                  </p>
-                </CardContent>
-              )}
-              {parsedDate && term == TermUnit.HOUR && (
-                <CardContent>
-                  <p>
-                    Booking from {parsedDate.start} to {parsedDate?.end} (
-                    {parsedDate.diff} hours)
-                  </p>
-                  <p>on {parsedDate?.date}</p>
-                </CardContent>
-              )}
+                <CardFooter>
+                  <p>Total charge: {totalCharge}</p>
+                </CardFooter>
+                <CardFooter>
+                  <div className="flex">
+                    <Label htmlFor="payment">Payment method</Label>
+                    <Select
+                      onValueChange={(value) => {
+                        setPayment(value);
+                      }}
+                      value={payment}
+                    >
+                      <SelectTrigger id="payment">
+                        <SelectValue placeholder="Select payment method" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value={Payment.CARD}>By card</SelectItem>
+                        <SelectItem value={Payment.CASH}>
+                          By cash on place
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </CardFooter>
+              </Card>
+            </AlertDialogHeader>
 
-              <CardFooter>
-                <p>Total charge: {totalCharge}</p>
-              </CardFooter>
-              <CardFooter>
-                <div className="space-y-2">
-                  <Label htmlFor="payment">Payment method</Label>
-                  <Select
-                    onValueChange={(value) => {
-                      setPayment(value);
-                    }}
-                    value={payment}
-                  >
-                    <SelectTrigger id="gender">
-                      <SelectValue placeholder="Select gender" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value={Payment.CARD}>By card</SelectItem>
-                      <SelectItem value={Payment.CASH}>
-                        By cash on place
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </CardFooter>
-            </Card>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={() => {
-                createBookingHandler(totalCharge || 0, payment, guests || []);
-              }}
-            >
-              Create Booking
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
+            <AlertDialogFooter>
+              <AlertDialogCancel onClick={() => setDisplayForm(false)}>
+                Cancel
+              </AlertDialogCancel>
+              <AlertDialogAction
+                onClick={async () => {
+                  await createBookingHandler(
+                    totalCharge || 0,
+                    payment,
+                    guests || []
+                  );
+                  setDisplayForm(false);
+                }}
+              >
+                Create Booking
+              </AlertDialogAction>
+            </AlertDialogFooter>
+            {/* </div> */}
+          </AlertDialogContent>
+        )}
       </AlertDialog>
     </>
   );

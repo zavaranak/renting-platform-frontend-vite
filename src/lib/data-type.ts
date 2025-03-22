@@ -130,3 +130,14 @@ export type Guest = {
   tel: string;
   tenantId: string;
 };
+
+export type UpdateGuestParams = {
+  id: string;
+  birthday?: number;
+  email?: string;
+  firstName?: string;
+  gender?: string;
+  lastName?: string;
+  middleName?: string;
+  tel?: string;
+};

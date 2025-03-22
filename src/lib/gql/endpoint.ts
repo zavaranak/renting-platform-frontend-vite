@@ -198,6 +198,18 @@ export const GET_ALL_GUESTS_BY_ID = gql`
         lastName
         middleName
         tel
+      }
+    }
+  }
+`;
+
+export const UPDATE_GUEST = gql`
+  mutation UpdateGuest($updateGuestId: String!, $input: UpdateGuestInput!) {
+    updateGuest(id: $updateGuestId, input: $input) {
+      message
+      type
+      guest {
+        id
         tenantId
       }
     }
