@@ -23,7 +23,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { cn } from "@/lib/utils";
+import { cn, parseGuestToUpdateGuestParams } from "@/lib/utils";
 import { GuestCard } from "./guest-card";
 import { Guest } from "@/lib/data-type";
 import dayjs from "dayjs";
@@ -31,7 +31,11 @@ import { Gender } from "@/lib/contanst";
 import { useAuthStore } from "@/store/auth-store";
 import { nanoid } from "nanoid";
 
-import { useCreateGuest, useFetchGuest } from "@/hook/guest.hook";
+import {
+  useCreateGuest,
+  useFetchGuest,
+  useUpdateGuest,
+} from "@/hook/guest.hook";
 
 interface GuestManagerProps {
   //   setGuests: (guest: string[]) => void;
@@ -45,27 +49,20 @@ const GuestManager = (params: GuestManagerProps) => {
     const [openAddGuest, setOpenAddGuest] = useState(false);
     const [openGuestList, setOpenGuestList] = useState(false);
     const [selectedGuests, setSelectedGuests] = useState<Guest[]>([]);
-    const [editingGuest, setEditingGuest] = useState<Guest | null>(null);
+    const [editingId, setEditingId] = useState<string | undefined>(undefined);
     const [formErrors, setFormErrors] = useState<{ [key: string]: string }>({});
     const { createGuest } = useCreateGuest();
+    const { updateGuest } = useUpdateGuest();
     const { guestList, setGuestList } = useFetchGuest(user.id);
 
     const validateGuest = () => {
       const errors: { [key: string]: string } = {};
-      if (editingGuest) {
-        if (!editingGuest.firstName)
-          errors.firstName = "First Name is required";
-        if (!editingGuest.lastName) errors.lastName = "Last Name is required";
-        if (!editingGuest.email) errors.email = "Email is required";
-        if (editingGuest.email && !/\S+@\S+\.\S+/.test(editingGuest.email))
-          errors.email = "Invalid email format";
-      } else {
-        if (!newGuest.firstName) errors.firstName = "First Name is required";
-        if (!newGuest.lastName) errors.lastName = "Last Name is required";
-        if (!newGuest.email) errors.email = "Email is required";
-        if (newGuest.email && !/\S+@\S+\.\S+/.test(newGuest.email))
-          errors.email = "Invalid email format";
-      }
+
+      if (!newGuest.firstName) errors.firstName = "First Name is required";
+      if (!newGuest.lastName) errors.lastName = "Last Name is required";
+      if (!newGuest.email) errors.email = "Email is required";
+      if (newGuest.email && !/\S+@\S+\.\S+/.test(newGuest.email))
+        errors.email = "Invalid email format";
 
       setFormErrors(errors);
       return Object.keys(errors).length === 0;
@@ -88,10 +85,10 @@ const GuestManager = (params: GuestManagerProps) => {
 
     const openAddGuestDialog = (guest?: Guest) => {
       if (guest) {
-        setEditingGuest(guest);
+        setEditingId(guest.id);
         setNewGuest(guest);
       } else {
-        setEditingGuest(null);
+        setEditingId(undefined);
         setNewGuest({
           id: "new-guest" + nanoid(),
           email: "",
@@ -117,15 +114,19 @@ const GuestManager = (params: GuestManagerProps) => {
 
     const handleSaveGuest = async () => {
       if (!validateGuest()) return;
-      if (editingGuest) {
+      if (editingId) {
+        const parsedGuest = parseGuestToUpdateGuestParams(newGuest);
+        const update = await updateGuest(parsedGuest);
         // Edit existing guest in selected list
-        setSelectedGuests((prev) =>
-          prev.map((g) => (g.id === editingGuest.id ? newGuest : g))
-        );
-        setGuestList((prev) =>
-          prev.map((g) => (g.id === editingGuest.id ? newGuest : g))
-        );
-        setOpenAddGuest(false);
+        if (update) {
+          setSelectedGuests((prev) =>
+            prev.map((g) => (g.id === editingId ? newGuest : g))
+          );
+          setGuestList((prev) =>
+            prev.map((g) => (g.id === editingId ? newGuest : g))
+          );
+          setOpenAddGuest(false);
+        }
       } else {
         // Add new guest
         const newGuestId = await createGuest(newGuest);
@@ -187,7 +188,7 @@ const GuestManager = (params: GuestManagerProps) => {
           <DialogContent className="sm:max-w-md">
             <DialogHeader>
               <DialogTitle>
-                {editingGuest ? "Edit Guest" : "Add New Guest"}
+                {editingId ? "Edit Guest" : "Add New Guest"}
               </DialogTitle>
             </DialogHeader>
             <div className="space-y-4 ">
@@ -317,7 +318,7 @@ const GuestManager = (params: GuestManagerProps) => {
             </div>
             <DialogFooter>
               <Button onClick={handleSaveGuest}>
-                {editingGuest ? "Save Changes" : "Add Guest"}
+                {editingId ? "Save Changes" : "Add Guest"}
               </Button>
             </DialogFooter>
           </DialogContent>

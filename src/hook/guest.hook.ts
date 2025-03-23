@@ -59,14 +59,11 @@ export const useCreateGuest = () => {
 
 export const useUpdateGuest = () => {
   const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const [mutationUpdateGuest] = useMutation(UPDATE_GUEST, {
     onCompleted: (data) => {
-      if (data.updateGuest.guest) {
-        setResult(true);
-      }
+      console.log(data.updateGuest.guest);
     },
     onError: (error) => {
       console.error("GraphQL Error:", error);
@@ -76,9 +73,7 @@ export const useUpdateGuest = () => {
     },
   });
 
-  const updateGuest = async (
-    params: UpdateGuestParams
-  ): Promise<boolean | null> => {
+  const updateGuest = async (params: UpdateGuestParams): Promise<boolean> => {
     setLoading(true);
     setError(null);
 
@@ -86,23 +81,24 @@ export const useUpdateGuest = () => {
     const updateParams = rest;
 
     try {
+      console.log(updateParams);
       const { data } = await mutationUpdateGuest({
-        variables: { id: id, input: updateParams },
+        variables: { updateGuestId: id, input: updateParams },
       });
-      const createdGuestId = data?.createGuest?.guest?.id;
+      const updatedGuestId = data?.updateGuest?.guest?.id;
 
-      if (createdGuestId) {
-        return true; //
+      if (updatedGuestId) {
+        return true;
       }
 
-      return null; // fallback if something weird happens
+      return false;
     } catch (err) {
       setError((err as Error).message);
-      return null;
+      return false;
     }
   };
 
-  return { updateGuest, result, loading, error };
+  return { updateGuest, loading, error };
 };
 
 export const useFetchGuest = (userId: string) => {
