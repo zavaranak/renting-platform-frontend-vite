@@ -4,8 +4,8 @@ import { FilterBox } from "@/components/boxes/filter-box";
 import { useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { useSearchPlaces } from "@/hook/search.hook";
-import { usePlaceDateParsing } from "@/hook/place-date-parsing.hook";
-import { useParamsUrlHandler } from "@/hook/params-url-handler.hook";
+import { usePlaceDateParsing } from "@/hook/place-date.hook";
+import { useParamsUrlHandler } from "@/hook/url.hook";
 
 export default function SearchResultRoute() {
   const { result, location } = useSearchStore((state) => state);

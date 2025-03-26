@@ -215,3 +215,23 @@ export const UPDATE_GUEST = gql`
     }
   }
 `;
+
+export const UPDATE_TENANT_ATTRIBUTES = gql`
+  mutation tenantAttribute($attibuteUpdateInput: [AttributeUpdateInput!]!) {
+    updateTenantAttributes(attibuteUpdateInput: $attibuteUpdateInput) {
+      message
+      type
+    }
+  }
+`;
+export const ADD_TENANT_ATTRIBUTES = gql`
+  mutation tenantAttribute(
+    $tenantId: String!
+    $attributesInput: [TenantAttributeInput!]!
+  ) {
+    addTenantAtributes(tenantId: $tenantId, attributesInput: $attributesInput) {
+      message
+      type
+    }
+  }
+`;

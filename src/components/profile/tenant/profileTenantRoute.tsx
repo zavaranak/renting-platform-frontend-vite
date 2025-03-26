@@ -1,4 +1,4 @@
-export default function ProFileTenantRoute() {
+export default function ProfileTenantRoute() {
   return (
     <div>
       username

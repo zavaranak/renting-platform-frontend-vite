@@ -9,8 +9,10 @@ import { Role } from "@/lib/contanst";
 import SearchRoute from "@/routes/search/search.route";
 import SearchResultRoute from "@/routes/search_result/search-result.route";
 
-import { useCreateApolloClient } from "@/hook/create-apollo-client.hook";
+import { useCreateApolloClient } from "@/hook/apollo-client.hook";
 import PlaceRoute from "./routes/place/place.route";
+import ProfileInfo from "./components/profile/profile/profile-info";
+import { ProfileRoute } from "./routes/profile/profile.route";
 
 export default function App() {
   useTitle("Homsk - Main page");
@@ -34,7 +36,7 @@ export default function App() {
               />
               <Route
                 path={`/profile/${Role.tenant}/:userId`}
-                element={isAuthenticated ? <Navigate to="/" /> : <LoginForm />}
+                element={isAuthenticated ? <ProfileRoute /> : <LoginForm />}
               />
               <Route
                 path={`/profile/${Role.landlord}/:userId`}

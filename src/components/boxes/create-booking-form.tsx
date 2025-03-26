@@ -19,7 +19,6 @@ import {
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -28,7 +27,7 @@ import { Button } from "@/components/ui/button";
 import { BookingInput, Place } from "@/lib/data-type";
 import { useSearchStore } from "@/store/search-store";
 import { useAuthStore } from "@/store/auth-store";
-import useCreateBooking from "@/hook/create-booking.hook";
+import useBooking from "@/hook/booking.hook";
 import { Payment, TermUnit } from "@/lib/contanst";
 import { useState } from "react";
 import GuestManager from "./guest/guest-manager";
@@ -44,7 +43,7 @@ export function CreateBookingBox(createBookingBoxProps: CreateBookingBoxProps) {
   const { place, parsedDate, totalCharge } = createBookingBoxProps;
   const { user } = useAuthStore((state) => state);
   const { term, selectedDate } = useSearchStore((state) => state);
-  const { createBooking } = useCreateBooking();
+  const { createBooking } = useBooking();
   const [payment, setPayment] = useState(Payment.CASH);
   const [guests, setGuests] = useState<string[]>([]);
   const [displayForm, setDisplayForm] = useState(false);

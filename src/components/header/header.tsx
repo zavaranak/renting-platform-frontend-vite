@@ -2,14 +2,14 @@ import HeaderItem from "./header-item";
 import { useAuthStore } from "@/store/auth-store";
 import { useEffect, useRef, useState } from "react";
 import LoginForm from "../boxes/login-form";
-import { ProfileMenu } from "../menu/profile-menu";
-import { useAuthHook } from "@/hook/auth.hook";
+import { HeaderMenu } from "./header-menu";
+import { useVerifyUser } from "@/hook/auth.hook";
 export const Header = () => {
   const [displayLogInMenu, setDisplayLogInMenu] = useState(false);
   const [displayProfileMenu, setDisplayProfileMenu] = useState(false);
   const { isAuthenticated } = useAuthStore((state) => state);
-  const { useVerifyUser } = useAuthHook();
   useVerifyUser();
+
   const menuDiv = useRef<HTMLDivElement>(null);
   const toggleLogInMenu = () => {
     // setDisplayLogInMenu((prev) => !prev);
@@ -46,7 +46,7 @@ export const Header = () => {
                 </HeaderItem>
                 {displayProfileMenu && (
                   <div className="absolute right-1 mt-2 w-max bg-white border border-gray-200 rounded shadow-lg ">
-                    <ProfileMenu />
+                    <HeaderMenu closeMenu={toggleProfileMenu} />
                   </div>
                 )}
               </div>
@@ -68,7 +68,7 @@ export const Header = () => {
           <HeaderItem>english</HeaderItem>
         </div>
       </div>
-      <div className="flex justify-between bg-dark_blue text-white pl-8 pr-20 p-2 uppercase">
+      {/* <div className="flex justify-between bg-dark_blue text-white pl-8 pr-20 p-2 uppercase">
         <div className="text-sm cursor-pointer">
           <div>Homsk</div>
           <div>logo and name</div>
@@ -79,7 +79,7 @@ export const Header = () => {
           <HeaderItem>Notification</HeaderItem>
           <HeaderItem>Favorite</HeaderItem>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

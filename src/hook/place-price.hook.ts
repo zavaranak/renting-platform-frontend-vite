@@ -20,17 +20,21 @@ export const usePlacePrice = (params: {
       value: params.id,
     },
     onCompleted: (data) => {
+      console.log(data);
       setLocalStatePlace(data.getOnePlace);
-      const priceAttributeName = "price_by_" + term;
+      const priceAttributeName = "PRICE_BY_" + term;
       const price_attribute = data.getOnePlace.attributes?.find(
         (item: PlaceAttribute) => item.name === priceAttributeName.toUpperCase()
       );
       setPrice(price_attribute ?? undefined);
     },
+    onError: (error) => {
+      console.log(error);
+    },
   });
   useEffect(() => {
     if (place) {
-      const priceAttributeName = "price_by_" + term;
+      const priceAttributeName = "PRICE_BY_" + term;
       const price_attribute = place.attributes?.find(
         (item: PlaceAttribute) => item.name === priceAttributeName.toUpperCase()
       );

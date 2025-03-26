@@ -20,7 +20,6 @@ export const PlaceCard = (params: PlaceCardParam) => {
   const { setPlaceFromNavigation } = useAppStore((state) => state);
   const navigate = useNavigate();
   const handleClickOnPlaceCard = () => {
-    console.log(place);
     setPlaceFromNavigation(place);
     navigate(
       `/place/${place?.id}?s=${selectedDate?.start}&e=${selectedDate?.end}&t=${term}&ty=${type}`

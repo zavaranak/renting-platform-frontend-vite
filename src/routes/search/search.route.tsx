@@ -1,6 +1,6 @@
 import photo from "@/assets/photo2.jpg";
-import SearchBox from "../../components/search_route/search-box";
-import { UseFetchCountriesAndCites } from "@/hook/fetch-countries-and-cities.hook";
+import SearchBox from "@/components/search-box/search-box";
+import { UseFetchCountriesAndCites } from "@/hook/countries-cities.hook";
 
 export default function SearchRoute() {
   UseFetchCountriesAndCites();

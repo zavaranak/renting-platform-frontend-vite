@@ -38,7 +38,6 @@ import {
 } from "@/hook/guest.hook";
 
 interface GuestManagerProps {
-  //   setGuests: (guest: string[]) => void;
   setGuests: (cb: (guest: string[]) => string[]) => void;
 }
 

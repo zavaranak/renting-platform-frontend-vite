@@ -4,7 +4,8 @@ import { CREATE_BOOKING } from "@/lib/gql/endpoint";
 import { useAppStore } from "@/store/app-store";
 import { useAuthStore } from "@/store/auth-store";
 import { useState } from "react";
-const useCreateBooking = () => {
+
+const useBooking = () => {
   const { isAuthenticated, user } = useAuthStore((state) => state);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -37,4 +38,4 @@ const useCreateBooking = () => {
   return { createBooking, loading, error };
 };
 
-export default useCreateBooking;
+export default useBooking;

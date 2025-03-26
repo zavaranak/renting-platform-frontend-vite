@@ -1,3 +1,4 @@
+import { UserAttributes } from "@/store/auth-store";
 import {
   AuthActions,
   Gender,
@@ -140,4 +141,15 @@ export type UpdateGuestParams = {
   lastName?: string;
   middleName?: string;
   tel?: string;
+};
+
+export type AttributeUpdateInput = {
+  id: string;
+  value?: string;
+  valueNumber?: number;
+};
+
+export type TenantAttributeInput = {
+  name: keyof UserAttributes;
+  value: string;
 };

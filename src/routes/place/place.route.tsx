@@ -12,9 +12,9 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { CreateBookingBox } from "@/components/boxes/create-booking-form";
-import { usePlaceDateParsing } from "@/hook/place-date-parsing.hook";
+import { usePlaceDateParsing } from "@/hook/place-date.hook";
 import { usePlacePrice } from "@/hook/place-price.hook";
-import { useParamsUrlHandler } from "@/hook/params-url-handler.hook";
+import { useParamsUrlHandler } from "@/hook/url.hook";
 import { useAuthStore } from "@/store/auth-store";
 import { Button } from "@/components/ui/button";
 

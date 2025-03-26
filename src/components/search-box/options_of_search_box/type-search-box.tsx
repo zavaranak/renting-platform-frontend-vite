@@ -33,7 +33,11 @@ export default function TypeSearchBox() {
   const handleChangePurpose = (value: string) => {
     if (purpose !== value) {
       setPurpose(value as Purpose);
-      setType("");
+      if (value == Purpose.LIVING) {
+        setType(livingPlaceType.HOUSE);
+      } else if (value == Purpose.WORKING) {
+        setType(workingPlaceType.OFFICE);
+      }
       handleSearch({ searchOption: SearchOption.TYPE, valid: false });
     }
   };
@@ -127,29 +131,29 @@ export default function TypeSearchBox() {
                 <CommandEmpty>No type can be found</CommandEmpty>
                 <CommandGroup>
                   {purpose === Purpose.LIVING &&
-                    Object.entries(livingPlaceType).map((entry, index) => (
+                    Object.values(livingPlaceType).map((value, index) => (
                       <CommandItem
-                        value={entry[1]}
+                        value={value}
                         key={index}
                         onSelect={(currentValue) => {
                           handleChangeType(currentValue);
                           setOpenTypeBox(false);
                         }}
                       >
-                        {entry[1]}
+                        {value[1]}
                       </CommandItem>
                     ))}
                   {purpose === Purpose.WORKING &&
-                    Object.entries(workingPlaceType).map((entry, index) => (
+                    Object.values(workingPlaceType).map((value, index) => (
                       <CommandItem
-                        value={entry[1]}
+                        value={value}
                         key={index}
                         onSelect={(currentValue) => {
                           handleChangeType(currentValue);
                           setOpenTypeBox(false);
                         }}
                       >
-                        {entry[1]}
+                        {value}
                       </CommandItem>
                     ))}
                 </CommandGroup>

@@ -6,12 +6,9 @@ import { AuthActions, Role, LoginData } from "@/lib/contanst";
 import { MouseEvent } from "react";
 import clsx from "clsx";
 import useLogin from "@/hook/logIn.hook";
-import { useSearchStore } from "@/store/search-store";
 
 export default function LoginForm() {
   const [displayPassword, setDisplayPassword] = useState(false);
-  const { location, term } = useSearchStore((state) => state);
-  console.log(location, term);
   const { loading, logIn } = useLogin();
   const [role, setRole] = useState(Role.tenant);
   const { register, handleSubmit } = useForm<LoginData>();
