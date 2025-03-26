@@ -1,6 +1,6 @@
 import { useSearchStore } from "@/store/search-store";
 import { PlaceCard } from "@/components/place/place-card";
-import { FilterBox } from "@/components/boxes/filter-box";
+import { FilterBox } from "@/components/search/filter-box";
 import { useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { useSearchPlaces } from "@/hook/search.hook";

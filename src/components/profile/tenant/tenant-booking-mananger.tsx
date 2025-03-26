@@ -1,7 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { Table } from "lucide-react";
 
-export const BookingManager = () => {
+export const TenantBookingManager = () => {
   return (
     <Card className="mb-6 p-4">
       <h2 className="text-xl font-bold mb-4">Bookings</h2>
@@ -14,8 +14,8 @@ export const BookingManager = () => {
             <th>Actions</th>
           </tr>
         </thead>
-        {/* <tbody>
-            {bookings?.map((booking: any) => (
+        <tbody>
+          {/* {bookings?.map((booking: any) => (
               <tr key={booking.id}>
                 <td>{booking.id}</td>
                 <td>{booking.date}</td>
@@ -25,8 +25,8 @@ export const BookingManager = () => {
                   <Button variant="ghost">Cancel</Button>
                 </td>
               </tr>
-            ))}
-          </tbody> */}
+            ))} */}
+        </tbody>
       </Table>
     </Card>
   );

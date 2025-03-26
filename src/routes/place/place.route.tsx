@@ -11,7 +11,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import { CreateBookingBox } from "@/components/boxes/create-booking-form";
+import { BookingForm } from "@/components/booking/booking-form";
 import { usePlaceDateParsing } from "@/hook/place-date.hook";
 import { usePlacePrice } from "@/hook/place-price.hook";
 import { useParamsUrlHandler } from "@/hook/url.hook";
@@ -123,7 +123,7 @@ export default function PlaceRoute() {
               </div>
             )}
             {isAuthenticated && (
-              <CreateBookingBox
+              <BookingForm
                 place={place}
                 parsedDate={parsedDate}
                 totalCharge={totalCharge}

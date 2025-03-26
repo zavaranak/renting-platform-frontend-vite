@@ -1,5 +1,5 @@
 import { SortOptionsInterface, useSearchStore } from "@/store/search-store";
-import { SideBox } from "@/components/boxes/side-box";
+import { SideBox } from "@/components/static_components/side-box";
 import clsx from "clsx";
 import { useState } from "react";
 import {
@@ -11,7 +11,7 @@ import {
   SortOptions,
 } from "@/lib/contanst";
 import { Card, Checkbox, FormControlLabel, FormGroup } from "@mui/material";
-import SearchButton from "@/components/search-box/search-button";
+import SearchButton from "@/components/search/search-button";
 import { UseFetchCountriesAndCites } from "@/hook/countries-cities.hook";
 
 export const FilterBox = () => {

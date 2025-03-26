@@ -1,7 +1,7 @@
 import HeaderItem from "./header-item";
 import { useAuthStore } from "@/store/auth-store";
 import { useEffect, useRef, useState } from "react";
-import LoginForm from "../boxes/login-form";
+import LoginForm from "../profile/unauthorized/login-form";
 import { HeaderMenu } from "./header-menu";
 import { useVerifyUser } from "@/hook/auth.hook";
 export const Header = () => {

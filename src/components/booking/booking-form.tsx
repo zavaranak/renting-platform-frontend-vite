@@ -30,16 +30,16 @@ import { useAuthStore } from "@/store/auth-store";
 import useBooking from "@/hook/booking.hook";
 import { Payment, TermUnit } from "@/lib/contanst";
 import { useState } from "react";
-import GuestManager from "./guest/guest-manager";
-import { Label } from "../ui/label";
+import GuestManager from "@/components/booking/guest/guest-manager";
+import { Label } from "@/components/ui/label";
 
-interface CreateBookingBoxProps {
+interface BookingFormProps {
   place: Place;
   parsedDate?: { start: any; end: any; date?: any; diff: any } | undefined;
   totalCharge?: number;
 }
 
-export function CreateBookingBox(createBookingBoxProps: CreateBookingBoxProps) {
+export function BookingForm(createBookingBoxProps: BookingFormProps) {
   const { place, parsedDate, totalCharge } = createBookingBoxProps;
   const { user } = useAuthStore((state) => state);
   const { term, selectedDate } = useSearchStore((state) => state);
@@ -47,8 +47,6 @@ export function CreateBookingBox(createBookingBoxProps: CreateBookingBoxProps) {
   const [payment, setPayment] = useState(Payment.CASH);
   const [guests, setGuests] = useState<string[]>([]);
   const [displayForm, setDisplayForm] = useState(false);
-
-  // State to manage guest info list and drawer visibility
 
   const createBookingHandler = (
     totalCharge: number,
@@ -70,8 +68,6 @@ export function CreateBookingBox(createBookingBoxProps: CreateBookingBoxProps) {
       createBooking(bookingInput);
     }
   };
-
-  // Handler to add guest info
 
   return (
     <>
