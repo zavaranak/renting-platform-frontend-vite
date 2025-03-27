@@ -1,8 +1,40 @@
 import { useEffect, useState } from "react";
+import { TermUnit } from "@/lib/contanst";
 import { useSearchStore } from "@/store/search-store";
+import dayjs from "dayjs";
+import localizedFormat from "dayjs/plugin/localizedFormat"; // ES 2015
 import { useQuery } from "@apollo/client";
 import { Place, PlaceAttribute } from "@/lib/data-type";
 import { QUERY_PLACE_BY_ID } from "@/lib/gql/endpoint";
+import { CITIES, COUNTRIES } from "@/lib/gql/endpoint";
+
+export const usePlaceDateParsing = (reload: boolean) => {
+  dayjs.extend(localizedFormat);
+  const [parsedDate, setParsedDate] = useState<
+    { start: any; end: any; date?: any; diff: any } | undefined
+  >(undefined);
+  const { term, selectedDate } = useSearchStore((state) => state);
+  useEffect(() => {
+    if (term == TermUnit.DAY) {
+      setParsedDate({
+        start: dayjs(selectedDate?.start).format("ll"),
+        end: dayjs(selectedDate?.end).format("ll"),
+        diff:
+          dayjs(selectedDate?.end).diff(dayjs(selectedDate?.start), "day") + 1,
+      });
+    }
+    if (term == TermUnit.HOUR) {
+      setParsedDate({
+        start: dayjs(selectedDate?.start).format("LT"),
+        end: dayjs(selectedDate?.end).format("LT"),
+        date: dayjs(selectedDate?.start).format("ll"),
+        diff:
+          dayjs(selectedDate?.end).diff(dayjs(selectedDate?.start), "hour") + 1,
+      });
+    }
+  }, [reload]);
+  return { parsedDate, term };
+};
 
 export const usePlacePrice = (params: {
   id: string | undefined;
@@ -49,4 +81,27 @@ export const usePlacePrice = (params: {
   }, [term, price]);
 
   return { totalCharge, place, price };
+};
+
+export const UseFetchCountriesAndCites = () => {
+  const { location, countries, cities, setCountries, setCities } =
+    useSearchStore((state) => state);
+  useQuery(COUNTRIES, {
+    skip: location.country != "" && countries.length > 0,
+    onCompleted: (data) => {
+      setCountries(data.getCountries.customData);
+    },
+  });
+  useQuery(CITIES, {
+    skip:
+      location.country == "" ||
+      !countries.includes(location.country) ||
+      cities.length > 0,
+    onCompleted: (data) => {
+      setCities(data.getCitiesByCountryName.customData);
+    },
+    variables: {
+      country_name: location.country,
+    },
+  });
 };

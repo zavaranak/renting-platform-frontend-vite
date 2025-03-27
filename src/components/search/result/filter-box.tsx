@@ -11,8 +11,8 @@ import {
   SortOptions,
 } from "@/lib/contanst";
 import { Card, Checkbox, FormControlLabel, FormGroup } from "@mui/material";
-import SearchButton from "@/components/search/search-button";
-import { UseFetchCountriesAndCites } from "@/hook/countries-cities.hook";
+import SearchButton from "@/components/search/searchbox/search-button";
+import { UseFetchCountriesAndCites } from "@/hook/place.hook";
 
 export const FilterBox = () => {
   UseFetchCountriesAndCites();

@@ -27,7 +27,7 @@ import { Button } from "@/components/ui/button";
 import { BookingInput, Place } from "@/lib/data-type";
 import { useSearchStore } from "@/store/search-store";
 import { useAuthStore } from "@/store/auth-store";
-import useBooking from "@/hook/booking.hook";
+import { useCreateBooking } from "@/hook/booking.hook";
 import { Payment, TermUnit } from "@/lib/contanst";
 import { useState } from "react";
 import GuestManager from "@/components/booking/guest/guest-manager";
@@ -43,7 +43,7 @@ export function BookingForm(createBookingBoxProps: BookingFormProps) {
   const { place, parsedDate, totalCharge } = createBookingBoxProps;
   const { user } = useAuthStore((state) => state);
   const { term, selectedDate } = useSearchStore((state) => state);
-  const { createBooking } = useBooking();
+  const { createBooking } = useCreateBooking();
   const [payment, setPayment] = useState(Payment.CASH);
   const [guests, setGuests] = useState<string[]>([]);
   const [displayForm, setDisplayForm] = useState(false);
@@ -125,7 +125,7 @@ export function BookingForm(createBookingBoxProps: BookingFormProps) {
                     <Label htmlFor="payment">Payment method</Label>
                     <Select
                       onValueChange={(value) => {
-                        setPayment(value);
+                        setPayment(value as Payment);
                       }}
                       value={payment}
                     >

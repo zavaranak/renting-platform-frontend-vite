@@ -1,16 +1,14 @@
 import { UserAttributes } from "@/store/auth-store";
 import {
   AuthActions,
-  Gender,
-  LandlordAttributeName,
   livingPlaceType,
   Operator,
   Order,
+  Payment,
   PlaceAttributeName,
   PlaceStatus,
   Role,
   Status,
-  TenantAttributeName,
   TermUnit,
   workingPlaceType,
 } from "./contanst";
@@ -152,4 +150,27 @@ export type AttributeUpdateInput = {
 export type TenantAttributeInput = {
   name: keyof UserAttributes;
   value: string;
+};
+
+export type QueryManyInput = {
+  conditions?: QueryCondition[];
+  orderBy?: QueryOrder;
+  pagination?: QueryPagination;
+  selectedDate?: SelectedDate;
+};
+
+export type PendingBooking = {
+  id: string;
+  createdAt: number;
+  lastUpdate: number;
+  startAt: number;
+  endAt: number;
+  termUnit: TermUnit;
+  period: number;
+  totalCharge: number;
+  tenantId: string;
+  placeId: string;
+  payment: Payment;
+  updateBy: string;
+  guests: string[];
 };

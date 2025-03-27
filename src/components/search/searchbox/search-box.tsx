@@ -1,10 +1,10 @@
-import OptionSwitchButton from "../option-switch-button";
+import OptionSwitchButton from "./option-switch-button";
 import { livingPlaceType, SearchOption, TermUnit } from "@/lib/contanst";
 
-import SearchButton from "../search-button";
-import MainSearchBox from "../options_of_search_box/main-search-box";
+import SearchButton from "./search-button";
+import MainSearchBox from "./options_of_search_box/main-search-box";
 import { useSearchStore } from "@/store/search-store";
-import SortSearchBox from "../options_of_search_box/sort-search-box";
+import SortSearchBox from "./options_of_search_box/sort-search-box";
 import { useEffect } from "react";
 
 export default function SearchBox() {

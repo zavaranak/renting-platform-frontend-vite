@@ -171,14 +171,13 @@ export default function ProfileEditForm(params: ProfileEditFormParams) {
               <Label htmlFor="birthday">Birthday</Label>
               <Input
                 type="date"
-                value={dayjs
-                  .unix(Number(formData.BIRTHDAY?.value))
-                  .format("YYYY-MM-DD")}
+                value={dayjs(Number(formData.BIRTHDAY?.value)).format(
+                  "YYYY-MM-DD"
+                )}
                 onChange={(e) => {
-                  console.log(dayjs(e.target.value).unix().toString());
                   handleInputChange(
                     "BIRTHDAY",
-                    dayjs(e.target.value).unix().toString(),
+                    dayjs(e.target.value).valueOf().toString(),
                     formData.BIRTHDAY?.id ?? ""
                   );
                 }}

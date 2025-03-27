@@ -4,6 +4,7 @@ import ProfileEditForm from "./profile-edit-form";
 import { useLazyVerifyUser } from "@/hook/auth.hook";
 import dayjs from "dayjs";
 import { TenantGuestManager } from "../tenant/tenant-guest-mananger";
+import { TenantBookingManager } from "../tenant/tenant-booking-mananger";
 
 export default function ProfileInfo() {
   const { verifyUser } = useLazyVerifyUser();
@@ -53,6 +54,9 @@ export default function ProfileInfo() {
 
           <ProfileEditForm onChangeProfile={handleChangeProfile} />
         </Card>
+
+        <TenantBookingManager tenantId={user.id} />
+
         <TenantGuestManager tenantId={user.id} />
       </div>
     );

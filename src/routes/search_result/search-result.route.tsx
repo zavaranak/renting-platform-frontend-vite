@@ -1,10 +1,10 @@
 import { useSearchStore } from "@/store/search-store";
 import { PlaceCard } from "@/components/place/place-card";
-import { FilterBox } from "@/components/search/filter-box";
+import { FilterBox } from "@/components/search/result/filter-box";
 import { useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { useSearchPlaces } from "@/hook/search.hook";
-import { usePlaceDateParsing } from "@/hook/place-date.hook";
+import { usePlaceDateParsing } from "@/hook/place.hook";
 import { useParamsUrlHandler } from "@/hook/url.hook";
 
 export default function SearchResultRoute() {

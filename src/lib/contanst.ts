@@ -224,7 +224,7 @@ export type AbstractAttributesType = typeof PlaceAttributeName &
   typeof TenantAttributeName &
   typeof LandlordAttributeName;
 
-export const Payment = {
-  CASH: "CASH",
-  CARD: "CARD",
-};
+export enum Payment {
+  CASH = "CASH",
+  CARD = "CARD",
+}

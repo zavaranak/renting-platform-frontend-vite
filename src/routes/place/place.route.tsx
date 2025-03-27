@@ -12,8 +12,8 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { BookingForm } from "@/components/booking/booking-form";
-import { usePlaceDateParsing } from "@/hook/place-date.hook";
-import { usePlacePrice } from "@/hook/place-price.hook";
+import { usePlaceDateParsing } from "@/hook/place.hook";
+import { usePlacePrice } from "@/hook/place.hook";
 import { useParamsUrlHandler } from "@/hook/url.hook";
 import { useAuthStore } from "@/store/auth-store";
 import { Button } from "@/components/ui/button";
@@ -29,7 +29,7 @@ export default function PlaceRoute() {
   const { firstLoad } = useParamsUrlHandler();
   const { parsedDate } = usePlaceDateParsing(firstLoad);
   const { totalCharge } = usePlacePrice({ id: placeId, parsedDate });
-  // ✅ Call useQuery at the top level
+  //  Call useQuery at the top level
   const { data, loading, error } = useQuery(QUERY_PLACE_BY_ID, {
     skip: !!placeFromNavigation || !placeId,
     variables: {
@@ -37,8 +37,7 @@ export default function PlaceRoute() {
       value: placeId,
     },
   });
-  //fetch place by id if there is no place in store
-  // ✅ Update local state only when new data is received
+
   useEffect(() => {
     if (!placeFromNavigation && data?.getOnePlace) {
       setLocalStatePlace(data.getOnePlace);

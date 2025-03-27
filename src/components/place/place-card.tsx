@@ -9,7 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { usePlacePrice } from "@/hook/place-price.hook";
+import { usePlacePrice } from "@/hook/place.hook";
 interface PlaceCardParam {
   id: string;
   parsedDate?: { start: any; end: any; date?: any; diff: any } | undefined;

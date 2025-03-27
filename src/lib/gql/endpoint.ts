@@ -235,3 +235,23 @@ export const ADD_TENANT_ATTRIBUTES = gql`
     }
   }
 `;
+
+export const QUERY_PENDING_BOOKINGS = gql`
+  query GetManyPendingBooking($queryManyInput: QueryManyInput!) {
+    getManyPendingBooking(query_many_input: $queryManyInput) {
+      id
+      placeId
+      payment
+      createdAt
+      termUnit
+      startAt
+      endAt
+      lastUpdate
+      guests
+      period
+      tenantId
+      totalCharge
+      updateBy
+    }
+  }
+`;
