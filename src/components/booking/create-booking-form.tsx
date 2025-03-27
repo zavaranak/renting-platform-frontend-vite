@@ -39,7 +39,7 @@ interface BookingFormProps {
   totalCharge?: number;
 }
 
-export function BookingForm(createBookingBoxProps: BookingFormProps) {
+export function CreateBookingForm(createBookingBoxProps: BookingFormProps) {
   const { place, parsedDate, totalCharge } = createBookingBoxProps;
   const { user } = useAuthStore((state) => state);
   const { term, selectedDate } = useSearchStore((state) => state);

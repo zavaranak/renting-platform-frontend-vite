@@ -37,14 +37,14 @@ export const usePlaceDateParsing = (reload: boolean) => {
 };
 
 export const usePlacePrice = (params: {
-  id: string | undefined;
+  id: string;
   parsedDate?: { start: any; end: any; date?: any; diff: any } | undefined;
 }) => {
-  const [place, setLocalStatePlace] = useState<Place | undefined>();
   const [price, setPrice] = useState<PlaceAttribute | undefined>(undefined);
   const [totalCharge, setTotalCharge] = useState(0);
   const { term } = useSearchStore((state) => state);
-  // const { data, loading, error, refetch } =
+  const { place } = useQueryPlace(params.id);
+
   useQuery(QUERY_PLACE_BY_ID, {
     skip: !params.id,
     variables: {
@@ -53,7 +53,6 @@ export const usePlacePrice = (params: {
     },
     onCompleted: (data) => {
       console.log(data);
-      setLocalStatePlace(data.getOnePlace);
       const priceAttributeName = "PRICE_BY_" + term;
       const price_attribute = data.getOnePlace.attributes?.find(
         (item: PlaceAttribute) => item.name === priceAttributeName.toUpperCase()
@@ -104,4 +103,22 @@ export const UseFetchCountriesAndCites = () => {
       country_name: location.country,
     },
   });
+};
+
+export const useQueryPlace = (placeId: string) => {
+  const [place, setPlace] = useState<Place | undefined>();
+  const { loading } = useQuery(QUERY_PLACE_BY_ID, {
+    variables: {
+      type: "id",
+      value: placeId,
+    },
+    onCompleted: (data) => {
+      console.log(data);
+      setPlace(data.getOnePlace);
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+  });
+  return { place, loading };
 };

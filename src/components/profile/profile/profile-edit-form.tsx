@@ -1,3 +1,6 @@
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -6,7 +9,6 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -16,11 +18,31 @@ import {
 } from "@/components/ui/select";
 import { useTenantAttributes } from "@/hook/tenant.hook";
 import { AttributeUpdateInput, TenantAttributeInput } from "@/lib/data-type";
-
 import { useAuthStore, UserAttributes } from "@/store/auth-store";
 import { DialogDescription, DialogTrigger } from "@radix-ui/react-dialog";
 import dayjs from "dayjs";
 import { useState } from "react";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+
+// Define Zod schema for form validation
+const profileFormSchema = z.object({
+  FIRSTNAME: z.string().min(1, "First name is required"),
+  MIDDLENAME: z.string().optional(),
+  LASTNAME: z.string().min(1, "Last name is required"),
+  TEL: z.string().min(1, "Phone number is required"),
+  BIRTHDAY: z.string().refine((val) => !isNaN(dayjs(val).valueOf()), {
+    message: "Invalid date",
+  }),
+  GENDER: z.enum(["male", "female", "other", "UNKNOWN"]),
+  COUNTRY: z.string().min(1, "Country is required"),
+});
 
 export interface ProfileEditFormParams {
   onChangeProfile: () => Promise<void>;
@@ -30,67 +52,66 @@ export default function ProfileEditForm(params: ProfileEditFormParams) {
   const { updateTenantAttr, createTenantAttr, loading } = useTenantAttributes();
   const { userAttributes } = useAuthStore((state) => state);
   const [displayForm, setDisplayForm] = useState(false);
-  const [formData, setFormData] = useState<UserAttributes>(userAttributes);
-  const [changedFields, setChangedFields] = useState<AttributeUpdateInput[]>(
-    []
-  );
-  const [newFields, setNewFields] = useState<TenantAttributeInput[]>([]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (changedFields.length > 0 && newFields.length > 0) {
-      await Promise.all([
-        updateTenantAttr(changedFields),
-        createTenantAttr(newFields),
-      ]);
-    } else if (changedFields.length > 0 && newFields.length == 0) {
-      await updateTenantAttr(changedFields);
-    } else if (changedFields.length == 0 && newFields.length > 0) {
-      await createTenantAttr(newFields);
-    }
-    params.onChangeProfile();
-    setDisplayForm(false);
-  };
+  // Initialize form with react-hook-form and zod
+  const form = useForm<z.infer<typeof profileFormSchema>>({
+    resolver: zodResolver(profileFormSchema),
+    defaultValues: {
+      FIRSTNAME: userAttributes.FIRSTNAME?.value || "",
+      MIDDLENAME: userAttributes.MIDDLENAME?.value || "",
+      LASTNAME: userAttributes.LASTNAME?.value || "",
+      TEL: userAttributes.TEL?.value || "",
+      BIRTHDAY: userAttributes.BIRTHDAY?.value
+        ? dayjs(Number(userAttributes.BIRTHDAY.value)).format("YYYY-MM-DD")
+        : dayjs().format("YYYY-MM-DD"),
+      GENDER:
+        (userAttributes.GENDER?.value as "male" | "female" | "other") ||
+        "UNKNOWN",
+      COUNTRY: userAttributes.COUNTRY?.value || "",
+    },
+  });
 
-  const handleInputChange = (
-    attributeName: keyof UserAttributes,
-    value: string,
-    id: string
-  ) => {
-    if (id == "") {
-      setNewFields((prev) => {
-        const fieldIndex = prev.findIndex(
-          (field) => field.name == attributeName
-        );
-        if (fieldIndex != -1) {
-          prev[fieldIndex].value = value;
-        } else {
-          prev.push({
-            name: attributeName,
-            value: value,
-          });
-        }
-        return prev;
-      });
-    } else {
-      setChangedFields((prev) => {
-        const fieldIndex = prev.findIndex((field) => field.id == id);
-        if (fieldIndex != -1) {
-          prev[fieldIndex].value = value;
-        } else {
-          prev.push({
-            id: id,
-            value: value,
-            valueNumber: undefined,
-          });
-        }
-        return prev;
-      });
+  const handleSubmit = async (values: z.infer<typeof profileFormSchema>) => {
+    const changedFields: AttributeUpdateInput[] = [];
+    const newFields: TenantAttributeInput[] = [];
+
+    // Prepare data for submission
+    Object.entries(values).forEach(([key, value]) => {
+      const attributeName = key as keyof UserAttributes;
+      const attribute = userAttributes[attributeName];
+
+      if (attribute?.id) {
+        changedFields.push({
+          id: attribute.id,
+          value:
+            key === "BIRTHDAY"
+              ? dayjs(value).valueOf().toString()
+              : value.toString(),
+          valueNumber: undefined,
+        });
+      } else {
+        newFields.push({
+          name: attributeName,
+          value:
+            key === "BIRTHDAY"
+              ? dayjs(value).valueOf().toString()
+              : value.toString(),
+        });
+      }
+    });
+
+    try {
+      if (changedFields.length > 0) {
+        await updateTenantAttr(changedFields);
+      }
+      if (newFields.length > 0) {
+        await createTenantAttr(newFields);
+      }
+      await params.onChangeProfile();
+      setDisplayForm(false);
+    } catch (error) {
+      console.error("Failed to update profile:", error);
     }
-    setFormData((prev) => ({
-      ...prev,
-      [attributeName]: { ...prev[attributeName], value },
-    }));
   };
 
   return (
@@ -105,134 +126,134 @@ export default function ProfileEditForm(params: ProfileEditFormParams) {
             Update your personal information
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="grid gap-4 py-4">
-          <div className="grid grid-cols-3 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="firstname">First Name</Label>
-              <Input
-                id={"firstname"}
-                value={formData.FIRSTNAME?.value ?? ""}
-                onChange={(e) =>
-                  handleInputChange(
-                    "FIRSTNAME",
-                    e.target.value,
-                    formData.FIRSTNAME?.id ?? ""
-                  )
-                }
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="middlename">Middle Name</Label>
-              <Input
-                id="middlename"
-                value={formData.MIDDLENAME?.value ?? ""}
-                onChange={(e) =>
-                  handleInputChange(
-                    "MIDDLENAME",
-                    e.target.value,
-                    formData.MIDDLENAME?.id ?? ""
-                  )
-                }
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="lastname">Last Name</Label>
-              <Input
-                id="lastname"
-                value={formData.LASTNAME?.value ?? ""}
-                onChange={(e) => {
-                  handleInputChange(
-                    "LASTNAME",
-                    e.target.value,
-                    formData.LASTNAME?.id ?? ""
-                  );
-                }}
-              />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="tel">Phone Number</Label>
-              <Input
-                id="tel"
-                value={formData.TEL?.value ?? ""}
-                onChange={(e) =>
-                  handleInputChange(
-                    "TEL",
-                    e.target.value,
-                    formData.TEL?.id ?? ""
-                  )
-                }
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="birthday">Birthday</Label>
-              <Input
-                type="date"
-                value={dayjs(Number(formData.BIRTHDAY?.value)).format(
-                  "YYYY-MM-DD"
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(handleSubmit)}
+            className="grid gap-4 py-4"
+          >
+            <div className="grid grid-cols-3 gap-4">
+              <FormField
+                control={form.control}
+                name="FIRSTNAME"
+                render={({ field }) => (
+                  <FormItem className="space-y-2">
+                    <FormLabel>First Name</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
                 )}
-                onChange={(e) => {
-                  handleInputChange(
-                    "BIRTHDAY",
-                    dayjs(e.target.value).valueOf().toString(),
-                    formData.BIRTHDAY?.id ?? ""
-                  );
-                }}
+              />
+              <FormField
+                control={form.control}
+                name="MIDDLENAME"
+                render={({ field }) => (
+                  <FormItem className="space-y-2">
+                    <FormLabel>Middle Name</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="LASTNAME"
+                render={({ field }) => (
+                  <FormItem className="space-y-2">
+                    <FormLabel>Last Name</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
             </div>
-          </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="gender">Gender</Label>
-              <Select
-                value={formData.GENDER?.value ?? "UNKNOWN"}
-                onValueChange={(value) =>
-                  handleInputChange("GENDER", value, formData.GENDER?.id ?? "")
-                }
+            <div className="grid grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="TEL"
+                render={({ field }) => (
+                  <FormItem className="space-y-2">
+                    <FormLabel>Phone Number</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="BIRTHDAY"
+                render={({ field }) => (
+                  <FormItem className="space-y-2">
+                    <FormLabel>Birthday</FormLabel>
+                    <FormControl>
+                      <Input type="date" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="GENDER"
+                render={({ field }) => (
+                  <FormItem className="space-y-2">
+                    <FormLabel>Gender</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select gender" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="male">Male</SelectItem>
+                        <SelectItem value="female">Female</SelectItem>
+                        <SelectItem value="other">Other</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="COUNTRY"
+                render={({ field }) => (
+                  <FormItem className="space-y-2">
+                    <FormLabel>Country</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <div className="flex justify-end gap-2 mt-4">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setDisplayForm(false)}
               >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select gender" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="male">Male</SelectItem>
-                  <SelectItem value="female">Female</SelectItem>
-                  <SelectItem value="other">Other</SelectItem>
-                </SelectContent>
-              </Select>
+                Cancel
+              </Button>
+              <Button type="submit" disabled={loading}>
+                {(loading && "Loading...") || "Save Changes"}
+              </Button>
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="country">Country</Label>
-              <Input
-                id="country"
-                value={formData.COUNTRY?.value ?? "UNKNOWN"}
-                onChange={(e) =>
-                  handleInputChange(
-                    "COUNTRY",
-                    e.target.value,
-                    formData.COUNTRY?.id ?? ""
-                  )
-                }
-              />
-            </div>
-          </div>
-
-          <div className="flex justify-end gap-2 mt-4">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => setDisplayForm(false)}
-            >
-              Cancel
-            </Button>
-            <Button type="submit" disabled={loading}>
-              {(loading && "Loading...") || " Save Changes"}
-            </Button>
-          </div>
-        </form>
+          </form>
+        </Form>
       </DialogContent>
     </Dialog>
   );

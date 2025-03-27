@@ -38,9 +38,9 @@ export default function ProfileInfo() {
             </p>
             <p>
               <strong>Birthday:</strong>{" "}
-              {dayjs
-                .unix(Number(userAttributes.BIRTHDAY?.value))
-                .format("DD/MM/YYYY") || "Not provided"}
+              {dayjs(Number(userAttributes.BIRTHDAY?.value)).format(
+                "DD/MM/YYYY"
+              ) || "Not provided"}
             </p>
             <p>
               <strong>Gender:</strong>{" "}

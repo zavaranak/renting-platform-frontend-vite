@@ -40,7 +40,7 @@ export const useCreateBooking = () => {
 
 export const useQueryBooking = () => {
   const [pendingBookings, setPendingBookings] = useState<
-    Partial<PendingBooking>[] | undefined
+    PendingBooking[] | undefined
   >();
   const [loadingPB, setLoadingPB] = useState<boolean>(false);
 
