@@ -65,7 +65,7 @@ export default function TypeSearchBox() {
 
   return (
     <div>
-      <div className="text-sm uppercase font-bold pb-3">
+      <div className="text-sm uppercase font-bold pb-3 z-10">
         What kind of place you want to rent?
       </div>
       <div className="grid grid-cols-2 gap-3">

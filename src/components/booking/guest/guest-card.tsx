@@ -12,8 +12,8 @@ type Props = {
 
 export const GuestCard: React.FC<Props> = ({ guest, onEdit, onDelete }) => {
   return (
-    <Card className="p-3">
-      <CardHeader className="p-0 pb-2">
+    <Card className="pl-2">
+      <CardHeader className="p-1 pl-0">
         <CardTitle className="text-lg">
           {guest.lastName} {guest.firstName} {guest.middleName}
         </CardTitle>

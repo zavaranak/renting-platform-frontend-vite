@@ -255,3 +255,12 @@ export const QUERY_PENDING_BOOKINGS = gql`
     }
   }
 `;
+
+export const CANCEL_PENDING_BOOKING = gql`
+  mutation CancelPendingBooking($pendingBookingId: String!) {
+    cancelPendingBooking(pendingBookingId: $pendingBookingId) {
+      type
+      message
+    }
+  }
+`;

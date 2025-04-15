@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { Table } from "@/components/ui/table";
-import { useQueryBooking } from "@/hook/booking.hook";
+import { useCancelPendingBooking, useQueryBooking } from "@/hook/booking.hook";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { PendingBooking, QueryManyInput } from "@/lib/data-type";
@@ -13,21 +13,25 @@ interface Props {
 }
 
 export const TenantBookingManager = ({ tenantId }: Props) => {
+  const params: QueryManyInput = {
+    conditions: [
+      {
+        key: "tenantId",
+        value: tenantId,
+        operator: Operator.EQUAL,
+      },
+    ],
+  };
+
   const [displayModal, setDisplayModal] = useState<boolean>(false);
   const { pendingBookings, getPendingBookings, loadingPB } = useQueryBooking();
   const [selectedPendingBooking, setSelectedPendingBooking] = useState<
     PendingBooking | undefined
   >();
+
+  const { cancelPendingBooking } = useCancelPendingBooking();
+
   useEffect(() => {
-    const params: QueryManyInput = {
-      conditions: [
-        {
-          key: "tenantId",
-          value: tenantId,
-          operator: Operator.EQUAL,
-        },
-      ],
-    };
     getPendingBookings(params);
   }, []);
 
@@ -79,7 +83,21 @@ export const TenantBookingManager = ({ tenantId }: Props) => {
                   >
                     View
                   </Button>
-                  <Button variant="ghost">Cancel</Button>
+                  <Button
+                    variant="ghost"
+                    onClick={async () => {
+                      const actionResult = await cancelPendingBooking(
+                        booking.id
+                      );
+                      if (actionResult) {
+                        getPendingBookings(params);
+                      } else {
+                        alert("unable to cancel this booking");
+                      }
+                    }}
+                  >
+                    Cancel
+                  </Button>
                 </td>
               </tr>
             ))}
@@ -95,3 +113,7 @@ export const TenantBookingManager = ({ tenantId }: Props) => {
     </Card>
   );
 };
+
+// const AlertErrorCancelBooking = () => {
+//   return <></>;
+// };

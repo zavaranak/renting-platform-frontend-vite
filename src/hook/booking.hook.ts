@@ -1,6 +1,10 @@
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import { BookingInput, PendingBooking, QueryManyInput } from "@/lib/data-type";
-import { CREATE_BOOKING, QUERY_PENDING_BOOKINGS } from "@/lib/gql/endpoint";
+import {
+  CANCEL_PENDING_BOOKING,
+  CREATE_BOOKING,
+  QUERY_PENDING_BOOKINGS,
+} from "@/lib/gql/endpoint";
 import { useAppStore } from "@/store/app-store";
 import { useAuthStore } from "@/store/auth-store";
 import { useState } from "react";
@@ -45,6 +49,7 @@ export const useQueryBooking = () => {
   const [loadingPB, setLoadingPB] = useState<boolean>(false);
 
   const [queryPendingBookings] = useLazyQuery(QUERY_PENDING_BOOKINGS, {
+    fetchPolicy: "network-only",
     onCompleted: (data) => {
       console.log(data);
       setPendingBookings(data.getManyPendingBooking);
@@ -65,4 +70,21 @@ export const useQueryBooking = () => {
     });
   };
   return { pendingBookings, getPendingBookings, loadingPB };
+};
+
+export const useCancelPendingBooking = () => {
+  const [cancelBooking] = useMutation(CANCEL_PENDING_BOOKING);
+
+  const cancelPendingBooking = async (bookingId: string) => {
+    try {
+      await cancelBooking({
+        variables: { pendingBookingId: bookingId },
+      });
+      return true; // Success
+    } catch (err) {
+      return false; // Failure
+    }
+  };
+
+  return { cancelPendingBooking };
 };

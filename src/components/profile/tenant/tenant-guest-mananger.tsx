@@ -2,7 +2,7 @@ import GuestForm from "@/components/booking/guest/guest-form";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Table } from "@/components/ui/table";
-import { useFetchGuest } from "@/hook/guest.hook";
+import { useFetchGuests } from "@/hook/guest.hook";
 import { Guest } from "@/lib/data-type";
 import dayjs from "dayjs";
 import { useState } from "react";
@@ -12,7 +12,7 @@ interface TenantGuestManagerProps {
 }
 
 export const TenantGuestManager = ({ tenantId }: TenantGuestManagerProps) => {
-  const { guestList, refetch } = useFetchGuest(tenantId);
+  const { guestList, refetch } = useFetchGuests(tenantId);
   const [displayForm, setDisplayForm] = useState<boolean>(false);
   const [edittingGuest, setEdittingGuest] = useState<Guest | undefined>();
 

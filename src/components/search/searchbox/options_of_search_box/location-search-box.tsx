@@ -47,14 +47,14 @@ export default function LocationSearchBox() {
 
   const validateSearchParams = (
     passedLocation: LocationParam,
-    term: TermUnit | ""
+    term: TermUnit | undefined
   ) => {
     if (
       countries.includes(passedLocation.country) &&
       cities.includes(passedLocation.city)
     ) {
       setLocation(passedLocation);
-      if (term != "") {
+      if (!term) {
         handleSearch({
           searchOption: SearchOption.LOCATION,
           valid: true,
@@ -122,7 +122,7 @@ export default function LocationSearchBox() {
             )}
           >
             <ScrollArea className="h-50 w-48 rounded-md border">
-              <div className="p-4">
+              <div className="p-4 z-20">
                 {filteredCountries.map((c, index) => {
                   return (
                     <div
@@ -133,7 +133,9 @@ export default function LocationSearchBox() {
                       }}
                     >
                       {c}
-                      <Separator className="my-2" />
+                      {index < filteredCountries.length - 1 && (
+                        <Separator className="my-1" />
+                      )}
                     </div>
                   );
                 })}
@@ -168,7 +170,9 @@ export default function LocationSearchBox() {
                       }}
                     >
                       {c}
-                      <Separator className="my-2" />
+                      {index < filteredCites.length - 1 && (
+                        <Separator className="my-1" />
+                      )}
                     </div>
                   );
                 })}

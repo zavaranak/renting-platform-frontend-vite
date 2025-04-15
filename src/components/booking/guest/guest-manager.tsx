@@ -19,7 +19,7 @@ import { Guest } from "@/lib/data-type";
 
 import { useAuthStore } from "@/store/auth-store";
 
-import { useFetchGuest } from "@/hook/guest.hook";
+import { useFetchGuests } from "@/hook/guest.hook";
 import GuestForm from "./guest-form";
 
 interface GuestManagerProps {
@@ -36,7 +36,7 @@ const GuestManager = (params: GuestManagerProps) => {
     const [edittingGuest, setEdittingGuest] = useState<Guest | undefined>(
       undefined
     );
-    const { guestList, setGuestList } = useFetchGuest(user.id);
+    const { guestList, setGuestList } = useFetchGuests(user.id);
 
     const openGuestForm = (guest?: Guest) => {
       if (guest) {
@@ -83,15 +83,27 @@ const GuestManager = (params: GuestManagerProps) => {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start">
-            <DropdownMenuItem
-              onClick={async () => {
-                setOpenGuestList(true);
-              }}
-            >
-              Select from guest list
+            <DropdownMenuItem>
+              <Button
+                className="w-full"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setTimeout(() => setOpenGuestList(true), 10);
+                }}
+              >
+                Select from guest list
+              </Button>
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => openGuestForm()}>
-              Add new guest
+            <DropdownMenuItem>
+              <Button
+                className="w-full"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setTimeout(() => openGuestForm(), 10);
+                }}
+              >
+                Add new guest
+              </Button>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

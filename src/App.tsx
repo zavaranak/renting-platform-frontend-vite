@@ -11,7 +11,6 @@ import SearchResultRoute from "@/routes/search_result/search-result.route";
 
 import { useCreateApolloClient } from "@/hook/apollo-client.hook";
 import PlaceRoute from "./routes/place/place.route";
-import ProfileInfo from "./components/profile/profile/profile-info";
 import { ProfileRoute } from "./routes/profile/profile.route";
 
 export default function App() {

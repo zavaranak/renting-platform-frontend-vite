@@ -93,7 +93,6 @@ export function CreateBookingForm(createBookingBoxProps: BookingFormProps) {
                 <div>
                   <CardHeader>
                     <CardTitle>Client: {user?.username}</CardTitle>
-
                     <GuestManager setGuests={setGuests} />
                   </CardHeader>
                 </div>

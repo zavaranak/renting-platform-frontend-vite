@@ -9,6 +9,8 @@ import { DialogDescription } from "@radix-ui/react-dialog";
 // import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader } from "../ui/card";
 import { useQueryPlace } from "@/hook/place.hook";
+import dayjs from "dayjs";
+import localizedFormat from "dayjs/plugin/localizedFormat";
 
 export interface BookingModalPros {
   booking: PendingBooking;
@@ -21,6 +23,8 @@ export default function BookingModal({
   setDisplayModal,
 }: BookingModalPros) {
   const { place } = useQueryPlace(booking.placeId);
+  dayjs.extend(localizedFormat);
+
   return (
     <Dialog open={displayModal} onOpenChange={setDisplayModal}>
       <DialogContent className="sm:max-w-[600px]">
@@ -33,12 +37,15 @@ export default function BookingModal({
         {place && (
           <Card>
             <CardHeader>
-              <p>{place.name}</p>
-            </CardHeader>
-            <CardContent>
+              <p className="font-bold">{place.name}</p>
               <p>
                 {place?.address}, {place.city}, {place.country}
               </p>
+            </CardHeader>
+            <CardContent>{booking.guests}</CardContent>
+            <CardContent>Total charge: {booking.totalCharge}</CardContent>
+            <CardContent>
+              Booking was created at: {dayjs(booking.createdAt).format("LLLL")}
             </CardContent>
           </Card>
         )}

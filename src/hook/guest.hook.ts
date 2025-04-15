@@ -101,7 +101,7 @@ export const useUpdateGuest = () => {
   return { updateGuest, loading, error };
 };
 
-export const useFetchGuest = (userId: string) => {
+export const useFetchGuests = (userId: string) => {
   const [guestList, setGuestList] = useState<Guest[]>([]);
 
   const { refetch } = useQuery(GET_ALL_GUESTS_BY_ID, {
