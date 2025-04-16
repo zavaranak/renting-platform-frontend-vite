@@ -1,8 +1,8 @@
 import {
-  livingPlaceType,
+  LivingPlaceType,
   Purpose,
   SearchOption,
-  workingPlaceType,
+  WorkingPlaceType,
 } from "@/lib/contanst";
 import { SearchOptionState, useSearchStore } from "@/store/search-store";
 import { cn } from "@/lib/utils";
@@ -34,30 +34,30 @@ export default function TypeSearchBox() {
     if (purpose !== value) {
       setPurpose(value as Purpose);
       if (value == Purpose.LIVING) {
-        setType(livingPlaceType.HOUSE);
+        setType(LivingPlaceType.HOUSE);
       } else if (value == Purpose.WORKING) {
-        setType(workingPlaceType.OFFICE);
+        setType(WorkingPlaceType.OFFICE);
       }
       handleSearch({ searchOption: SearchOption.TYPE, valid: false });
     }
   };
   const handleChangeType = (value: string) => {
     value;
-    if (Object.values(workingPlaceType).includes(value as workingPlaceType)) {
-      setType(value as workingPlaceType);
+    if (Object.values(WorkingPlaceType).includes(value as WorkingPlaceType)) {
+      setType(value as WorkingPlaceType);
     }
-    if (Object.values(livingPlaceType).includes(value as livingPlaceType)) {
-      setType(value as livingPlaceType);
+    if (Object.values(LivingPlaceType).includes(value as LivingPlaceType)) {
+      setType(value as LivingPlaceType);
     }
 
     const searchOption: SearchOptionState = {
       searchOption: SearchOption.TYPE,
       valid:
         purpose === Purpose.LIVING
-          ? Object.values(livingPlaceType).includes(value as livingPlaceType) &&
+          ? Object.values(LivingPlaceType).includes(value as LivingPlaceType) &&
             guest.adults > 0
           : purpose === Purpose.WORKING
-          ? Object.values(workingPlaceType).includes(value as workingPlaceType)
+          ? Object.values(WorkingPlaceType).includes(value as WorkingPlaceType)
           : false,
     };
     handleSearch(searchOption);
@@ -131,7 +131,7 @@ export default function TypeSearchBox() {
                 <CommandEmpty>No type can be found</CommandEmpty>
                 <CommandGroup>
                   {purpose === Purpose.LIVING &&
-                    Object.values(livingPlaceType).map((value, index) => (
+                    Object.values(LivingPlaceType).map((value, index) => (
                       <CommandItem
                         value={value}
                         key={index}
@@ -144,7 +144,7 @@ export default function TypeSearchBox() {
                       </CommandItem>
                     ))}
                   {purpose === Purpose.WORKING &&
-                    Object.values(workingPlaceType).map((value, index) => (
+                    Object.values(WorkingPlaceType).map((value, index) => (
                       <CommandItem
                         value={value}
                         key={index}

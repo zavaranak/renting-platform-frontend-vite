@@ -1,4 +1,4 @@
-import { Place } from "@mui/icons-material";
+import { z } from "zod";
 
 export enum Term {
   LONG = "long_term",
@@ -20,23 +20,24 @@ export enum TermUnit {
   MONTH = "MONTH",
 }
 
+export const TermUnitSchema = z.nativeEnum(TermUnit);
+
 export enum SearchOption {
   LOCATION = "location",
   TYPE = "type",
-  // PERIOD = 'period',
-  // GUEST = 'guest',
-  // TERM = "term",
   SORT = "sort",
 }
 
-export enum livingPlaceType {
+export enum LivingPlaceType {
   HOUSE = "HOUSE",
   APARTMENT = "APARTMENT",
   DORMITORY = "DORMITORY",
   STUDIO = "STUDIO",
   HOTEL = "HOTEL",
 }
-export enum workingPlaceType {
+export const LivingPlaceTypeSchema = z.nativeEnum(LivingPlaceType);
+
+export enum WorkingPlaceType {
   OFFICE = "OFFICE",
   WORKSHOP = "WORKSHOP",
   FACTORY = "FACTORY",
@@ -46,6 +47,7 @@ export enum workingPlaceType {
   COWORKING_SPACE = "COWORKING_SPACE",
   EVENT_SPACE = "EVENT_SPACE",
 }
+export const WorkingPlaceTypeSchema = z.nativeEnum(WorkingPlaceType);
 
 export enum PlaceType {
   HOUSE = "HOUSE",
@@ -61,11 +63,15 @@ export enum PlaceType {
   COWORKING_SPACE = "COWORKING_SPACE",
   EVENT_SPACE = "EVENT_SPACE",
 }
+export const PlaceTypeSchema = z.nativeEnum(PlaceType);
 
 export enum AuthActions {
   LOG_IN = "LOG_IN",
   SIGN_UP = "SIGN_UP",
 }
+
+export const AuthActionsSchema = z.nativeEnum(AuthActions);
+
 export type LoginData = {
   role: string;
   action: AuthActions;
@@ -78,11 +84,14 @@ export const Gender = {
   FEMALE: "FEMALE",
   OTHER: "OTHER",
 };
+export const GenderSchema = z.nativeEnum(Gender);
 
 export enum Role {
   landlord = "LANDLORD",
   tenant = "TENANT",
 }
+export const RoleSchema = z.nativeEnum(Role);
+
 export enum TenantAttributeName {
   FIRSTNAME = "FIRSTNAME",
   LASTNAME = "LASTNAME",
@@ -94,6 +103,7 @@ export enum TenantAttributeName {
   COUNTRY = "COUNTRY",
   AVATAR = "AVATAR",
 }
+export const TenantAttributeNameSchema = z.nativeEnum(TenantAttributeName);
 
 export enum LandlordAttributeName {
   FIRSTNAME = "FIRSTNAME",
@@ -107,6 +117,7 @@ export enum LandlordAttributeName {
   DOCUMENT = "DOCUMENT",
   COUNTRY = "COUNTRY",
 }
+export const LandlordAttributeNameSchema = z.nativeEnum(LandlordAttributeName);
 
 export enum Operator {
   EQUAL = "EQUAL",
@@ -116,12 +127,15 @@ export enum Operator {
   SMALLER_AND_EQUAL = "SMALLER_AND_EQUAL",
   INCLUDE = "INCLUDE",
 }
+export const OperatorSchema = z.nativeEnum(Operator);
 
 export enum PlaceStatus {
   FOR_RENT = "FOR_RENT",
   NOT_FORENT = "NOT_FORENT",
   OCCUPIED = "OCCUPIED",
 }
+
+export const PlaceStatusSchema = z.nativeEnum(PlaceStatus);
 
 export enum PlaceAttributeName {
   PRIVATE_BATHROOM = "PRIVATE_BATHROOM",
@@ -151,6 +165,9 @@ export enum PlaceAttributeName {
   PRICE_BY_MONTH = "PRICE_BY_MONTH",
   MAX_GUEST = "MAX_GUEST",
 }
+
+export const PlaceAttributeNameSchema = z.nativeEnum(PlaceAttributeName);
+
 export const Facilities = {
   PRIVATE_BATHROOM: "PRIVATE_BATHROOM",
   PRIVATE_KITCHEN: "PRIVATE_KITCHEN",
@@ -219,6 +236,7 @@ export enum Order {
   asc = "asc",
   desc = "desc",
 }
+export const OrderSchema = z.nativeEnum(Order);
 
 export type AbstractAttributesType = typeof PlaceAttributeName &
   typeof TenantAttributeName &
@@ -228,3 +246,6 @@ export enum Payment {
   CASH = "CASH",
   CARD = "CARD",
 }
+export const PaymentSchema = z.nativeEnum(Payment);
+
+export const BookingStatusSchema = z.enum(["canceled", "completed"]);

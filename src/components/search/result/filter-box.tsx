@@ -4,9 +4,9 @@ import clsx from "clsx";
 import { useState } from "react";
 import {
   Facilities,
-  livingPlaceType,
+  LivingPlaceType,
   Purpose,
-  workingPlaceType,
+  WorkingPlaceType,
   SearchOption,
   SortOptions,
 } from "@/lib/contanst";
@@ -83,23 +83,23 @@ export const FilterBox = () => {
             <select onChange={handleTypeChange} value={type ?? ""}>
               <option value="">--</option>
               {purpose == Purpose.LIVING ? (
-                Object.keys(livingPlaceType).map((key) => (
+                Object.keys(LivingPlaceType).map((key) => (
                   <option
                     key={key}
-                    value={livingPlaceType[key as keyof typeof livingPlaceType]}
+                    value={LivingPlaceType[key as keyof typeof LivingPlaceType]}
                   >
-                    {livingPlaceType[key as keyof typeof livingPlaceType]}
+                    {LivingPlaceType[key as keyof typeof LivingPlaceType]}
                   </option>
                 ))
               ) : purpose == Purpose.WORKING ? (
-                Object.keys(workingPlaceType).map((key) => (
+                Object.keys(WorkingPlaceType).map((key) => (
                   <option
                     key={key}
                     value={
-                      workingPlaceType[key as keyof typeof workingPlaceType]
+                      WorkingPlaceType[key as keyof typeof WorkingPlaceType]
                     }
                   >
-                    {workingPlaceType[key as keyof typeof workingPlaceType]}
+                    {WorkingPlaceType[key as keyof typeof WorkingPlaceType]}
                   </option>
                 ))
               ) : (

@@ -1,5 +1,5 @@
 import OptionSwitchButton from "./option-switch-button";
-import { livingPlaceType, SearchOption, TermUnit } from "@/lib/contanst";
+import { LivingPlaceType, SearchOption, TermUnit } from "@/lib/contanst";
 
 import SearchButton from "./search-button";
 import MainSearchBox from "./options_of_search_box/main-search-box";
@@ -18,7 +18,7 @@ export default function SearchBox() {
 
   useEffect(() => {
     setTerm(TermUnit.DAY);
-    setType(livingPlaceType.HOUSE);
+    setType(LivingPlaceType.HOUSE);
   }, []);
 
   return (

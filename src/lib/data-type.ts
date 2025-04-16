@@ -1,17 +1,21 @@
 import { UserAttributes } from "@/store/auth-store";
 import {
   AuthActions,
-  livingPlaceType,
+  BookingStatusSchema,
+  LivingPlaceType,
   Operator,
   Order,
   Payment,
+  PaymentSchema,
   PlaceAttributeName,
   PlaceStatus,
   Role,
   Status,
   TermUnit,
-  workingPlaceType,
+  TermUnitSchema,
+  WorkingPlaceType,
 } from "./contanst";
+import { number, z } from "zod";
 
 export type Attribute = {
   __typename: string;
@@ -37,35 +41,20 @@ export type LoginData = {
 
 export type Place = {
   id: string;
-
   name: string;
-
   address: string;
-
   city: string;
-
   country: string;
-
-  type: workingPlaceType[] | livingPlaceType[];
-
+  type: WorkingPlaceType[] | LivingPlaceType[];
   termUnit: TermUnit[];
-
   area: number;
-
   createdAt: number;
-
   lastUpdate: number;
-
   rating?: number;
-
   photos?: string[];
-
   status: PlaceStatus;
-
   landlord: User;
-
   distanceFromCenter: number;
-
   attributes?: PlaceAttribute[];
 };
 
@@ -159,18 +148,56 @@ export type QueryManyInput = {
   selectedDate?: SelectedDate;
 };
 
-export type PendingBooking = {
-  id: string;
-  createdAt: number;
-  lastUpdate: number;
-  startAt: number;
-  endAt: number;
-  termUnit: TermUnit;
-  period: number;
-  totalCharge: number;
-  tenantId: string;
-  placeId: string;
-  payment: Payment;
-  updateBy: string;
-  guests: string[];
-};
+export const PendingBookingSchema = z.object({
+  id: z.string(),
+  createdAt: z.number().positive(),
+  lastUpdate: z.number().positive(),
+  startAt: z.number().positive(),
+  endAt: z.number().positive(),
+  termUnit: TermUnitSchema,
+  period: z.number().positive(),
+  totalCharge: z.number().positive(),
+  tenantId: z.string(),
+  placeId: z.string(),
+  payment: PaymentSchema,
+  guests: z.array(z.string()),
+});
+
+export type PendingBooking = z.infer<typeof PendingBookingSchema>;
+
+export const ActiveBookingSchema = z.object({
+  id: z.string(),
+  createdAt: z.number().positive(),
+  lastUpdate: z.number().positive(),
+  startAt: z.number().positive(),
+  endAt: z.number().positive(),
+  termUnit: TermUnitSchema,
+  period: z.number(),
+  totalCharge: z.number().positive(),
+  tenantId: z.string(),
+  payment: PaymentSchema,
+  placeId: z.string(),
+  paidDate: z.number().nullable(),
+  guests: z.array(z.string()),
+});
+
+export type ActiveBooking = z.infer<typeof ActiveBookingSchema>;
+
+export const CompletedBookingSchema = z.object({
+  id: z.string(),
+  createdAt: z.number().positive(),
+  lastUpdate: z.number().positive(),
+  startAt: z.number().positive(),
+  endAt: z.number().positive(),
+  termUnit: TermUnitSchema,
+  period: z.number().positive(),
+  status: BookingStatusSchema,
+  totalCharge: z.number().positive(),
+  paidDate: z.number().nullable(),
+  tenantId: z.string(),
+  placeId: z.string(),
+  reviews: z.array(z.string()).nullable(),
+  guests: z.array(z.string()),
+});
+
+export type CompletedBooking = z.infer<typeof CompletedBookingSchema>;

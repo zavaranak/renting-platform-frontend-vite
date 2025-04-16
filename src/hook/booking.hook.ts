@@ -1,8 +1,16 @@
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
-import { BookingInput, PendingBooking, QueryManyInput } from "@/lib/data-type";
+import {
+  ActiveBooking,
+  BookingInput,
+  CompletedBooking,
+  PendingBooking,
+  QueryManyInput,
+} from "@/lib/data-type";
 import {
   CANCEL_PENDING_BOOKING,
   CREATE_BOOKING,
+  QUERY_ACTIVE_BOOKINGS,
+  QUERY_COMPLETED_BOOKINGS,
   QUERY_PENDING_BOOKINGS,
 } from "@/lib/gql/endpoint";
 import { useAppStore } from "@/store/app-store";
@@ -42,7 +50,7 @@ export const useCreateBooking = () => {
   return { createBooking, loading, error };
 };
 
-export const useQueryBooking = () => {
+export const useFetchPendingBooking = () => {
   const [pendingBookings, setPendingBookings] = useState<
     PendingBooking[] | undefined
   >();
@@ -87,4 +95,63 @@ export const useCancelPendingBooking = () => {
   };
 
   return { cancelPendingBooking };
+};
+
+export const useFetchActiveBooking = () => {
+  const [activeBookings, setActiveBookings] = useState<
+    ActiveBooking[] | undefined
+  >();
+  const [loadingAB, setLoadingAB] = useState<boolean>(false);
+
+  const [queryBookings] = useLazyQuery(QUERY_ACTIVE_BOOKINGS, {
+    fetchPolicy: "network-only",
+    onCompleted: (data) => {
+      console.log(data);
+      setActiveBookings(data.getManyActiveBooking);
+      setLoadingAB(false);
+    },
+    onError: (err) => {
+      console.log(err);
+      setLoadingAB(false);
+    },
+  });
+
+  const getActiveBookings = async (params: QueryManyInput) => {
+    setLoadingAB(true);
+    await queryBookings({
+      variables: {
+        queryManyInput: params,
+      },
+    });
+  };
+  return { activeBookings, getActiveBookings, loadingAB };
+};
+export const useFetchCompletedBooking = () => {
+  const [completedBookings, setCompletedBookings] = useState<
+    CompletedBooking[] | undefined
+  >();
+  const [loadingCB, setLoadingCB] = useState<boolean>(false);
+
+  const [queryBookings] = useLazyQuery(QUERY_COMPLETED_BOOKINGS, {
+    fetchPolicy: "network-only",
+    onCompleted: (data) => {
+      console.log(data);
+      setCompletedBookings(data.getManyActiveBooking);
+      setLoadingCB(false);
+    },
+    onError: (err) => {
+      console.log(err);
+      setLoadingCB(false);
+    },
+  });
+
+  const getCompletedBookings = async (params: QueryManyInput) => {
+    setLoadingCB(true);
+    await queryBookings({
+      variables: {
+        queryManyInput: params,
+      },
+    });
+  };
+  return { completedBookings, getCompletedBookings, loadingCB };
 };

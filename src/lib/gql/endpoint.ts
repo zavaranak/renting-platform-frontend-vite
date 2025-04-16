@@ -251,7 +251,6 @@ export const QUERY_PENDING_BOOKINGS = gql`
       period
       tenantId
       totalCharge
-      updateBy
     }
   }
 `;
@@ -261,6 +260,45 @@ export const CANCEL_PENDING_BOOKING = gql`
     cancelPendingBooking(pendingBookingId: $pendingBookingId) {
       type
       message
+    }
+  }
+`;
+
+export const QUERY_ACTIVE_BOOKINGS = gql`
+  query GetManyActiveBooking($queryManyInput: QueryManyInput!) {
+    getManyActiveBooking(query_many_input: $queryManyInput) {
+      createdAt
+      endAt
+      guests
+      id
+      lastUpdate
+      paidDate
+      payment
+      period
+      placeId
+      startAt
+      tenantId
+      termUnit
+      totalCharge
+    }
+  }
+`;
+export const QUERY_COMPLETED_BOOKINGS = gql`
+  query GetManyCompletedBooking($queryManyInput: QueryManyInput!) {
+    getManyCompletedBooking(query_many_input: $queryManyInput) {
+      createdAt
+      endAt
+      guests
+      id
+      lastUpdate
+      paidDate
+      period
+      placeId
+      startAt
+      status
+      tenantId
+      termUnit
+      totalCharge
     }
   }
 `;
