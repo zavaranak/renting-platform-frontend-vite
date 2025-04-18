@@ -20,8 +20,6 @@ export function HourPicker() {
   const timeValueHandler = () => {
     const start = dayjs(date).add(parseInt(startHour), "hour").valueOf();
     const end = dayjs(date).add(parseInt(endHour), "hour").valueOf();
-    console.log(start, end);
-    console.log(start < end);
     if (start < end) {
       setSelectedDate({ start, end });
     } else {

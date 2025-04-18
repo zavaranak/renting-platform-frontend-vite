@@ -1,13 +1,13 @@
 "use client";
 import { create } from "zustand";
 import {
-  livingPlaceType,
+  LivingPlaceType,
   PlaceType,
   Purpose,
   SearchOption,
   SortOptions,
   TermUnit,
-  workingPlaceType,
+  WorkingPlaceType,
 } from "@/lib/contanst";
 
 import { QueryPagination, SelectedDate } from "@/lib/data-type";
@@ -38,7 +38,7 @@ export type SearchStoreState = {
   countries: string[];
   cities: string[];
   purpose: Purpose;
-  type: livingPlaceType | workingPlaceType | PlaceType | undefined;
+  type: LivingPlaceType | WorkingPlaceType | PlaceType | undefined;
   term: TermUnit | undefined;
   location: LocationParam;
   guest: GuestParam;
@@ -59,7 +59,7 @@ export type SearchStoreAction = {
   setGuest: (guest: GuestParam) => void;
   setLocation: (location: LocationParam) => void;
   setType: (
-    type: livingPlaceType | workingPlaceType | PlaceType | undefined
+    type: LivingPlaceType | WorkingPlaceType | PlaceType | undefined
   ) => void;
   setTerm: (term: TermUnit) => void;
   setPurpose: (purpose: Purpose) => void;
@@ -131,6 +131,7 @@ export const useSearchStore = create<SearchStore>((set) => ({
   handleSearch: (optionState?: SearchOptionState) =>
     set((state: SearchStoreState) => {
       if (optionState == undefined) {
+        console.log("update cansearch to false");
         return {
           searchOptionState: initialSearchOptionState,
           canSearch: false,
@@ -154,12 +155,16 @@ export const useSearchStore = create<SearchStore>((set) => ({
           return option;
         }
       });
-      if (optionState)
+      if (optionState) {
+        console.log(
+          `update cansearch to ${checkCanSearch && optionState.valid}`
+        );
         return {
           searchOptionState: newState,
           canSearch: checkCanSearch && optionState.valid,
         };
-      else {
+      } else {
+        console.log(`update cansearch to ${checkCanSearch}`);
         return {
           canSearch: checkCanSearch,
         };
@@ -193,7 +198,7 @@ export const useSearchStore = create<SearchStore>((set) => ({
     }));
   },
   setType: (
-    type: workingPlaceType | livingPlaceType | PlaceType | undefined
+    type: WorkingPlaceType | LivingPlaceType | PlaceType | undefined
   ) => {
     set(() => ({
       type: type,

@@ -34,18 +34,11 @@ export default function App() {
                 element={isAuthenticated ? <Navigate to="/" /> : <LoginForm />}
               />
               <Route
-                path={`/profile/${Role.tenant}/:userId`}
+                path={`/profile/:role/:userId`}
                 element={isAuthenticated ? <ProfileRoute /> : <LoginForm />}
-              />
-              <Route
-                path={`/profile/${Role.landlord}/:userId`}
-                element={isAuthenticated ? <Navigate to="/" /> : <LoginForm />}
               />
               <Route path={`/search/`} element={<SearchResultRoute />} />
               <Route path="/place/:placeId" element={<PlaceRoute />} />
-              {/* <Route path="/contact" element={<Contact />} /> */}
-              {/* <Route path="/products/:id" element={<ProductDetail />} /> */}
-              {/* <Route path="*" element={<NotFound />} /> */}
             </Routes>
           </div>
         </BrowserRouter>

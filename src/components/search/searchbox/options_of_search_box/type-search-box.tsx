@@ -38,7 +38,7 @@ export default function TypeSearchBox() {
       } else if (value == Purpose.WORKING) {
         setType(WorkingPlaceType.OFFICE);
       }
-      handleSearch({ searchOption: SearchOption.TYPE, valid: false });
+      handleSearch({ searchOption: SearchOption.TYPE, valid: true });
     }
   };
   const handleChangeType = (value: string) => {
@@ -140,7 +140,7 @@ export default function TypeSearchBox() {
                           setOpenTypeBox(false);
                         }}
                       >
-                        {value[1]}
+                        {value}
                       </CommandItem>
                     ))}
                   {purpose === Purpose.WORKING &&

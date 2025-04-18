@@ -3,26 +3,39 @@ import {
   AuthActions,
   BookingStatusSchema,
   LivingPlaceType,
+  LivingPlaceTypeSchema,
   Operator,
   Order,
-  Payment,
   PaymentSchema,
   PlaceAttributeName,
+  PlaceAttributeNameSchema,
   PlaceStatus,
+  PlaceStatusSchema,
   Role,
   Status,
   TermUnit,
   TermUnitSchema,
+  UserStatusSchema,
   WorkingPlaceType,
+  WorkingPlaceTypeSchema,
 } from "./contanst";
-import { number, z } from "zod";
+import { z } from "zod";
 
-export type Attribute = {
-  __typename: string;
-  value: string;
-  name: string;
-  id: string;
-};
+export const UserAttributeSchema = z.object({
+  __typename: z.string(),
+  value: z.string(),
+  name: z.string(),
+  id: z.string(),
+});
+
+export type Attribute = z.infer<typeof UserAttributeSchema>;
+
+export const UserSchema = z.object({
+  username: z.string(),
+  id: z.string(),
+  status: UserStatusSchema,
+  attributes: z.array(UserAttributeSchema),
+});
 
 export type User = {
   username: string;
@@ -38,35 +51,36 @@ export type LoginData = {
   action: AuthActions;
   role: Role;
 };
+export const PlaceAttributeSchema = z.object({
+  id: z.string(),
+  name: PlaceAttributeNameSchema,
+  valueNumber: z.number().nullable(),
+  value: z.string(),
+});
 
-export type Place = {
-  id: string;
-  name: string;
-  address: string;
-  city: string;
-  country: string;
-  type: WorkingPlaceType[] | LivingPlaceType[];
-  termUnit: TermUnit[];
-  area: number;
-  createdAt: number;
-  lastUpdate: number;
-  rating?: number;
-  photos?: string[];
-  status: PlaceStatus;
-  landlord: User;
-  distanceFromCenter: number;
-  attributes?: PlaceAttribute[];
-};
+export type PlaceAttribute = z.infer<typeof PlaceAttributeSchema>;
 
-export type PlaceAttribute = {
-  id?: string;
+export const PlaceSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  address: z.string(),
+  city: z.string(),
+  country: z.string(),
+  type: z.array(z.union([WorkingPlaceTypeSchema, LivingPlaceTypeSchema])),
+  termUnit: z.array(TermUnitSchema),
+  area: z.number().positive(),
+  createdAt: z.number().positive(),
+  lastUpdate: z.number(),
+  rating: z.number(),
+  photos: z.array(z.string()).nullable(),
+  status: PlaceStatusSchema,
+  landlord: UserSchema.optional(),
+  distanceFromCenter: z.number(),
+  attributes: z.array(PlaceAttributeSchema),
+});
 
-  name: PlaceAttributeName;
+export type Place = z.infer<typeof PlaceSchema>;
 
-  valueNumber?: number;
-
-  value: string;
-};
 export type ResponseVerify = {
   user: User;
   attributes: Attribute[];
@@ -136,7 +150,7 @@ export type AttributeUpdateInput = {
   valueNumber?: number;
 };
 
-export type TenantAttributeInput = {
+export type UserAttributeInput = {
   name: keyof UserAttributes;
   value: string;
 };

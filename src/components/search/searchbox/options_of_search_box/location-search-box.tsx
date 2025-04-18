@@ -42,24 +42,20 @@ export default function LocationSearchBox() {
 
   const handleChangeTerm = (value: TermUnit) => {
     setTerm(value);
-    validateSearchParams(location, value);
+    // validateSearchParams(location);
   };
 
-  const validateSearchParams = (
-    passedLocation: LocationParam,
-    term: TermUnit | undefined
-  ) => {
+  const validateSearchParams = (passedLocation: LocationParam) => {
     if (
       countries.includes(passedLocation.country) &&
       cities.includes(passedLocation.city)
     ) {
       setLocation(passedLocation);
-      if (!term) {
-        handleSearch({
-          searchOption: SearchOption.LOCATION,
-          valid: true,
-        });
-      }
+
+      handleSearch({
+        searchOption: SearchOption.LOCATION,
+        valid: true,
+      });
     } else {
       handleSearch({
         searchOption: SearchOption.LOCATION,
@@ -90,7 +86,7 @@ export default function LocationSearchBox() {
           })
         : [];
     setFilteredCities(filter);
-    validateSearchParams({ city: value, country: location.country }, term);
+    validateSearchParams({ city: value, country: location.country });
   };
   useEffect(() => {
     if (city != "" && country != "") {

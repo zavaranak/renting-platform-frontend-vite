@@ -136,7 +136,7 @@ export const useFetchCompletedBooking = () => {
     fetchPolicy: "network-only",
     onCompleted: (data) => {
       console.log(data);
-      setCompletedBookings(data.getManyActiveBooking);
+      setCompletedBookings(data.getManyCompletedBooking);
       setLoadingCB(false);
     },
     onError: (err) => {

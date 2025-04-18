@@ -17,7 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useTenantAttributes } from "@/hook/tenant.hook";
-import { AttributeUpdateInput, TenantAttributeInput } from "@/lib/data-type";
+import { AttributeUpdateInput, UserAttributeInput } from "@/lib/data-type";
 import { useAuthStore, UserAttributes } from "@/store/auth-store";
 import { DialogDescription, DialogTrigger } from "@radix-ui/react-dialog";
 import dayjs from "dayjs";
@@ -30,6 +30,8 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { useLandlordAttributes } from "@/hook/landlord.hook";
+import { Role } from "@/lib/contanst";
 
 // Define Zod schema for form validation
 const profileFormSchema = z.object({
@@ -46,14 +48,20 @@ const profileFormSchema = z.object({
 
 export interface ProfileEditFormParams {
   onChangeProfile: () => Promise<void>;
+  role: Role;
 }
 
-export default function ProfileEditForm(params: ProfileEditFormParams) {
-  const { updateTenantAttr, createTenantAttr, loading } = useTenantAttributes();
+export default function ProfileEditForm({
+  onChangeProfile,
+  role,
+}: ProfileEditFormParams) {
+  const { updateTenantAttr, createTenantAttr, statusTenantAttr } =
+    useTenantAttributes();
+  const { updateLandlordAttr, createLandlordAttr, statusLandlordAttr } =
+    useLandlordAttributes();
   const { userAttributes } = useAuthStore((state) => state);
   const [displayForm, setDisplayForm] = useState(false);
 
-  // Initialize form with react-hook-form and zod
   const form = useForm<z.infer<typeof profileFormSchema>>({
     resolver: zodResolver(profileFormSchema),
     defaultValues: {
@@ -73,7 +81,7 @@ export default function ProfileEditForm(params: ProfileEditFormParams) {
 
   const handleSubmit = async (values: z.infer<typeof profileFormSchema>) => {
     const changedFields: AttributeUpdateInput[] = [];
-    const newFields: TenantAttributeInput[] = [];
+    const newFields: UserAttributeInput[] = [];
 
     // Prepare data for submission
     Object.entries(values).forEach(([key, value]) => {
@@ -102,12 +110,30 @@ export default function ProfileEditForm(params: ProfileEditFormParams) {
 
     try {
       if (changedFields.length > 0) {
-        await updateTenantAttr(changedFields);
+        switch (role) {
+          case Role.tenant: {
+            await updateTenantAttr(changedFields);
+            break;
+          }
+          case Role.landlord: {
+            await updateLandlordAttr(changedFields);
+            break;
+          }
+        }
       }
       if (newFields.length > 0) {
-        await createTenantAttr(newFields);
+        switch (role) {
+          case Role.landlord: {
+            await createLandlordAttr(newFields);
+            break;
+          }
+          case Role.tenant: {
+            await createTenantAttr(newFields);
+            break;
+          }
+        }
       }
-      await params.onChangeProfile();
+      await onChangeProfile();
       setDisplayForm(false);
     } catch (error) {
       console.error("Failed to update profile:", error);
@@ -248,8 +274,16 @@ export default function ProfileEditForm(params: ProfileEditFormParams) {
               >
                 Cancel
               </Button>
-              <Button type="submit" disabled={loading}>
-                {(loading && "Loading...") || "Save Changes"}
+              <Button
+                type="submit"
+                disabled={
+                  statusTenantAttr.anyLoading && statusLandlordAttr.anyLoading
+                }
+              >
+                {(statusTenantAttr.anyLoading &&
+                  statusLandlordAttr.anyLoading &&
+                  "Loading...") ||
+                  "Save Changes"}
               </Button>
             </div>
           </form>

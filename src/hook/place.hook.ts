@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
-import { TermUnit } from "@/lib/contanst";
+import { useCallback, useEffect, useState } from "react";
+import { Operator, TermUnit } from "@/lib/contanst";
 import { useSearchStore } from "@/store/search-store";
 import dayjs from "dayjs";
 import localizedFormat from "dayjs/plugin/localizedFormat"; // ES 2015
-import { useQuery } from "@apollo/client";
+import { useLazyQuery, useQuery } from "@apollo/client";
 import { Place, PlaceAttribute } from "@/lib/data-type";
-import { QUERY_PLACE_BY_ID } from "@/lib/gql/endpoint";
+import { QUERY_PLACE_BY_ID, QUERY_PLACES_WITH_DATA } from "@/lib/gql/endpoint";
 import { CITIES, COUNTRIES } from "@/lib/gql/endpoint";
 
 export const usePlaceDateParsing = (reload: boolean) => {
@@ -82,7 +82,7 @@ export const usePlacePrice = (params: {
   return { totalCharge, place, price };
 };
 
-export const UseFetchCountriesAndCites = () => {
+export const useFetchCountriesAndCites = () => {
   const { location, countries, cities, setCountries, setCities } =
     useSearchStore((state) => state);
   useQuery(COUNTRIES, {
@@ -121,4 +121,40 @@ export const useQueryPlace = (placeId: string) => {
     },
   });
   return { place, loading };
+};
+
+export const useQueryPlacesByLandlord = (landlordId: string) => {
+  const [places, setPlaces] = useState<Place[]>();
+  const [search, { loading, error }] = useLazyQuery(QUERY_PLACES_WITH_DATA, {
+    onCompleted: (data) => {
+      setPlaces(data?.getPlaces ?? []);
+      console.log(data?.getPlaces);
+    },
+    onError: (error) => {
+      console.error("Fetch error:", error);
+    },
+  });
+
+  const queryPlacesByLandlord = useCallback(() => {
+    search({
+      variables: {
+        queryManyInput: {
+          conditions: [
+            {
+              value: landlordId,
+              key: "landlordId",
+              operator: Operator.EQUAL,
+            },
+          ],
+        },
+      },
+    });
+  }, [search]);
+
+  return {
+    queryPlacesByLandlord,
+    places: places ?? [],
+    loading,
+    error,
+  };
 };

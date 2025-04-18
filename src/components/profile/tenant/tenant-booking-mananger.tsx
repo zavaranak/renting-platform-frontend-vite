@@ -1,5 +1,14 @@
 import { Card } from "@/components/ui/card";
-import { Table } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import {
   useCancelPendingBooking,
   useFetchActiveBooking,
@@ -38,20 +47,25 @@ export const TenantBookingManager = ({ tenantId }: Props) => {
   >();
 
   return (
-    <Card className="mb-6 p-4 flex flex-col max-h-[620px]">
-      <PendingBookingTable
-        queryParams={params}
-        viewAction={setSelectedBooking}
-      />
-
-      <ActiveBookingTable
-        queryParams={params}
-        viewAction={setSelectedBooking}
-      />
-      <CompletedBookingTable
-        queryParams={params}
-        viewAction={setSelectedBooking}
-      />
+    <div className="mb-6 flex flex-col gap-2">
+      <Card className="p-4  flex flex-col max-h-[300px] overflow-y-scroll">
+        <PendingBookingTable
+          queryParams={params}
+          viewAction={setSelectedBooking}
+        />
+      </Card>
+      <Card className=" p-4 flex flex-col max-h-[300px] overflow-y-scroll">
+        <ActiveBookingTable
+          queryParams={params}
+          viewAction={setSelectedBooking}
+        />
+      </Card>
+      <Card className=" p-4 flex flex-col max-h-[300px] overflow-y-scroll">
+        <CompletedBookingTable
+          queryParams={params}
+          viewAction={setSelectedBooking}
+        />
+      </Card>
 
       {selectedBooking && (
         <BookingModal
@@ -59,7 +73,7 @@ export const TenantBookingManager = ({ tenantId }: Props) => {
           setSelectedBooking={setSelectedBooking}
         />
       )}
-    </Card>
+    </div>
   );
 };
 
@@ -88,35 +102,37 @@ const PendingBookingTable = (tableParams: TableParam) => {
     <div>
       <h2 className="text-xl font-bold mb-4">Pending bookings</h2>
       <Table className="relative">
-        <thead className="sticky top-0 bg-white z-10">
-          <tr>
-            <th>Created</th>
-            <th>Term</th>
-            <th>From</th>
-            <th>To</th>
-            <th>Total charge</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
+        <TableHeader className="sticky top-0 bg-white z-10">
+          <TableRow>
+            <TableHead>Created</TableHead>
+            <TableHead>Term</TableHead>
+            <TableHead>From</TableHead>
+            <TableHead>To</TableHead>
+            <TableHead>Total charge</TableHead>
+            <TableHead>Actions</TableHead>
+          </TableRow>
+        </TableHeader>
         {loadingPB || (
-          <tbody className="overflow-y-auto flex-1">
+          <TableBody className="overflow-y-auto flex-1">
             {pendingBookings?.map((booking: PendingBooking) => (
-              <tr
+              <TableRow
                 key={booking.id}
-                className="hover:bg-gray-50 transition-colors"
+                className="hover:bg-gray-50 TableRowansition-colors"
               >
-                <td className="px-4 py-3">
+                <TableCell className="">
                   {dayjs(Number(booking.createdAt)).format("h:mm DD/MM/YYYY")}
-                </td>
-                <td className="px-4 py-3">{booking.termUnit?.toLowerCase()}</td>
-                <td className="px-4 py-3">
+                </TableCell>
+                <TableCell className="">
+                  {booking.termUnit?.toLowerCase()}
+                </TableCell>
+                <TableCell className="">
                   {dayjs(Number(booking.startAt)).format("DD/MM/YYYY")}
-                </td>
-                <td className="px-4 py-3">
+                </TableCell>
+                <TableCell className="">
                   {dayjs(Number(booking.endAt)).format("DD/MM/YYYY")}
-                </td>
-                <td className="px-4 py-3">{booking.totalCharge}</td>
-                <td className="px-4 py-3 flex gap-2 m-auto">
+                </TableCell>
+                <TableCell className="">{booking.totalCharge}</TableCell>
+                <TableCell className=" flex gap-2 m-auto">
                   <Button
                     onClick={() => {
                       viewAction(booking);
@@ -134,16 +150,16 @@ const PendingBookingTable = (tableParams: TableParam) => {
                       if (actionResult) {
                         getPendingBookings(queryParams);
                       } else {
-                        alert("unable to cancel this booking");
+                        alert("unable to cancel TableHeadis booking");
                       }
                     }}
                   >
                     Cancel
                   </Button>
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
             ))}
-          </tbody>
+          </TableBody>
         )}
       </Table>
     </div>
@@ -165,35 +181,37 @@ const ActiveBookingTable = (tableParams: TableParam) => {
     <div>
       <h2 className="text-xl font-bold mb-4">Active bookings</h2>
       <Table className="relative">
-        <thead className="sticky top-0 bg-white z-10">
-          <tr>
-            <th>Created</th>
-            <th>Term</th>
-            <th>From</th>
-            <th>To</th>
-            <th>Total charge</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
+        <TableHeader className="sticky top-0 bg-white z-10">
+          <TableRow>
+            <TableHead>Created</TableHead>
+            <TableHead>Term</TableHead>
+            <TableHead>From</TableHead>
+            <TableHead>To</TableHead>
+            <TableHead>Total charge</TableHead>
+            <TableHead>Actions</TableHead>
+          </TableRow>
+        </TableHeader>
         {loadingAB || (
-          <tbody className="overflow-y-auto flex-1">
+          <TableBody className="overflow-y-auto flex-1">
             {activeBookings?.map((booking: PendingBooking) => (
-              <tr
+              <TableRow
                 key={booking.id}
-                className="hover:bg-gray-50 transition-colors"
+                className="hover:bg-gray-50 TableRowansition-colors"
               >
-                <td className="px-4 py-3">
+                <TableCell className="">
                   {dayjs(Number(booking.createdAt)).format("h:mm DD/MM/YYYY")}
-                </td>
-                <td className="px-4 py-3">{booking.termUnit?.toLowerCase()}</td>
-                <td className="px-4 py-3">
+                </TableCell>
+                <TableCell className="">
+                  {booking.termUnit?.toLowerCase()}
+                </TableCell>
+                <TableCell className="">
                   {dayjs(Number(booking.startAt)).format("DD/MM/YYYY")}
-                </td>
-                <td className="px-4 py-3">
+                </TableCell>
+                <TableCell className="">
                   {dayjs(Number(booking.endAt)).format("DD/MM/YYYY")}
-                </td>
-                <td className="px-4 py-3">{booking.totalCharge}</td>
-                <td className="px-4 py-3 flex gap-2 m-auto">
+                </TableCell>
+                <TableCell className="">{booking.totalCharge}</TableCell>
+                <TableCell className=" flex gap-2 m-auto">
                   <Button
                     onClick={() => {
                       viewAction(booking);
@@ -211,16 +229,16 @@ const ActiveBookingTable = (tableParams: TableParam) => {
                       if (actionResult) {
                         getActiveBookings(queryParams);
                       } else {
-                        alert("unable to cancel this booking");
+                        alert("unable to cancel TableHeadis booking");
                       }
                     }}
                   >
                     Cancel
                   </Button>
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
             ))}
-          </tbody>
+          </TableBody>
         )}
       </Table>
     </div>
@@ -239,35 +257,37 @@ const CompletedBookingTable = (tableParams: TableParam) => {
     <div>
       <h2 className="text-xl font-bold mb-4">Completed bookings</h2>
       <Table className="relative">
-        <thead className="sticky top-0 bg-white z-10">
-          <tr>
-            <th>Created</th>
-            <th>Term</th>
-            <th>From</th>
-            <th>To</th>
-            <th>Total charge</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
+        <TableHeader className="sticky top-0 bg-white z-10">
+          <TableRow>
+            <TableHead>Created</TableHead>
+            <TableHead>Term</TableHead>
+            <TableHead>From</TableHead>
+            <TableHead>To</TableHead>
+            <TableHead>Total charge</TableHead>
+            <TableHead>Actions</TableHead>
+          </TableRow>
+        </TableHeader>
         {loadingCB || (
-          <tbody className="overflow-y-auto flex-1">
+          <TableBody className="overflow-y-auto flex-1">
             {completedBookings?.map((booking: CompletedBooking) => (
-              <tr
+              <TableRow
                 key={booking.id}
-                className="hover:bg-gray-50 transition-colors"
+                className="hover:bg-gray-50 TableRowansition-colors"
               >
-                <td className="px-4 py-3">
+                <TableCell className="">
                   {dayjs(Number(booking.createdAt)).format("h:mm DD/MM/YYYY")}
-                </td>
-                <td className="px-4 py-3">{booking.termUnit?.toLowerCase()}</td>
-                <td className="px-4 py-3">
+                </TableCell>
+                <TableCell className="">
+                  {booking.termUnit?.toLowerCase()}
+                </TableCell>
+                <TableCell className="">
                   {dayjs(Number(booking.startAt)).format("DD/MM/YYYY")}
-                </td>
-                <td className="px-4 py-3">
+                </TableCell>
+                <TableCell className="">
                   {dayjs(Number(booking.endAt)).format("DD/MM/YYYY")}
-                </td>
-                <td className="px-4 py-3">{booking.totalCharge}</td>
-                <td className="px-4 py-3">
+                </TableCell>
+                <TableCell className="">{booking.totalCharge}</TableCell>
+                <TableCell className="">
                   <Button
                     onClick={() => {
                       viewAction(booking);
@@ -276,10 +296,10 @@ const CompletedBookingTable = (tableParams: TableParam) => {
                   >
                     View
                   </Button>
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
             ))}
-          </tbody>
+          </TableBody>
         )}
       </Table>
     </div>

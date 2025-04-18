@@ -8,6 +8,8 @@ export enum Status {
   verified = "verified",
 }
 
+export const UserStatusSchema = z.nativeEnum(Status);
+
 export enum Purpose {
   LIVING = "for living",
   WORKING = "for business",

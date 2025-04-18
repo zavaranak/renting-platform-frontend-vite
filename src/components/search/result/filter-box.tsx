@@ -12,10 +12,10 @@ import {
 } from "@/lib/contanst";
 import { Card, Checkbox, FormControlLabel, FormGroup } from "@mui/material";
 import SearchButton from "@/components/search/searchbox/search-button";
-import { UseFetchCountriesAndCites } from "@/hook/place.hook";
+import { useFetchCountriesAndCites } from "@/hook/place.hook";
 
 export const FilterBox = () => {
-  UseFetchCountriesAndCites();
+  useFetchCountriesAndCites();
   const [openSortBox, setOpenSortBox] = useState(false);
   const [openFilterBox, setOpenFilterBox] = useState(false);
   const {
@@ -199,7 +199,7 @@ export const FilterBox = () => {
             </FormGroup>
           </div>
         </div>
-        <SearchButton />
+        <SearchButton size="small" />
       </Card>
     </SideBox>
     // </div>

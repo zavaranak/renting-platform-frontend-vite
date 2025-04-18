@@ -302,3 +302,57 @@ export const QUERY_COMPLETED_BOOKINGS = gql`
     }
   }
 `;
+
+export const QUERY_PLACES_WITH_DATA = gql`
+  query getPlaces($queryManyInput: QueryManyInput!) {
+    getPlaces(query_many_input: $queryManyInput) {
+      id
+      address
+      area
+      city
+      country
+      createdAt
+      lastUpdate
+      name
+      photos
+      priority
+      rating
+      status
+      termUnit
+      type
+      distanceFromCenter
+      attributes {
+        id
+        name
+        value
+        valueNumber
+      }
+    }
+  }
+`;
+
+export const ADD_LANDLORD_ATTRIBUTES = gql`
+  mutation AddLandlordAtributes(
+    $landlordId: String!
+    $attributesInput: [LandlordAttributeInput!]!
+  ) {
+    addLandlordAtributes(
+      landlordId: $landlordId
+      attributesInput: $attributesInput
+    ) {
+      message
+      type
+    }
+  }
+`;
+
+export const UPDATE_LANDLORD_ATTRIBUTES = gql`
+  mutation UpdateLandlordAttributes(
+    $attibuteUpdateInput: [AttributeUpdateInput!]!
+  ) {
+    updateLandlordAttributes(attibuteUpdateInput: $attibuteUpdateInput) {
+      message
+      type
+    }
+  }
+`;
