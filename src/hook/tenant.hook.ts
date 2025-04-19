@@ -5,7 +5,10 @@ import {
   UPDATE_TENANT_ATTRIBUTES,
   ADD_TENANT_ATTRIBUTES,
 } from "@/lib/gql/endpoint";
-import type { AttributeUpdateInput, UserAttributeInput } from "@/lib/data-type";
+import type {
+  UserAttributeUpdateInput,
+  UserAttributeInput,
+} from "@/lib/data-type";
 
 type OperationStatus = {
   loading: boolean;
@@ -24,7 +27,7 @@ export const useTenantAttributes = () => {
   const [updateMutation] = useMutation(UPDATE_TENANT_ATTRIBUTES);
   const [createMutation] = useMutation(ADD_TENANT_ATTRIBUTES);
 
-  const updateTenantAttr = async (updates: AttributeUpdateInput[]) => {
+  const updateTenantAttr = async (updates: UserAttributeUpdateInput[]) => {
     setUpdateStatus({ loading: true });
     try {
       const { data } = await updateMutation({

@@ -3,9 +3,21 @@ import { Operator, TermUnit } from "@/lib/contanst";
 import { useSearchStore } from "@/store/search-store";
 import dayjs from "dayjs";
 import localizedFormat from "dayjs/plugin/localizedFormat"; // ES 2015
-import { useLazyQuery, useQuery } from "@apollo/client";
-import { Place, PlaceAttribute } from "@/lib/data-type";
-import { QUERY_PLACE_BY_ID, QUERY_PLACES_WITH_DATA } from "@/lib/gql/endpoint";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
+import {
+  Place,
+  PlaceAttribute,
+  PlaceInput,
+  PlaceUpdateInput,
+} from "@/lib/data-type";
+import {
+  ADD_PLACE_ATTRIBUTES,
+  CREATE_PLACE,
+  QUERY_PLACE_BY_ID,
+  QUERY_PLACES_WITH_DATA,
+  UPDATE_PLACE,
+  UPDATE_PLACE_ATTRIBUTES,
+} from "@/lib/gql/endpoint";
 import { CITIES, COUNTRIES } from "@/lib/gql/endpoint";
 
 export const usePlaceDateParsing = (reload: boolean) => {
@@ -157,4 +169,51 @@ export const useQueryPlacesByLandlord = (landlordId: string) => {
     loading,
     error,
   };
+};
+
+export const useCreatePlace = () => {
+  const [create, { data, loading }] = useMutation(CREATE_PLACE, {
+    onCompleted: (data) => {
+      console.log(data.createPlace);
+    },
+    onError: (err) => {
+      console.log(err);
+    },
+  });
+  async function createPlace(input: PlaceInput) {
+    await create({
+      variables: {
+        placeInput: input,
+      },
+    });
+  }
+  return { createPlace, data, loading };
+};
+
+export const useUpdatePlace = () => {
+  const [update, { data, loading }] = useMutation(UPDATE_PLACE, {
+    onCompleted: (data) => {
+      console.log(data.updatePlace);
+    },
+    onError: (err) => {
+      console.log(err);
+    },
+  });
+
+  async function updatePlace(input: PlaceUpdateInput) {
+    await update({
+      variables: {
+        placeUpdateInput: input,
+      },
+    });
+  }
+  return { updatePlace, data, loading };
+};
+
+export const usePlaceAttributes = () => {
+  const [create] = useMutation(ADD_PLACE_ATTRIBUTES);
+  const [update] = useMutation(UPDATE_PLACE_ATTRIBUTES);
+
+  async function CreateAttrs() {}
+  async function UpdateAttrs() {}
 };

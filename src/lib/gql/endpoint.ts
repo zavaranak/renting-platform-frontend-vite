@@ -217,7 +217,7 @@ export const UPDATE_GUEST = gql`
 `;
 
 export const UPDATE_TENANT_ATTRIBUTES = gql`
-  mutation tenantAttribute($attibuteUpdateInput: [AttributeUpdateInput!]!) {
+  mutation tenantAttribute($attibuteUpdateInput: [UserAttributeUpdateInput!]!) {
     updateTenantAttributes(attibuteUpdateInput: $attibuteUpdateInput) {
       message
       type
@@ -348,9 +348,56 @@ export const ADD_LANDLORD_ATTRIBUTES = gql`
 
 export const UPDATE_LANDLORD_ATTRIBUTES = gql`
   mutation UpdateLandlordAttributes(
+    $attributeUpdateInput: [UserAttributeUpdateInput!]!
+  ) {
+    updateLandlordAttributes(attributeUpdateInput: $attributeUpdateInput) {
+      message
+      type
+    }
+  }
+`;
+
+export const CREATE_PLACE = gql`
+  mutation CreatePlace($placeInput: PlaceInput!) {
+    createPlace(placeInput: $placeInput) {
+      type
+      message
+      place {
+        id
+      }
+    }
+  }
+`;
+export const UPDATE_PLACE = gql`
+  mutation UpdatePlace($placeUpdateInput: PlaceUpdateInput!) {
+    updatePlace(placeUpdateInput: $placeUpdateInput) {
+      message
+      type
+      place {
+        id
+      }
+    }
+  }
+`;
+export const ADD_PLACE_ATTRIBUTES = gql`
+  mutation AddPlaceAttributes(
+    $placeId: String!
+    $placeAttributeInput: [PlaceAttributeInput!]!
+  ) {
+    addPlaceAttributes(
+      placeId: $placeId
+      placeAttributeInput: $placeAttributeInput
+    ) {
+      message
+      type
+    }
+  }
+`;
+export const UPDATE_PLACE_ATTRIBUTES = gql`
+  mutation UpdatePlaceAttributes(
     $attibuteUpdateInput: [AttributeUpdateInput!]!
   ) {
-    updateLandlordAttributes(attibuteUpdateInput: $attibuteUpdateInput) {
+    updatePlaceAttributes(attibuteUpdateInput: $attibuteUpdateInput) {
       message
       type
     }

@@ -17,7 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useTenantAttributes } from "@/hook/tenant.hook";
-import { AttributeUpdateInput, UserAttributeInput } from "@/lib/data-type";
+import { UserAttributeUpdateInput, UserAttributeInput } from "@/lib/data-type";
 import { useAuthStore, UserAttributes } from "@/store/auth-store";
 import { DialogDescription, DialogTrigger } from "@radix-ui/react-dialog";
 import dayjs from "dayjs";
@@ -80,7 +80,7 @@ export default function ProfileEditForm({
   });
 
   const handleSubmit = async (values: z.infer<typeof profileFormSchema>) => {
-    const changedFields: AttributeUpdateInput[] = [];
+    const changedFields: UserAttributeUpdateInput[] = [];
     const newFields: UserAttributeInput[] = [];
 
     // Prepare data for submission
@@ -95,7 +95,6 @@ export default function ProfileEditForm({
             key === "BIRTHDAY"
               ? dayjs(value).valueOf().toString()
               : value.toString(),
-          valueNumber: undefined,
         });
       } else {
         newFields.push({

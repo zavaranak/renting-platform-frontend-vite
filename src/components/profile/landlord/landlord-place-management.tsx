@@ -18,7 +18,7 @@ import {
   DropdownMenuTrigger,
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
-import { PlaceForm } from "@/components/place/place-form";
+import PlaceForm from "@/components/place/place-form";
 
 interface PlaceTableParam {
   landlordId: string;
@@ -39,7 +39,7 @@ export const LandlordPlaceManagement = ({ landlordId }: PlaceTableParam) => {
       <h2 className="text-xl font-bold mb-4">
         Place management [{places.length}] {selectedPlace?.name}
       </h2>
-      <PlaceForm onSubmit={() => {}} />
+      <PlaceForm />
       <Table className="relative">
         <TableHeader className="sticky top-0 bg-white z-10">
           <TableRow>
@@ -47,7 +47,9 @@ export const LandlordPlaceManagement = ({ landlordId }: PlaceTableParam) => {
             <TableHead>Country</TableHead>
             <TableHead>City</TableHead>
             <TableHead>Address</TableHead>
-            <TableHead>Area</TableHead>
+            <TableHead>
+              Area (m <sup>2</sup> )
+            </TableHead>
             <TableHead>Status</TableHead>
             {/* <TableHead>Attributes</TableHead> */}
             {/* <TableHead>Actions</TableHead> */}

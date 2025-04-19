@@ -2,21 +2,16 @@ import { UserAttributes } from "@/store/auth-store";
 import {
   AuthActions,
   BookingStatusSchema,
-  LivingPlaceType,
   LivingPlaceTypeSchema,
   Operator,
   Order,
   PaymentSchema,
-  PlaceAttributeName,
   PlaceAttributeNameSchema,
-  PlaceStatus,
   PlaceStatusSchema,
   Role,
   Status,
-  TermUnit,
   TermUnitSchema,
   UserStatusSchema,
-  WorkingPlaceType,
   WorkingPlaceTypeSchema,
 } from "./contanst";
 import { z } from "zod";
@@ -60,6 +55,16 @@ export const PlaceAttributeSchema = z.object({
 
 export type PlaceAttribute = z.infer<typeof PlaceAttributeSchema>;
 
+export const PlaceAttributeCreateSchema = PlaceAttributeSchema.omit({
+  id: true,
+});
+export const PlaceAttributeUpdateSchema = PlaceAttributeSchema.omit({
+  name: true,
+});
+
+export type PlaceAttributeCreate = z.infer<typeof PlaceAttributeCreateSchema>;
+export type PlaceAttributeUpdate = z.infer<typeof PlaceAttributeUpdateSchema>;
+
 export const PlaceSchema = z.object({
   id: z.string(),
   name: z.string(),
@@ -80,6 +85,28 @@ export const PlaceSchema = z.object({
 });
 
 export type Place = z.infer<typeof PlaceSchema>;
+
+export const PlaceInputSchema = PlaceSchema.omit({
+  id: true,
+  createdAt: true,
+  lastUpdate: true,
+  rating: true,
+  photos: true,
+  landlord: true,
+}).extend({
+  landlordId: z.string(),
+});
+
+export type PlaceInput = z.infer<typeof PlaceInputSchema>;
+
+export const PlaceUpdateInputSchema = PlaceInputSchema.omit({
+  landlordId: true,
+})
+  .partial()
+  .extend({
+    id: z.string(),
+  });
+export type PlaceUpdateInput = z.infer<typeof PlaceUpdateInputSchema>;
 
 export type ResponseVerify = {
   user: User;
@@ -144,16 +171,19 @@ export type UpdateGuestParams = {
   tel?: string;
 };
 
-export type AttributeUpdateInput = {
-  id: string;
-  value?: string;
-  valueNumber?: number;
-};
+export const UserAttributeInputSchema = UserAttributeSchema.omit({
+  id: true,
+  __typename: true,
+});
+export const UserAttributeUpdateSchema = UserAttributeSchema.omit({
+  name: true,
+  __typename: true,
+});
 
-export type UserAttributeInput = {
-  name: keyof UserAttributes;
-  value: string;
-};
+export type UserAttributeInput = z.infer<typeof UserAttributeInputSchema>;
+export type UserAttributeUpdateInput = z.infer<
+  typeof UserAttributeUpdateSchema
+>;
 
 export type QueryManyInput = {
   conditions?: QueryCondition[];
