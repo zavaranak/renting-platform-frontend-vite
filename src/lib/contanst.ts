@@ -15,6 +15,8 @@ export enum Purpose {
   WORKING = "for business",
 }
 
+export const PurposeSchema = z.nativeEnum(Purpose);
+
 export enum TermUnit {
   HOUR = "HOUR",
   DAY = "DAY",

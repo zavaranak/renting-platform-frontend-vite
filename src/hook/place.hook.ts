@@ -8,6 +8,7 @@ import {
   Place,
   PlaceAttribute,
   PlaceInput,
+  PlaceInputSchema,
   PlaceUpdateInput,
 } from "@/lib/data-type";
 import {
@@ -149,6 +150,7 @@ export const useQueryPlacesByLandlord = (landlordId: string) => {
 
   const queryPlacesByLandlord = useCallback(() => {
     search({
+      fetchPolicy: "network-only",
       variables: {
         queryManyInput: {
           conditions: [
@@ -172,42 +174,86 @@ export const useQueryPlacesByLandlord = (landlordId: string) => {
 };
 
 export const useCreatePlace = () => {
-  const [create, { data, loading }] = useMutation(CREATE_PLACE, {
+  const [result, setResult] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
+  const [create] = useMutation(CREATE_PLACE, {
     onCompleted: (data) => {
       console.log(data.createPlace);
+      setLoading(false);
+      setResult(true);
     },
     onError: (err) => {
       console.log(err);
+      setLoading(false);
+      setResult(false);
     },
   });
-  async function createPlace(input: PlaceInput) {
-    await create({
-      variables: {
-        placeInput: input,
-      },
-    });
-  }
-  return { createPlace, data, loading };
+  const createPlace = useCallback(
+    async (input: PlaceInput): Promise<{ success: boolean }> => {
+      setLoading(true);
+      setError(null);
+
+      try {
+        const { data } = await create({
+          variables: { placeInput: input },
+        });
+
+        const success = Boolean(data?.createPlace);
+        setResult(success);
+        return { success };
+      } catch (err) {
+        console.error("Mutation error:", err);
+        setError(err instanceof Error ? err : new Error(String(err)));
+        setResult(false);
+        return { success: false };
+      } finally {
+        setLoading(false);
+      }
+    },
+    [create]
+  );
+  return { createPlace, result, loading, error };
 };
 
 export const useUpdatePlace = () => {
-  const [update, { data, loading }] = useMutation(UPDATE_PLACE, {
+  const [result, setResult] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
+  const [update] = useMutation(UPDATE_PLACE, {
     onCompleted: (data) => {
-      console.log(data.updatePlace);
+      console.log(data.placeUpdateInput);
     },
     onError: (err) => {
       console.log(err);
     },
   });
 
-  async function updatePlace(input: PlaceUpdateInput) {
-    await update({
-      variables: {
-        placeUpdateInput: input,
-      },
-    });
-  }
-  return { updatePlace, data, loading };
+  const updatePlace = useCallback(
+    async (input: PlaceUpdateInput): Promise<{ success: boolean }> => {
+      setLoading(true);
+      setError(null);
+
+      try {
+        const { data } = await update({
+          variables: { placeUpdateInput: input },
+        });
+
+        const success = Boolean(data?.updatePlace);
+        setResult(success);
+        return { success };
+      } catch (err) {
+        console.error("Mutation error:", err);
+        setError(err instanceof Error ? err : new Error(String(err)));
+        setResult(false);
+        return { success: false };
+      } finally {
+        setLoading(false);
+      }
+    },
+    [update]
+  );
+  return { updatePlace, loading, result, error };
 };
 
 export const usePlaceAttributes = () => {

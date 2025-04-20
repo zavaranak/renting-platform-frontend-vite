@@ -18,8 +18,7 @@ import {
   DropdownMenuTrigger,
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
-import PlaceForm from "@/components/place/place-form";
-
+import { PlaceForm, PlaceUpdateForm } from "@/components/place/place-form";
 interface PlaceTableParam {
   landlordId: string;
 }
@@ -30,6 +29,7 @@ export const LandlordPlaceManagement = ({ landlordId }: PlaceTableParam) => {
   const [selectedPlace, setSelectedPlace] = useState<Place | undefined>(
     undefined
   );
+  const [updatePlace, setUpdatePlace] = useState<Place | undefined>(undefined);
 
   useEffect(() => {
     queryPlacesByLandlord();
@@ -39,7 +39,14 @@ export const LandlordPlaceManagement = ({ landlordId }: PlaceTableParam) => {
       <h2 className="text-xl font-bold mb-4">
         Place management [{places.length}] {selectedPlace?.name}
       </h2>
-      <PlaceForm />
+      <PlaceForm refreshDashboard={queryPlacesByLandlord} />
+      {updatePlace != undefined && (
+        <PlaceUpdateForm
+          place={updatePlace}
+          setPlace={setUpdatePlace}
+          refreshDashboard={queryPlacesByLandlord}
+        />
+      )}
       <Table className="relative">
         <TableHeader className="sticky top-0 bg-white z-10">
           <TableRow>
@@ -96,13 +103,13 @@ export const LandlordPlaceManagement = ({ landlordId }: PlaceTableParam) => {
                         <Button
                           onClick={() => {
                             setTimeout(() => {
-                              setSelectedPlace(place);
+                              setUpdatePlace(place);
                             }, 10);
                           }}
                           variant="ghost"
                           className="w-full justify-start"
                         >
-                          Edit
+                          Update
                         </Button>
                       </DropdownMenuItem>
                     </DropdownMenuContent>

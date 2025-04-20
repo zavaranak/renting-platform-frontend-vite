@@ -68,12 +68,13 @@ export default function GuestForm({
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
   };
-
+  const { updateGuest } = useUpdateGuest();
+  const { createGuest } = useCreateGuest();
   const onSubmit = async () => {
     if (!validateGuest()) return;
     if (edittingId) {
       const parsedGuest = parseGuestToUpdateGuestParams(guest);
-      const { updateGuest } = useUpdateGuest();
+
       const update = await updateGuest(parsedGuest);
       if (update) {
         guestListUpdate(guest);
@@ -81,7 +82,7 @@ export default function GuestForm({
       }
     } else {
       // Add new guest
-      const { createGuest } = useCreateGuest();
+
       const guestId = await createGuest(guest);
       if (guestId) {
         guest.id = guestId;

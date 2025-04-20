@@ -73,14 +73,14 @@ export const PlaceSchema = z.object({
   country: z.string(),
   type: z.array(z.union([WorkingPlaceTypeSchema, LivingPlaceTypeSchema])),
   termUnit: z.array(TermUnitSchema),
-  area: z.number().positive(),
+  area: z.coerce.number().positive(),
   createdAt: z.number().positive(),
   lastUpdate: z.number(),
   rating: z.number(),
   photos: z.array(z.string()).nullable(),
   status: PlaceStatusSchema,
   landlord: UserSchema.optional(),
-  distanceFromCenter: z.number(),
+  distanceFromCenter: z.coerce.number(),
   attributes: z.array(PlaceAttributeSchema),
 });
 
@@ -93,19 +93,23 @@ export const PlaceInputSchema = PlaceSchema.omit({
   rating: true,
   photos: true,
   landlord: true,
+  attributes: true,
+  status: true,
 }).extend({
   landlordId: z.string(),
 });
 
 export type PlaceInput = z.infer<typeof PlaceInputSchema>;
 
-export const PlaceUpdateInputSchema = PlaceInputSchema.omit({
-  landlordId: true,
-})
-  .partial()
-  .extend({
-    id: z.string(),
-  });
+export const PlaceUpdateInputSchema = PlaceSchema.omit({
+  createdAt: true,
+  lastUpdate: true,
+  rating: true,
+  photos: true,
+  landlord: true,
+  attributes: true,
+  status: true,
+}).extend({});
 export type PlaceUpdateInput = z.infer<typeof PlaceUpdateInputSchema>;
 
 export type ResponseVerify = {

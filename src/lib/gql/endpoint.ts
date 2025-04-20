@@ -217,8 +217,10 @@ export const UPDATE_GUEST = gql`
 `;
 
 export const UPDATE_TENANT_ATTRIBUTES = gql`
-  mutation tenantAttribute($attibuteUpdateInput: [UserAttributeUpdateInput!]!) {
-    updateTenantAttributes(attibuteUpdateInput: $attibuteUpdateInput) {
+  mutation tenantAttribute(
+    $attributeUpdateInput: [UserAttributeUpdateInput!]!
+  ) {
+    updateTenantAttributes(attributeUpdateInput: $attributeUpdateInput) {
       message
       type
     }
