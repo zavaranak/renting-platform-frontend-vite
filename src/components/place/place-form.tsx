@@ -170,7 +170,13 @@ export function PlaceForm({ refreshDashboard }: PlaceFormParams) {
                     Area (m<sup>2</sup>)
                   </FormLabel>
                   <FormControl>
-                    <Input {...field} />
+                    <Input
+                      type="number"
+                      value={field.value}
+                      onChange={(e) => {
+                        field.onChange(e.target.value);
+                      }}
+                    />
                   </FormControl>
                 </FormItem>
               )}
@@ -184,7 +190,13 @@ export function PlaceForm({ refreshDashboard }: PlaceFormParams) {
                     Distance from city's center (km)
                   </FormLabel>
                   <FormControl>
-                    <Input {...field} />
+                    <Input
+                      type="number"
+                      value={field.value}
+                      onChange={(e) => {
+                        field.onChange(e.target.value);
+                      }}
+                    />
                   </FormControl>
                 </FormItem>
               )}
@@ -416,10 +428,18 @@ export function PlaceUpdateForm({
   const getDefaultValues = () => {
     if (!place) return { purpose: Purpose.LIVING };
 
-    // Extract only the fields that exist in the update schema
     const updateFields = PlaceUpdateInputSchema.keyof().options;
     const baseValues = updateFields.reduce((acc, key) => {
       if (key in place) {
+        if (key === "area") {
+          return { ...acc, [key]: Number(place[key]) || 0 };
+        }
+        if (key === "distanceFromCenter") {
+          return {
+            ...acc,
+            [key]: parseFloat(place["distanceFromCenter"].toString()) || 0,
+          };
+        }
         return { ...acc, [key]: place[key] };
       }
       return acc;
@@ -442,6 +462,7 @@ export function PlaceUpdateForm({
     const { success } = await updatePlace(input);
     if (success) {
       refreshDashboard();
+      setPlace(undefined);
       setDisplayForm(false);
     }
   };
@@ -531,7 +552,13 @@ export function PlaceUpdateForm({
                     Area (m<sup>2</sup>)
                   </FormLabel>
                   <FormControl>
-                    <Input {...field} />
+                    <Input
+                      type="number"
+                      value={Number(field.value)}
+                      onChange={(e) => {
+                        field.onChange(e.target.value);
+                      }}
+                    />
                   </FormControl>
                 </FormItem>
               )}
@@ -545,7 +572,13 @@ export function PlaceUpdateForm({
                     Distance from city's center (km)
                   </FormLabel>
                   <FormControl>
-                    <Input {...field} />
+                    <Input
+                      type="number"
+                      value={field.value}
+                      onChange={(e) => {
+                        field.onChange(e.target.value);
+                      }}
+                    />
                   </FormControl>
                 </FormItem>
               )}

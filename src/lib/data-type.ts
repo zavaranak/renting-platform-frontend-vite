@@ -1,4 +1,3 @@
-import { UserAttributes } from "@/store/auth-store";
 import {
   AuthActions,
   BookingStatusSchema,

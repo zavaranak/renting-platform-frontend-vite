@@ -8,7 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Place } from "@/lib/data-type";
+import { Place, PlaceAttribute } from "@/lib/data-type";
 import { useQueryPlacesByLandlord } from "@/hook/place.hook";
 import { Button } from "@/components/ui/button";
 import PlaceModel from "@/components/place/place-model";
@@ -19,8 +19,15 @@ import {
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import { PlaceForm, PlaceUpdateForm } from "@/components/place/place-form";
+import { PlaceAttributeForm } from "@/components/place/place-property-form";
 interface PlaceTableParam {
   landlordId: string;
+}
+
+export interface PlaceUpdateAttributeInterface {
+  placeAddress: string;
+  placeName: string;
+  attributes: PlaceAttribute[];
 }
 
 export const LandlordPlaceManagement = ({ landlordId }: PlaceTableParam) => {
@@ -30,6 +37,9 @@ export const LandlordPlaceManagement = ({ landlordId }: PlaceTableParam) => {
     undefined
   );
   const [updatePlace, setUpdatePlace] = useState<Place | undefined>(undefined);
+  const [updateAttributes, setUpdateAttributes] = useState<
+    PlaceUpdateAttributeInterface | undefined
+  >(undefined);
 
   useEffect(() => {
     queryPlacesByLandlord();
@@ -45,6 +55,12 @@ export const LandlordPlaceManagement = ({ landlordId }: PlaceTableParam) => {
           place={updatePlace}
           setPlace={setUpdatePlace}
           refreshDashboard={queryPlacesByLandlord}
+        />
+      )}
+      {updateAttributes != undefined && (
+        <PlaceAttributeForm
+          data={updateAttributes}
+          onAttributesChange={setUpdateAttributes}
         />
       )}
       <Table className="relative">
@@ -110,6 +126,24 @@ export const LandlordPlaceManagement = ({ landlordId }: PlaceTableParam) => {
                           className="w-full justify-start"
                         >
                           Update
+                        </Button>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem>
+                        <Button
+                          onClick={() => {
+                            setTimeout(() => {
+                              setUpdateAttributes({
+                                placeName: place.name,
+                                placeAddress:
+                                  place.address + `(` + place.city + ")",
+                                attributes: place.attributes,
+                              });
+                            }, 10);
+                          }}
+                          variant="ghost"
+                          className="w-full justify-start"
+                        >
+                          Manage
                         </Button>
                       </DropdownMenuItem>
                     </DropdownMenuContent>

@@ -8,7 +8,6 @@ import {
   Place,
   PlaceAttribute,
   PlaceInput,
-  PlaceInputSchema,
   PlaceUpdateInput,
 } from "@/lib/data-type";
 import {
@@ -195,6 +194,8 @@ export const useCreatePlace = () => {
       setError(null);
 
       try {
+        input.area = Number(input.area);
+        input.distanceFromCenter = Number(input.distanceFromCenter);
         const { data } = await create({
           variables: { placeInput: input },
         });
@@ -235,6 +236,8 @@ export const useUpdatePlace = () => {
       setError(null);
 
       try {
+        input.area = Number(input.area);
+        input.distanceFromCenter = Number(input.distanceFromCenter);
         const { data } = await update({
           variables: { placeUpdateInput: input },
         });
@@ -257,9 +260,8 @@ export const useUpdatePlace = () => {
 };
 
 export const usePlaceAttributes = () => {
-  const [create] = useMutation(ADD_PLACE_ATTRIBUTES);
-  const [update] = useMutation(UPDATE_PLACE_ATTRIBUTES);
-
-  async function CreateAttrs() {}
-  async function UpdateAttrs() {}
+  // const [create] = useMutation(ADD_PLACE_ATTRIBUTES);
+  // const [update] = useMutation(UPDATE_PLACE_ATTRIBUTES);
+  // async function CreateAttrs() {}
+  // async function UpdateAttrs() {}
 };
