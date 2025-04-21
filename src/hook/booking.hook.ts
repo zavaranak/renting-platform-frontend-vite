@@ -1,4 +1,4 @@
-import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
+import { useLazyQuery, useMutation } from "@apollo/client";
 import {
   ActiveBooking,
   BookingInput,
@@ -71,11 +71,12 @@ export const useFetchPendingBooking = () => {
 
   const getPendingBookings = async (params: QueryManyInput) => {
     setLoadingPB(true);
-    await queryPendingBookings({
+    const { data } = await queryPendingBookings({
       variables: {
         queryManyInput: params,
       },
     });
+    return data.getManyPendingBooking;
   };
   return { pendingBookings, getPendingBookings, loadingPB };
 };

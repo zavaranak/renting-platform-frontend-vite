@@ -130,6 +130,7 @@ export enum Operator {
   GREATER_AND_EQUAL = "GREATER_AND_EQUAL",
   SMALLER_AND_EQUAL = "SMALLER_AND_EQUAL",
   INCLUDE = "INCLUDE",
+  IN = "IN",
 }
 export const OperatorSchema = z.nativeEnum(Operator);
 
@@ -142,6 +143,7 @@ export enum PlaceStatus {
 export const PlaceStatusSchema = z.nativeEnum(PlaceStatus);
 
 export enum PlaceAttributeName {
+  UNSELECTED = "UNSELECTED",
   PRIVATE_BATHROOM = "PRIVATE_BATHROOM",
   PRIVATE_KITCHEN = "PRIVATE_KITCHEN",
   SHARED_BATHROOM = "SHARED_BATHROOM",

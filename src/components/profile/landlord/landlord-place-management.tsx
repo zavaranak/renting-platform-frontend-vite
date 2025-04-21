@@ -22,15 +22,20 @@ import { PlaceForm, PlaceUpdateForm } from "@/components/place/place-form";
 import { PlaceAttributeForm } from "@/components/place/place-property-form";
 interface PlaceTableParam {
   landlordId: string;
+  setPlacesId: (array: string[]) => void;
 }
 
 export interface PlaceUpdateAttributeInterface {
+  placeId: string;
   placeAddress: string;
   placeName: string;
   attributes: PlaceAttribute[];
 }
 
-export const LandlordPlaceManagement = ({ landlordId }: PlaceTableParam) => {
+export const LandlordPlaceManagement = ({
+  landlordId,
+  setPlacesId,
+}: PlaceTableParam) => {
   const { queryPlacesByLandlord, places, loading } =
     useQueryPlacesByLandlord(landlordId);
   const [selectedPlace, setSelectedPlace] = useState<Place | undefined>(
@@ -44,10 +49,17 @@ export const LandlordPlaceManagement = ({ landlordId }: PlaceTableParam) => {
   useEffect(() => {
     queryPlacesByLandlord();
   }, []);
+  useEffect(() => {
+    if (places.length > 0) {
+      const placeIds = places.map((place) => place.id);
+      setPlacesId(placeIds);
+    }
+  }, [places]);
+
   return (
     <div>
-      <h2 className="text-xl font-bold mb-4">
-        Place management [{places.length}] {selectedPlace?.name}
+      <h2 className="text-xl font-bold mb-2">
+        Place management {selectedPlace?.name}
       </h2>
       <PlaceForm refreshDashboard={queryPlacesByLandlord} />
       {updatePlace != undefined && (
@@ -60,7 +72,8 @@ export const LandlordPlaceManagement = ({ landlordId }: PlaceTableParam) => {
       {updateAttributes != undefined && (
         <PlaceAttributeForm
           data={updateAttributes}
-          onAttributesChange={setUpdateAttributes}
+          setSelectedAttributes={setUpdateAttributes}
+          refreshDashboard={queryPlacesByLandlord}
         />
       )}
       <Table className="relative">
@@ -90,7 +103,9 @@ export const LandlordPlaceManagement = ({ landlordId }: PlaceTableParam) => {
                 <TableCell className="">{place.city}</TableCell>
                 <TableCell className="">{place.address}</TableCell>
                 <TableCell className="">{place.area}</TableCell>
-                <TableCell className="">{place.status}</TableCell>
+                <TableCell className="">
+                  {place.status.toLowerCase().replace("_", " ")}
+                </TableCell>
                 {/* <TableCell className="">{place.attributes?.length}</TableCell> */}
                 {/* <TableCell className="">actions</TableCell> */}
 
@@ -133,6 +148,7 @@ export const LandlordPlaceManagement = ({ landlordId }: PlaceTableParam) => {
                           onClick={() => {
                             setTimeout(() => {
                               setUpdateAttributes({
+                                placeId: place.id,
                                 placeName: place.name,
                                 placeAddress:
                                   place.address + `(` + place.city + ")",

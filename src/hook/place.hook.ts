@@ -7,6 +7,8 @@ import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import {
   Place,
   PlaceAttribute,
+  PlaceAttributeCreate,
+  PlaceAttributeUpdate,
   PlaceInput,
   PlaceUpdateInput,
 } from "@/lib/data-type";
@@ -15,6 +17,7 @@ import {
   CREATE_PLACE,
   QUERY_PLACE_BY_ID,
   QUERY_PLACES_WITH_DATA,
+  REMOVE_PLACE_ATTRIBUTES,
   UPDATE_PLACE,
   UPDATE_PLACE_ATTRIBUTES,
 } from "@/lib/gql/endpoint";
@@ -259,9 +262,86 @@ export const useUpdatePlace = () => {
   return { updatePlace, loading, result, error };
 };
 
+interface StatusAttributeAction {
+  result: boolean;
+  loading: boolean;
+}
 export const usePlaceAttributes = () => {
-  // const [create] = useMutation(ADD_PLACE_ATTRIBUTES);
-  // const [update] = useMutation(UPDATE_PLACE_ATTRIBUTES);
-  // async function CreateAttrs() {}
-  // async function UpdateAttrs() {}
+  const [statusCreate, setStatusCreate] = useState<StatusAttributeAction>({
+    result: false,
+    loading: false,
+  });
+  const [statusUpdate, setStatusUpdate] = useState<StatusAttributeAction>({
+    result: false,
+    loading: false,
+  });
+  const [statusRemove, setStatusRemove] = useState<StatusAttributeAction>({
+    result: false,
+    loading: false,
+  });
+  const [create] = useMutation(ADD_PLACE_ATTRIBUTES);
+  const [update] = useMutation(UPDATE_PLACE_ATTRIBUTES);
+  const [remove] = useMutation(REMOVE_PLACE_ATTRIBUTES);
+  const createAttrs = useCallback(
+    async (input: PlaceAttributeCreate[], placeId: string) => {
+      setStatusCreate({
+        result: false,
+        loading: true,
+      });
+      const { data } = await create({
+        variables: {
+          placeId: placeId,
+          placeAttributeInput: input,
+        },
+      });
+      const success = Boolean(data?.addPlaceAttributes);
+      setStatusCreate({ loading: false, result: success });
+      return success;
+    },
+    [create]
+  );
+  const updateAttrs = useCallback(
+    async (input: PlaceAttributeUpdate[]) => {
+      setStatusUpdate({
+        result: false,
+        loading: true,
+      });
+      const { data } = await update({
+        variables: {
+          attibuteUpdateInput: input,
+        },
+      });
+      const success = Boolean(data?.updatePlaceAttributes);
+      setStatusUpdate({ loading: false, result: success });
+      return success;
+    },
+    [update]
+  );
+
+  const removeAttrs = useCallback(
+    async (input: string[]) => {
+      setStatusRemove({
+        loading: true,
+        result: false,
+      });
+      const { data } = await remove({
+        variables: {
+          attributeIds: input,
+        },
+      });
+      const success = Boolean(data?.removePlaceAttributes);
+      setStatusRemove({ loading: false, result: success });
+      return success;
+    },
+    [remove]
+  );
+
+  return {
+    createAttrs,
+    updateAttrs,
+    removeAttrs,
+    statusCreate,
+    statusUpdate,
+    statusRemove,
+  };
 };

@@ -405,3 +405,12 @@ export const UPDATE_PLACE_ATTRIBUTES = gql`
     }
   }
 `;
+
+export const REMOVE_PLACE_ATTRIBUTES = gql`
+  mutation RemovePlaceAttributes($attributeIds: [String!]!) {
+    removePlaceAttributes(attributeIds: $attributeIds) {
+      message
+      type
+    }
+  }
+`;

@@ -5,7 +5,8 @@ import { useNavigate } from "react-router-dom";
 import { TenantGuestManager } from "@/components/profile/tenant/tenant-guest-mananger";
 import { TenantBookingManager } from "@/components/profile/tenant/tenant-booking-mananger";
 import { LandlordPlaceManagement } from "@/components/profile/landlord/landlord-place-management";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { LandlordBookingManagement } from "@/components/profile/landlord/landlord-booking-management";
 
 export function ProfileRoute() {
   const { user } = useAuthStore((state) => state);
@@ -28,13 +29,18 @@ export function ProfileRoute() {
         </div>
       );
     } else if (user.role === Role.landlord) {
+      const [placesId, setPlacesId] = useState<string[]>([]);
       document.title = "Homsk - Landlord Profile";
 
       return (
         <div className="lg:col-start-4 lg:col-span-6 md:col-start-2 md:col-span-6 col-span-full w-full z-10">
           <div className="p-4">
             <ProfileInfo />
-            <LandlordPlaceManagement landlordId={user.id} />
+            <LandlordBookingManagement placesId={placesId} />
+            <LandlordPlaceManagement
+              landlordId={user.id}
+              setPlacesId={setPlacesId}
+            />
           </div>
         </div>
       );
