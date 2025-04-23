@@ -8,10 +8,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import {
-  useCancelPendingBooking,
   useFetchActiveBooking,
   useFetchCompletedBooking,
   useFetchPendingBooking,
+  useHandlePendingBooking,
 } from "@/hook/booking.hook";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
@@ -21,7 +21,7 @@ import {
   PendingBooking,
   QueryManyInput,
 } from "@/lib/data-type";
-import { Operator } from "@/lib/contanst";
+import { Operator, TermUnit } from "@/lib/contanst";
 import dayjs from "dayjs";
 import BookingModal from "@/components/booking/booking.modal";
 
@@ -30,6 +30,9 @@ interface Props {
 }
 
 export const TenantBookingManager = ({ tenantId }: Props) => {
+  const [selectedBookingType, setBookingType] = useState<
+    "Completed" | "Active" | "Pending" | undefined
+  >(undefined);
   const params: QueryManyInput = {
     conditions: [
       {
@@ -48,18 +51,21 @@ export const TenantBookingManager = ({ tenantId }: Props) => {
     <div className="mb-6 flex flex-col gap-2">
       <Card className="p-4  flex flex-col max-h-[300px] overflow-y-scroll">
         <PendingBookingTable
+          setType={setBookingType}
           queryParams={params}
           viewAction={setSelectedBooking}
         />
       </Card>
       <Card className=" p-4 flex flex-col max-h-[300px] overflow-y-scroll">
         <ActiveBookingTable
+          setType={setBookingType}
           queryParams={params}
           viewAction={setSelectedBooking}
         />
       </Card>
       <Card className=" p-4 flex flex-col max-h-[300px] overflow-y-scroll">
         <CompletedBookingTable
+          setType={setBookingType}
           queryParams={params}
           viewAction={setSelectedBooking}
         />
@@ -67,6 +73,7 @@ export const TenantBookingManager = ({ tenantId }: Props) => {
 
       {selectedBooking && (
         <BookingModal
+          type={selectedBookingType}
           booking={selectedBooking}
           setSelectedBooking={setSelectedBooking}
         />
@@ -84,13 +91,14 @@ interface TableParam {
   viewAction: (
     booking: PendingBooking | ActiveBooking | CompletedBooking
   ) => void;
+  setType: (x: "Completed" | "Active" | "Pending" | undefined) => void;
 }
 
 const PendingBookingTable = (tableParams: TableParam) => {
-  const { queryParams, viewAction } = tableParams;
+  const { queryParams, viewAction, setType } = tableParams;
   const { pendingBookings, getPendingBookings, loadingPB } =
     useFetchPendingBooking();
-  const { cancelPendingBooking } = useCancelPendingBooking();
+  const { cancelPendingBooking } = useHandlePendingBooking();
 
   useEffect(() => {
     getPendingBookings(queryParams);
@@ -103,11 +111,11 @@ const PendingBookingTable = (tableParams: TableParam) => {
         <TableHeader className="sticky top-0 bg-white z-10">
           <TableRow>
             <TableHead>Created</TableHead>
-            <TableHead>Term</TableHead>
+
+            <TableHead>Period</TableHead>
             <TableHead>From</TableHead>
             <TableHead>To</TableHead>
             <TableHead>Total charge</TableHead>
-            <TableHead>Actions</TableHead>
           </TableRow>
         </TableHeader>
         {loadingPB || (
@@ -121,18 +129,24 @@ const PendingBookingTable = (tableParams: TableParam) => {
                   {dayjs(Number(booking.createdAt)).format("h:mm DD/MM/YYYY")}
                 </TableCell>
                 <TableCell className="">
-                  {booking.termUnit?.toLowerCase()}
+                  {booking.period} {booking.termUnit?.toLowerCase()}
+                  {booking.period > 1 ? "s" : ""}
                 </TableCell>
                 <TableCell className="">
-                  {dayjs(Number(booking.startAt)).format("DD/MM/YYYY")}
+                  {[TermUnit.DAY, TermUnit.HOUR].includes(booking.termUnit)
+                    ? dayjs(Number(booking.startAt)).format("DD/MM/YYYY")
+                    : "empty"}
                 </TableCell>
                 <TableCell className="">
-                  {dayjs(Number(booking.endAt)).format("DD/MM/YYYY")}
+                  {[TermUnit.DAY, TermUnit.HOUR].includes(booking.termUnit)
+                    ? dayjs(Number(booking.endAt)).format("DD/MM/YYYY")
+                    : "empty"}
                 </TableCell>
-                <TableCell className="">{booking.totalCharge}</TableCell>
+                <TableCell className="">{booking.totalCharge} USD</TableCell>
                 <TableCell className=" flex gap-2 m-auto">
                   <Button
                     onClick={() => {
+                      setType("Pending");
                       viewAction(booking);
                     }}
                     variant="ghost"
@@ -165,11 +179,11 @@ const PendingBookingTable = (tableParams: TableParam) => {
 };
 
 const ActiveBookingTable = (tableParams: TableParam) => {
-  const { queryParams, viewAction } = tableParams;
+  const { queryParams, viewAction, setType } = tableParams;
   const { activeBookings, getActiveBookings, loadingAB } =
     useFetchActiveBooking();
 
-  const { cancelPendingBooking } = useCancelPendingBooking();
+  const { cancelPendingBooking } = useHandlePendingBooking();
 
   useEffect(() => {
     getActiveBookings(queryParams);
@@ -182,11 +196,11 @@ const ActiveBookingTable = (tableParams: TableParam) => {
         <TableHeader className="sticky top-0 bg-white z-10">
           <TableRow>
             <TableHead>Created</TableHead>
-            <TableHead>Term</TableHead>
+
+            <TableHead>Period</TableHead>
             <TableHead>From</TableHead>
             <TableHead>To</TableHead>
             <TableHead>Total charge</TableHead>
-            <TableHead>Actions</TableHead>
           </TableRow>
         </TableHeader>
         {loadingAB || (
@@ -200,18 +214,24 @@ const ActiveBookingTable = (tableParams: TableParam) => {
                   {dayjs(Number(booking.createdAt)).format("h:mm DD/MM/YYYY")}
                 </TableCell>
                 <TableCell className="">
-                  {booking.termUnit?.toLowerCase()}
+                  {booking.period} {booking.termUnit?.toLowerCase()}
+                  {booking.period > 1 ? "s" : ""}
                 </TableCell>
                 <TableCell className="">
-                  {dayjs(Number(booking.startAt)).format("DD/MM/YYYY")}
+                  {[TermUnit.DAY, TermUnit.HOUR].includes(booking.termUnit)
+                    ? dayjs(Number(booking.startAt)).format("DD/MM/YYYY")
+                    : "empty"}
                 </TableCell>
                 <TableCell className="">
-                  {dayjs(Number(booking.endAt)).format("DD/MM/YYYY")}
+                  {[TermUnit.DAY, TermUnit.HOUR].includes(booking.termUnit)
+                    ? dayjs(Number(booking.endAt)).format("DD/MM/YYYY")
+                    : "empty"}
                 </TableCell>
-                <TableCell className="">{booking.totalCharge}</TableCell>
+                <TableCell className="">{booking.totalCharge} USD</TableCell>
                 <TableCell className=" flex gap-2 m-auto">
                   <Button
                     onClick={() => {
+                      setType("Active");
                       viewAction(booking);
                     }}
                     variant="ghost"
@@ -243,7 +263,7 @@ const ActiveBookingTable = (tableParams: TableParam) => {
   );
 };
 const CompletedBookingTable = (tableParams: TableParam) => {
-  const { queryParams, viewAction } = tableParams;
+  const { queryParams, viewAction, setType } = tableParams;
   const { completedBookings, getCompletedBookings, loadingCB } =
     useFetchCompletedBooking();
 
@@ -258,11 +278,11 @@ const CompletedBookingTable = (tableParams: TableParam) => {
         <TableHeader className="sticky top-0 bg-white z-10">
           <TableRow>
             <TableHead>Created</TableHead>
-            <TableHead>Term</TableHead>
+            <TableHead>Period</TableHead>
             <TableHead>From</TableHead>
             <TableHead>To</TableHead>
             <TableHead>Total charge</TableHead>
-            <TableHead>Actions</TableHead>
+            <TableHead>Status</TableHead>
           </TableRow>
         </TableHeader>
         {loadingCB || (
@@ -276,18 +296,27 @@ const CompletedBookingTable = (tableParams: TableParam) => {
                   {dayjs(Number(booking.createdAt)).format("h:mm DD/MM/YYYY")}
                 </TableCell>
                 <TableCell className="">
-                  {booking.termUnit?.toLowerCase()}
+                  {booking.period} {booking.termUnit?.toLowerCase()}
+                  {booking.period > 1 ? "s" : ""}
                 </TableCell>
                 <TableCell className="">
-                  {dayjs(Number(booking.startAt)).format("DD/MM/YYYY")}
+                  {[TermUnit.DAY, TermUnit.HOUR].includes(booking.termUnit)
+                    ? dayjs(Number(booking.startAt)).format("DD/MM/YYYY")
+                    : "empty"}
                 </TableCell>
                 <TableCell className="">
-                  {dayjs(Number(booking.endAt)).format("DD/MM/YYYY")}
+                  {[TermUnit.DAY, TermUnit.HOUR].includes(booking.termUnit)
+                    ? dayjs(Number(booking.endAt)).format("DD/MM/YYYY")
+                    : "empty"}
                 </TableCell>
-                <TableCell className="">{booking.totalCharge}</TableCell>
+                <TableCell className="">{booking.totalCharge} USD</TableCell>
+                <TableCell className="">
+                  {booking.status.toLocaleLowerCase()}
+                </TableCell>
                 <TableCell className="">
                   <Button
                     onClick={() => {
+                      setType("Completed");
                       viewAction(booking);
                     }}
                     variant="ghost"

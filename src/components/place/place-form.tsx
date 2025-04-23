@@ -100,7 +100,7 @@ export function PlaceForm({ refreshDashboard }: PlaceFormParams) {
       <DialogTrigger asChild>
         <Button className="mt-4">Add new place</Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[600px]">
+      <DialogContent aria-describedby={undefined} className="sm:max-w-[600px]">
         <DialogHeader>
           <DialogTitle>Add new place</DialogTitle>
           <DialogDescription></DialogDescription>
@@ -482,7 +482,7 @@ export function PlaceUpdateForm({
         setDisplayForm(open);
       }}
     >
-      <DialogContent className="sm:max-w-[600px]">
+      <DialogContent aria-describedby={undefined} className="sm:max-w-[600px]">
         <DialogHeader>
           <DialogTitle>update place</DialogTitle>
           <DialogDescription></DialogDescription>

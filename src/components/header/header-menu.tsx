@@ -1,5 +1,6 @@
 import { useAuthStore } from "@/store/auth-store";
 import { Link } from "react-router-dom";
+import { Button } from "../ui/button";
 
 interface HeaderMenuParams {
   closeMenu: () => void;
@@ -9,27 +10,27 @@ export const HeaderMenu = (params: HeaderMenuParams) => {
   const { user, userAttributes, logOut } = useAuthStore((state) => state);
 
   return (
-    <div className="w-[200px] p-3 relative z-70 bg-background">
+    <div className="w-[200px] p-1 relative z-70 bg-background">
       <Link to={`/profile/${user?.role + "/" + user?.id}`}>
-        <div
+        <Button
           onClick={params.closeMenu}
-          className="border-y-2 border-neutral-brown text-center p-2"
+          variant={"outline"}
+          className="w-full border-y-2 border-neutral-brown text-center p-2"
         >
-          {userAttributes.FIRSTNAME?.value +
-            " " +
-            userAttributes.LASTNAME?.value}
-        </div>
+          profile
+        </Button>
       </Link>
-      <div className="border-b-2 border-neutral-brown cursor-pointer p-2">
-        <div
-          className="text-center"
+      <div className="border-neutral-brown cursor-pointer">
+        <Button
+          variant={"destructive"}
+          className="w-full border-y-2 border-neutral-brown text-center p-2"
           onClick={() => {
             logOut();
             params.closeMenu();
           }}
         >
           log out
-        </div>
+        </Button>
       </div>
     </div>
   );

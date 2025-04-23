@@ -30,7 +30,10 @@ export default function PlaceModel({
           setSelectedPlace(undefined);
         }}
       >
-        <DialogContent className="xl:max-w-[80%] sm:max-w-[600px]">
+        <DialogContent
+          aria-describedby={undefined}
+          className="xl:max-w-[80%] sm:max-w-[600px]"
+        >
           <DialogHeader>
             <DialogTitle>Place's information</DialogTitle>
             <DialogDescription></DialogDescription>

@@ -34,7 +34,7 @@ export function ProfileRoute() {
 
       return (
         <div className="lg:col-start-4 lg:col-span-6 md:col-start-2 md:col-span-6 col-span-full w-full z-10">
-          <div className="p-4">
+          <div className="flex flex-col gap-6 p-4">
             <ProfileInfo />
             <LandlordBookingManagement placesId={placesId} />
             <LandlordPlaceManagement

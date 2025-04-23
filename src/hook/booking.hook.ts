@@ -7,7 +7,10 @@ import {
   QueryManyInput,
 } from "@/lib/data-type";
 import {
+  ACCEPT_PENDING_BOOKING,
+  CANCEL_ACTIVE_BOOKING,
   CANCEL_PENDING_BOOKING,
+  COMPLETE_ACTIVE_BOOKING,
   CREATE_BOOKING,
   QUERY_ACTIVE_BOOKINGS,
   QUERY_COMPLETED_BOOKINGS,
@@ -15,7 +18,7 @@ import {
 } from "@/lib/gql/endpoint";
 import { useAppStore } from "@/store/app-store";
 import { useAuthStore } from "@/store/auth-store";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 export const useCreateBooking = () => {
   const { isAuthenticated, user } = useAuthStore((state) => state);
@@ -81,22 +84,22 @@ export const useFetchPendingBooking = () => {
   return { pendingBookings, getPendingBookings, loadingPB };
 };
 
-export const useCancelPendingBooking = () => {
-  const [cancelBooking] = useMutation(CANCEL_PENDING_BOOKING);
+// export const useCancelPendingBooking = () => {
+//   const [cancelBooking] = useMutation(CANCEL_PENDING_BOOKING);
 
-  const cancelPendingBooking = async (bookingId: string) => {
-    try {
-      await cancelBooking({
-        variables: { pendingBookingId: bookingId },
-      });
-      return true; // Success
-    } catch (err) {
-      return false; // Failure
-    }
-  };
+//   const cancelPendingBooking = async (bookingId: string) => {
+//     try {
+//       await cancelBooking({
+//         variables: { pendingBookingId: bookingId },
+//       });
+//       return true; // Success
+//     } catch (err) {
+//       return false; // Failure
+//     }
+//   };
 
-  return { cancelPendingBooking };
-};
+//   return { cancelPendingBooking };
+// };
 
 export const useFetchActiveBooking = () => {
   const [activeBookings, setActiveBookings] = useState<
@@ -155,4 +158,63 @@ export const useFetchCompletedBooking = () => {
     });
   };
   return { completedBookings, getCompletedBookings, loadingCB };
+};
+
+export const useHandlePendingBooking = () => {
+  const [accept] = useMutation(ACCEPT_PENDING_BOOKING);
+  const [cancel] = useMutation(CANCEL_PENDING_BOOKING);
+
+  const acceptPendingBooking = useCallback(
+    async (id: string) => {
+      const { data } = await accept({
+        variables: {
+          pendingBookingId: id,
+        },
+      });
+      return data;
+    },
+    [accept]
+  );
+  const cancelPendingBooking = useCallback(
+    async (id: string) => {
+      const { data } = await cancel({
+        variables: {
+          pendingBookingId: id,
+        },
+      });
+      return data;
+    },
+    [cancel]
+  );
+
+  return { acceptPendingBooking, cancelPendingBooking };
+};
+export const useHandleActiveBooking = () => {
+  const [complete] = useMutation(COMPLETE_ACTIVE_BOOKING);
+  const [cancel] = useMutation(CANCEL_ACTIVE_BOOKING);
+
+  const completeActiveBooking = useCallback(
+    async (id: string) => {
+      const { data } = await complete({
+        variables: {
+          activeBookingId: id,
+        },
+      });
+      return data;
+    },
+    [complete]
+  );
+  const cancelActiveBooking = useCallback(
+    async (id: string) => {
+      const { data } = await cancel({
+        variables: {
+          activeBookingId: id,
+        },
+      });
+      return data;
+    },
+    [cancel]
+  );
+
+  return { completeActiveBooking, cancelActiveBooking };
 };

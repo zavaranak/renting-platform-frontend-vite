@@ -5,7 +5,6 @@ import { Header } from "@/components/header/header";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import LoginForm from "@/components/profile/unauthorized/login-form";
 import { useAuthStore } from "@/store/auth-store";
-import { Role } from "@/lib/contanst";
 import SearchRoute from "@/routes/search/search.route";
 import SearchResultRoute from "@/routes/search_result/search-result.route";
 

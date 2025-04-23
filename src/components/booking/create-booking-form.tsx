@@ -32,6 +32,8 @@ import { Payment, TermUnit } from "@/lib/contanst";
 import { useState } from "react";
 import GuestManager from "@/components/booking/guest/guest-manager";
 import { Label } from "@/components/ui/label";
+import { Input } from "../ui/input";
+import { useNavigate } from "react-router-dom";
 
 interface BookingFormProps {
   place: Place;
@@ -47,8 +49,9 @@ export function CreateBookingForm(createBookingBoxProps: BookingFormProps) {
   const [payment, setPayment] = useState(Payment.CASH);
   const [guests, setGuests] = useState<string[]>([]);
   const [displayForm, setDisplayForm] = useState(false);
-
-  const createBookingHandler = (
+  const [period, setPeriod] = useState("0");
+  const navigate = useNavigate();
+  const createBookingHandler = async (
     totalCharge: number,
     payment: string,
     guests: string[]
@@ -59,13 +62,13 @@ export function CreateBookingForm(createBookingBoxProps: BookingFormProps) {
         tenantId: user?.id,
         startAt: selectedDate?.start,
         endAt: selectedDate?.end,
-        period: parsedDate?.diff,
+        period: parsedDate?.diff ?? Number(period),
         termUnit: term.toUpperCase(),
         guests: guests,
         payment: payment,
         totalCharge: totalCharge,
       };
-      createBooking(bookingInput);
+      await createBooking(bookingInput);
     }
   };
 
@@ -115,10 +118,36 @@ export function CreateBookingForm(createBookingBoxProps: BookingFormProps) {
                     <p>on {parsedDate?.date}</p>
                   </CardContent>
                 )}
+                {(term && [TermUnit.MONTH, TermUnit.WEEK].includes(term) && (
+                  <>
+                    <CardContent className="flex gap-5">
+                      <p>Period:</p>
+                      <Input
+                        className="w-14"
+                        type="number"
+                        min={1}
+                        onChange={(e) => setPeriod(e.target.value)}
+                      />
+                      <p>
+                        {term?.toLowerCase()}
+                        {Number(period) > 1 ? "s" : ""}
+                      </p>
+                    </CardContent>
+                    <CardFooter>
+                      <p>
+                        Total charge:{" "}
+                        {Number(Number(period) * (totalCharge ?? 1))} USD
+                      </p>
+                    </CardFooter>
+                  </>
+                )) || (
+                  <>
+                    <CardFooter>
+                      <p>Total charge: {totalCharge} USD</p>
+                    </CardFooter>
+                  </>
+                )}
 
-                <CardFooter>
-                  <p>Total charge: {totalCharge}</p>
-                </CardFooter>
                 <CardFooter>
                   <div className="flex">
                     <Label htmlFor="payment">Payment method</Label>
@@ -150,11 +179,14 @@ export function CreateBookingForm(createBookingBoxProps: BookingFormProps) {
               <AlertDialogAction
                 onClick={async () => {
                   await createBookingHandler(
-                    totalCharge || 0,
+                    term && [TermUnit.MONTH, TermUnit.WEEK].includes(term)
+                      ? (totalCharge ?? 1) * Number(period) || 0
+                      : totalCharge ?? 0,
                     payment,
                     guests || []
                   );
                   setDisplayForm(false);
+                  navigate(`/profile/${user?.role}/${user?.id}`);
                 }}
               >
                 Create Booking

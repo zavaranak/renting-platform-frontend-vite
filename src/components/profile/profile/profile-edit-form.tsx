@@ -144,7 +144,7 @@ export default function ProfileEditForm({
       <DialogTrigger asChild>
         <Button className="mt-4">Edit Profile</Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[600px]">
+      <DialogContent aria-describedby={undefined} className="sm:max-w-[600px]">
         <DialogHeader>
           <DialogTitle>Edit Profile</DialogTitle>
           <DialogDescription>

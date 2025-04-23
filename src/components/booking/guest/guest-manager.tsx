@@ -21,6 +21,7 @@ import { useAuthStore } from "@/store/auth-store";
 
 import { useFetchGuests } from "@/hook/guest.hook";
 import GuestForm from "./guest-form";
+import { Operator } from "@/lib/contanst";
 
 interface GuestManagerProps {
   setGuests: (cb: (guest: string[]) => string[]) => void;
@@ -36,7 +37,15 @@ const GuestManager = (params: GuestManagerProps) => {
     const [edittingGuest, setEdittingGuest] = useState<Guest | undefined>(
       undefined
     );
-    const { guestList, setGuestList } = useFetchGuests(user.id);
+    const { guestList, setGuestList } = useFetchGuests({
+      conditions: [
+        {
+          key: "tenantId",
+          value: user.id,
+          operator: Operator.EQUAL,
+        },
+      ],
+    });
 
     const openGuestForm = (guest?: Guest) => {
       if (guest) {

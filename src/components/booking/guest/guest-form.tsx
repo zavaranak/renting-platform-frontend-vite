@@ -114,7 +114,7 @@ export default function GuestForm({
 
   return (
     <Dialog open={displayForm} onOpenChange={setDisplayForm}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent aria-describedby={undefined} className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>
             {edittingId ? "Edit Guest" : "Add New Guest"}

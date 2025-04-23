@@ -183,22 +183,19 @@ export const GET_GUEST_BY_ID = gql`
     }
   }
 `;
-export const GET_ALL_GUESTS_BY_ID = gql`
-  query GetGuests($value: String!, $type: String!) {
-    getGuests(value: $value, type: $type) {
-      type
-      message
-      guests {
-        id
-        birthday
-        createdAt
-        email
-        firstName
-        gender
-        lastName
-        middleName
-        tel
-      }
+export const GET_MANY_GUESTS = gql`
+  query Guest($queryManyInput: QueryManyInput!) {
+    getGuests(queryManyInput: $queryManyInput) {
+      birthday
+      createdAt
+      email
+      firstName
+      gender
+      id
+      lastName
+      middleName
+      tel
+      tenantId
     }
   }
 `;
@@ -253,15 +250,6 @@ export const QUERY_PENDING_BOOKINGS = gql`
       period
       tenantId
       totalCharge
-    }
-  }
-`;
-
-export const CANCEL_PENDING_BOOKING = gql`
-  mutation CancelPendingBooking($pendingBookingId: String!) {
-    cancelPendingBooking(pendingBookingId: $pendingBookingId) {
-      type
-      message
     }
   }
 `;
@@ -409,6 +397,41 @@ export const UPDATE_PLACE_ATTRIBUTES = gql`
 export const REMOVE_PLACE_ATTRIBUTES = gql`
   mutation RemovePlaceAttributes($attributeIds: [String!]!) {
     removePlaceAttributes(attributeIds: $attributeIds) {
+      message
+      type
+    }
+  }
+`;
+
+export const ACCEPT_PENDING_BOOKING = gql`
+  mutation ActivateBooking($pendingBookingId: String!) {
+    activateBooking(pendingBookingId: $pendingBookingId) {
+      type
+      message
+    }
+  }
+`;
+
+export const CANCEL_PENDING_BOOKING = gql`
+  mutation CancelPendingBooking($pendingBookingId: String!) {
+    cancelPendingBooking(pendingBookingId: $pendingBookingId) {
+      message
+      type
+    }
+  }
+`;
+export const COMPLETE_ACTIVE_BOOKING = gql`
+  mutation CompleteActiveBooking($activeBookingId: String!) {
+    completeActiveBooking(activeBookingId: $activeBookingId) {
+      message
+      type
+    }
+  }
+`;
+
+export const CANCEL_ACTIVE_BOOKING = gql`
+  mutation CancelActiveBooking($activeBookingId: String!) {
+    cancelActiveBooking(activeBookingId: $activeBookingId) {
       message
       type
     }

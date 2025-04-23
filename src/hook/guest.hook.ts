@@ -1,8 +1,8 @@
 import { useMutation, useQuery } from "@apollo/client";
-import { Guest, UpdateGuestParams } from "@/lib/data-type";
+import { Guest, QueryManyInput, UpdateGuestParams } from "@/lib/data-type";
 import {
   CREATE_GUEST,
-  GET_ALL_GUESTS_BY_ID,
+  GET_MANY_GUESTS,
   UPDATE_GUEST,
 } from "@/lib/gql/endpoint";
 import { useState } from "react";
@@ -101,15 +101,18 @@ export const useUpdateGuest = () => {
   return { updateGuest, loading, error };
 };
 
-export const useFetchGuests = (userId: string) => {
+export const useFetchGuests = (queryInput: QueryManyInput) => {
   const [guestList, setGuestList] = useState<Guest[]>([]);
 
-  const { refetch } = useQuery(GET_ALL_GUESTS_BY_ID, {
-    variables: { type: "tenantId", value: userId },
+  const { refetch } = useQuery(GET_MANY_GUESTS, {
+    skip: queryInput.conditions && queryInput.conditions.length == 0,
+    variables: {
+      queryManyInput: queryInput,
+    },
     fetchPolicy: "cache-and-network", //"cache-first" for static data, "network-only", "no cache"
     onCompleted(data) {
-      if (data.getGuests.guests) {
-        setGuestList(data.getGuests.guests as Guest[]);
+      if (data.getGuests) {
+        setGuestList(data.getGuests as Guest[]);
       }
     },
     onError(error) {

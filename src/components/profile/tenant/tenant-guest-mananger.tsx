@@ -3,7 +3,8 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Table } from "@/components/ui/table";
 import { useFetchGuests } from "@/hook/guest.hook";
-import { Guest } from "@/lib/data-type";
+import { Operator } from "@/lib/contanst";
+import { Guest, QueryManyInput } from "@/lib/data-type";
 import dayjs from "dayjs";
 import { useState } from "react";
 
@@ -12,7 +13,17 @@ interface TenantGuestManagerProps {
 }
 
 export const TenantGuestManager = ({ tenantId }: TenantGuestManagerProps) => {
-  const { guestList, refetch } = useFetchGuests(tenantId);
+  const queryInput: QueryManyInput = {
+    conditions: [
+      {
+        value: tenantId,
+        key: "tenantId",
+        operator: Operator.EQUAL,
+      },
+    ],
+  };
+
+  const { guestList, refetch } = useFetchGuests(queryInput);
   const [displayForm, setDisplayForm] = useState<boolean>(false);
   const [edittingGuest, setEdittingGuest] = useState<Guest | undefined>();
 
