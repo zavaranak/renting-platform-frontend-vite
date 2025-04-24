@@ -1,5 +1,7 @@
 {
   "compilerOptions": {
+    "allowJs": true,
+    "maxNodeModuleJsDepth": 10,
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
     "target": "ES2020",
     "useDefineForClassFields": true,
@@ -23,12 +25,6 @@
     "noUncheckedSideEffectImports": true,
     "baseUrl": ".",
     "paths": {
-      // "@components/*": ["./src/components/*"],
-      // "@lib/*": ["./src/lib/*"],
-      // "@assets/*": ["./src/assets/*"],
-      // "@utils/*": ["./src/utils/*"],
-      // "@store/*": ["./src/store/*"],
-      // "@hook/*": ["./src/hook/*"] 
       "@/*": ["./src/*"]  
     }
   },

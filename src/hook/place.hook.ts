@@ -20,6 +20,7 @@ import {
   REMOVE_PLACE_ATTRIBUTES,
   UPDATE_PLACE,
   UPDATE_PLACE_ATTRIBUTES,
+  UPDATE_PLACE_PHOTOS,
 } from "@/lib/gql/endpoint";
 import { CITIES, COUNTRIES } from "@/lib/gql/endpoint";
 
@@ -344,4 +345,48 @@ export const usePlaceAttributes = () => {
     statusUpdate,
     statusRemove,
   };
+};
+
+export const useUpdatePlacePhotos = () => {
+  const [uploadPhotoLoading, setLoading] = useState(false);
+  const [uploadP] = useMutation(UPDATE_PLACE_PHOTOS, {
+    context: {
+      headers: {
+        "apollo-require-preflight": true,
+      },
+    },
+  });
+  const [deleteP] = useMutation(UPDATE_PLACE);
+  const uploadPhotos = useCallback(
+    async (placeId: string, uploadedPhotos: File[], afterDeleted: string[]) => {
+      console.log("upload photos", uploadedPhotos);
+      console.log("after deleted", afterDeleted);
+      setLoading(true);
+      if (afterDeleted.length > 0) {
+        await deleteP({
+          variables: {
+            placeUpdateInput: {
+              id: placeId,
+              photos: afterDeleted,
+            },
+          },
+        });
+      }
+      if (uploadedPhotos.length > 0) {
+        const { data, errors } = await uploadP({
+          variables: {
+            uploadPlacePhotosPlaceId: placeId,
+            images: uploadedPhotos,
+          },
+        });
+
+        if (errors) throw new Error(errors[0].message);
+        return data;
+      }
+      setLoading(false);
+      return true;
+    },
+    [uploadP, deleteP]
+  );
+  return { uploadPhotos, uploadPhotoLoading };
 };

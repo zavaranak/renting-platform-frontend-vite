@@ -21,6 +21,8 @@ import {
 import { PlaceForm, PlaceUpdateForm } from "@/components/place/place-form";
 import { PlaceAttributeForm } from "@/components/place/place-property-form";
 import { Card } from "@/components/ui/card";
+import { PhotoUpdateDialog } from "@/components/place/place-photos-form";
+
 interface PlaceTableParam {
   landlordId: string;
   setPlacesId: (array: string[]) => void;
@@ -32,6 +34,12 @@ export interface PlaceUpdateAttributeInterface {
   placeName: string;
   attributes: PlaceAttribute[];
 }
+export interface PlaceUpdatePhotoInterface {
+  placeId: string;
+  placeAddress: string;
+  placeName: string;
+  photos: string[];
+}
 
 export const LandlordPlaceManagement = ({
   landlordId,
@@ -42,6 +50,9 @@ export const LandlordPlaceManagement = ({
   const [selectedPlace, setSelectedPlace] = useState<Place | undefined>(
     undefined
   );
+  const [currentPhotos, setCurrentPhotos] = useState<
+    PlaceUpdatePhotoInterface | undefined
+  >(undefined);
   const [updatePlace, setUpdatePlace] = useState<Place | undefined>(undefined);
   const [updateAttributes, setUpdateAttributes] = useState<
     PlaceUpdateAttributeInterface | undefined
@@ -164,6 +175,25 @@ export const LandlordPlaceManagement = ({
                             Manage
                           </Button>
                         </DropdownMenuItem>
+                        <DropdownMenuItem>
+                          <Button
+                            onClick={() => {
+                              setTimeout(() => {
+                                setCurrentPhotos({
+                                  placeId: place.id,
+                                  placeName: place.name,
+                                  placeAddress:
+                                    place.address + `(` + place.city + ")",
+                                  photos: place.photos ?? [],
+                                });
+                              }, 10);
+                            }}
+                            variant="ghost"
+                            className="w-full justify-start"
+                          >
+                            Place's photos
+                          </Button>
+                        </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </TableCell>
@@ -173,6 +203,13 @@ export const LandlordPlaceManagement = ({
           )}
         </Table>
         <PlaceModel place={selectedPlace} setSelectedPlace={setSelectedPlace} />
+
+        {currentPhotos != undefined && (
+          <PhotoUpdateDialog
+            updatePhotoInterface={currentPhotos}
+            setPhotosInterface={setCurrentPhotos}
+          />
+        )}
       </Card>
     </div>
   );

@@ -437,3 +437,17 @@ export const CANCEL_ACTIVE_BOOKING = gql`
     }
   }
 `;
+
+export const UPDATE_PLACE_PHOTOS = gql`
+  mutation UploadPlacePhotos(
+    $uploadPlacePhotosPlaceId: String!
+    $images: [Upload!]!
+  ) {
+    uploadPlacePhotos(placeId: $uploadPlacePhotosPlaceId, images: $images) {
+      message
+      place {
+        photos
+      }
+    }
+  }
+`;

@@ -1,14 +1,15 @@
 import { useAuthStore } from "@/store/auth-store";
 import { useEffect, useState } from "react";
 import {
-  HttpLink,
+  // HttpLink,
   ApolloLink,
   ApolloClient,
   InMemoryCache,
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
+import createUploadLink from "apollo-upload-client/createUploadLink.mjs";
 export const useCreateApolloClient = () => {
-  const httpLink = new HttpLink({
+  const httpLink = createUploadLink({
     uri: "/graphql",
   });
   const { token } = useAuthStore((state) => state);
